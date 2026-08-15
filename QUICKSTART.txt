@@ -1,0 +1,206 @@
+========================================================
+ CLAWMARK — QUICK START
+ A Twitch shoutout overlay for OBS
+ by Hardclaws  ·  twitch.tv/hardclaws
+ thehardclaws@gmail.com
+========================================================
+
+WHAT'S IN HERE
+--------------
+  index.html      The builder. Pick a layout + theme, get your OBS URL.
+  test.html       Diagnostics. Run this FIRST — checks your token & clips.
+  overlay.html    The actual browser source that goes into OBS.
+  src/            The engine (skins, layouts, Twitch API, app logic).
+  docs/shots/     Screenshots of the layouts.
+  README.md       Full documentation.
+
+
+STEP 1 — START A LOCAL SERVER
+-----------------------------
+Don't just double-click the HTML files. Browsers restrict API calls on
+file:// URLs. Serve the folder instead:
+
+  Windows:   double-click  serve.bat
+  Mac/Linux: ./serve.sh
+
+Both call serve.py. Use these rather than "python -m http.server":
+the stock server spams ConnectionAbortedError tracebacks whenever the
+browser cancels a request (which is constant and harmless). serve.py
+silences that noise.
+
+Then open:  http://localhost:8080/
+
+(If you don't have Python, any static server works — or just push the
+folder to GitHub Pages and use that URL.)
+
+
+STEP 2 — RUN THE DIAGNOSTICS
+----------------------------
+Open  http://localhost:8080/test.html
+
+LEAVE THE CLIENT ID AND TOKEN BLANK. You don't need them.
+
+Just enter a test channel that has clips (e.g. zwift) and click
+"Run all checks". It will verify the public API, fetch a real clip,
+and actually play the video to prove it works.
+
+Fix anything red before continuing.
+
+
+STEP 3 — BUILD YOUR OVERLAY
+---------------------------
+Open  http://localhost:8080/
+
+  1. Pick one of the 63 layouts -- or open "Random mix" and tick
+     several so each shoutout uses a different one. Click the cog
+     on any of them to give that layout its own detail level,
+     info duration, video fit and backdrop. (15 are themed: comic strip,
+     newspaper, arcade, blueprint, VHS, glitch, wanted poster,
+     boarding pass, chat app, vinyl, storybook and more) -- or open the "Variations" tab
+     to browse 266,400 generated ones. Filter by clip framing,
+     info position, detail level, ornament, video fit or how long
+     the info panel stays up, then page through.
+
+     TIP: if the info panel covers too much of the clip, set
+     "Info duration" to clear after 3 or 5 seconds. Or pick a
+     letterbox fit so none of the video is ever cropped.
+  2. Pick a preset theme, or open the Edit tab and click through
+     five rows: Colour, Mood, Type, Shape, Background.
+     No colour codes. Contrast is fixed for you automatically.
+
+     TRANSPARENT BACKGROUND: in the Edit tab under "Overlay
+     background", choose "Transparent background" so OBS shows
+     your scene through it. That is the usual choice.
+  3. Enter your channel name. No token required.
+  4. Set your options.
+  5. Use "Preview with a real channel" to test on a real streamer.
+  6. Copy the generated URL.
+
+The preview shows fake demo data by default. Type any real Twitch
+username into the "Preview with a real channel" box and hit Test to
+see their actual profile and a real clip play.
+
+
+TRANSPARENT BACKGROUND
+----------------------
+The overlay is TRANSPARENT BY DEFAULT so your game shows through
+around it. If you want a solid background instead, change
+"Overlay background" to Solid in the Behaviour panel.
+
+
+IF YOUR BROWSER SOURCE IS SMALL
+-------------------------------
+Set "Browser source size" in the builder to match the Width/Height
+you give the OBS Browser Source (e.g. 960x540). Text is enlarged so
+it stays readable, and the least useful details are hidden at the
+smallest sizes.
+
+
+STEP 4 — ADD TO OBS
+-------------------
+Add a Browser Source, paste the URL, then set:
+
+  Width                                      1920
+  Height                                     1080
+  Shutdown source when not visible           ON
+  Refresh browser when scene becomes active  ON
+  Control audio via OBS                      ON   <-- REQUIRED FOR SOUND
+
+Scale the source in your scene. Do NOT change the 1920x1080 values.
+
+>>> If clips are silent for your viewers but audible to you, it's the
+    "Control audio via OBS" setting. This catches everyone once.
+
+
+STEP 5 — TEST IT
+----------------
+In your Twitch chat:
+
+  !so someusername       Queue a shoutout
+  !watchclip user        Play a clip (bypasses mod restriction)
+  !watchclip <clip url>  Play a specific clip pasted in chat
+  !replayso              Replay the last one
+  !stopclip              Stop current clip (mods only)
+  !clipreload            Reload the source (mods only)
+
+Fire three !so commands quickly to confirm the queue works — they
+should play one after another, not overlap.
+
+
+DO I NEED AN ACCESS TOKEN?
+--------------------------
+No — not for normal use.
+
+Works with NO token:
+  avatar, name, bio, partner/affiliate badge, account age,
+  FOLLOWER COUNT, last category, last stream title, live status,
+  clips, and clip video playback.
+
+Needs a token (one feature only):
+  posting "Go check out X" into your chat.
+
+Tick "I want the overlay to post a message in chat" in the builder to
+reveal those fields, and use token.html to generate them.
+
+
+DATA THAT IS NOT AVAILABLE
+--------------------------
+Twitch's API does not expose Zwift/cycling metrics (watts, FTP, W/kg,
+cadence). Nothing in these layouts displays data it can't actually
+fetch. Real fields used: avatar, name, login, bio, partner/affiliate
+status, account age, followers, last category, last title, live
+status, language, plus the clip's video, title, views, duration,
+date and creator.
+
+
+TROUBLESHOOTING
+---------------
+Blank browser source
+  Run test.html. Usually an expired token or Client ID mismatch.
+
+Nothing happens when I type !so
+  - Check the channel field is your LOGIN name, not display name.
+  - Check "Moderators only" isn't on when you're testing as a viewer.
+  - Use "Test chat connection only" in test.html to confirm the
+    listener sees your messages.
+
+Clip plays but no sound
+  "Control audio via OBS" must be ON in the Browser Source settings.
+
+Clip never appears, only the profile card
+  That channel has no clips. Try someone else, or widen the date
+  range slider (0 = all time).
+
+Everything worked yesterday, broken today
+  Your token expired. Implicit-grant tokens are short-lived.
+  Diagnostics warns when expiry is under 24 hours.
+
+
+CONSOLE HELPERS
+---------------
+In any overlay tab, open DevTools console:
+
+  shoutout('someuser')   queue a shoutout
+  shoutoutClip(url)      play a specific clip
+  shoutoutReplay()       replay the last one
+  shoutoutStop()         stop the current clip
+
+========================================================
+ MIT licensed. Full docs in README.md
+========================================================
+
+
+SHOWING CREDIT ON STREAM (OPTIONAL)
+-----------------------------------
+Add  &credit=1  to your overlay URL to show a small
+"Clawmark by Hardclaws" badge in the bottom-right corner.
+It is OFF by default. Custom text: &credit=Your%20Text
+
+
+MADE BY
+-------
+  Hardclaws
+  twitch.tv/hardclaws
+  thehardclaws@gmail.com
+
+  MIT licence — free to use, modify and fork.

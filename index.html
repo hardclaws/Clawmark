@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clawmark — Twitch Shoutout Overlay Builder</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/brand/icon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/brand/icon-180.png">
+<meta name="theme-color" content="#08192a">
+<meta name="author" content="Hardclaws">
+<meta property="og:title" content="Clawmark — Twitch Shoutout Overlay">
+<meta property="og:description" content="138 hand-designed shoutout layouts for OBS. No access token required. By Hardclaws.">
+<meta property="og:image" content="assets/brand/social-preview.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *{box-sizing:border-box}
+  :root{
+    --b:#0b0b11; --s:#13131d; --s2:#1a1a28; --l:#26263c;
+    --t:#eaeaf4; --td:#8f8fab; --a:#9146ff; --g:#8fd14f;
+  }
+  body{margin:0;background:var(--b);color:var(--t);
+    font:15px/1.55 "Inter","Segoe UI",system-ui,-apple-system,sans-serif}
+  a{color:var(--a)}
+  .wrap{max-width:1500px;margin:0 auto;padding:26px 22px 80px}
+  header.top{margin-bottom:22px}
+  h1{margin:0 0 6px;font-size:28px;letter-spacing:-.02em}
+  h1 span{background:linear-gradient(90deg,var(--a),var(--g));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{margin:0;color:var(--td);max-width:820px}
+
+  .cols{display:grid;grid-template-columns:1fr 420px;gap:22px;align-items:start}
+  @media(max-width:1100px){.cols{grid-template-columns:1fr}}
+
+  .panel{background:var(--s);border:1px solid var(--l);border-radius:14px;overflow:hidden;margin-bottom:18px}
+  .panel > h2{margin:0;padding:14px 18px;font-size:14px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--td);border-bottom:1px solid var(--l);background:var(--s2)}
+  .panel .in{padding:18px}
+
+  /* preview */
+  .stagebox{position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden;
+    border-radius:10px;border:1px solid var(--l)}
+  .stagebox iframe{position:absolute;top:0;left:0;width:1920px;height:1080px;border:0;transform-origin:top left}
+  .previewbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+
+  /* layout grid */
+  .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .lopt{background:var(--s2);border:2px solid var(--l);border-radius:10px;padding:10px;cursor:pointer;text-align:left}
+  .lopt:hover{border-color:#3a3a60}
+  .lopt.on{border-color:var(--a);background:#1d1533}
+  .lopt.focus{box-shadow:0 0 0 2px var(--g)}
+  .lopt.focus small{color:var(--g)!important}
+  .lopt .thumb{height:62px;border-radius:6px;background:#0e0e18;margin-bottom:8px;position:relative;overflow:hidden}
+  .lopt b{display:block;font-size:13px}
+  .lopt small{display:block;color:var(--td);font-size:11px;line-height:1.35;margin-top:3px}
+
+  /* skin swatches */
+  .sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+  .sopt{border:2px solid var(--l);border-radius:9px;padding:7px;cursor:pointer;background:var(--s2)}
+  .sopt.on{border-color:var(--a)}
+  .sopt .sw{height:34px;border-radius:5px;display:flex;overflow:hidden;margin-bottom:6px}
+  .sopt .sw i{flex:1}
+  .sopt span{font-size:11.5px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  label{display:block;font-size:12.5px;color:var(--td);margin:14px 0 5px;letter-spacing:.02em}
+  label:first-child{margin-top:0}
+  input[type=text],input[type=password],input[type=number],select,textarea{
+    width:100%;background:#0a0a12;border:1px solid var(--l);color:var(--t);
+    border-radius:8px;padding:10px 12px;font:14px inherit;font-family:inherit}
+  input:focus,select:focus,textarea:focus{outline:0;border-color:var(--a)}
+  .row{display:flex;gap:10px}.row>*{flex:1}
+  .chk{display:flex;align-items:flex-start;gap:9px;margin:9px 0;cursor:pointer;font-size:13.5px;color:var(--t)}
+  .chk input{margin:3px 0 0;accent-color:var(--a);flex:0 0 auto}
+  .chk small{display:block;color:var(--td);font-size:11.5px}
+  .rng{display:flex;align-items:center;gap:10px}
+  .rng input[type=range]{flex:1;accent-color:var(--a)}
+  .rng b{font-size:12.5px;color:var(--g);min-width:78px;text-align:right}
+
+  .btn{background:var(--a);border:0;color:#fff;font:600 14px inherit;padding:11px 18px;
+    border-radius:9px;cursor:pointer}
+  .btn:hover{filter:brightness(1.12)}
+  .btn.sec{background:var(--s2);border:1px solid var(--l);color:var(--t)}
+  .btn.g{background:var(--g);color:#0b1a05;font-weight:700}
+  .btn.sm{padding:7px 12px;font-size:12.5px}
+
+  .out{width:100%;background:#07070d;border:1px solid var(--l);border-radius:9px;
+    padding:12px;color:var(--g);font:12.5px/1.6 "JetBrains Mono",Consolas,monospace;
+    word-break:break-all;min-height:90px;resize:vertical}
+  .hint{font-size:12px;color:var(--td);margin-top:7px}
+  .pickrow{display:flex;gap:8px;flex-wrap:wrap}
+  .pick{background:var(--s2);border:2px solid var(--l);border-radius:10px;
+    padding:9px 13px;cursor:pointer;color:var(--t);font:600 13px inherit;text-align:left;
+    display:flex;flex-direction:column;gap:3px;min-width:96px}
+  .pick:hover{border-color:#3a3a60}
+  .pick.on{border-color:var(--a);background:#1d1533}
+  .pick small{color:var(--td);font-size:10.5px;font-weight:400;line-height:1.3}
+  .palgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:9px}
+  .pal{border:2px solid var(--l);border-radius:10px;padding:0;cursor:pointer;overflow:hidden;
+    background:var(--s2);text-align:left}
+  .pal:hover{border-color:#3a3a60}
+  .pal.on{border-color:var(--a);box-shadow:0 0 0 2px color-mix(in srgb,var(--a) 40%,transparent)}
+  .pal .bars{display:flex;height:44px}
+  .pal .bars i{flex:1}
+  .pal .bars i.wide{flex:2.2}
+  .pal span{display:block;padding:6px 9px;font:600 11.5px inherit;color:var(--t);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ok{background:#132012;border:1px solid #2c5220;border-radius:8px;padding:10px 12px;
+    font-size:12.5px;margin-top:12px;color:#bfe6a8}
+  .ok b{color:var(--g)}
+  .warn{background:#2a1608;border:1px solid #5a3312;color:#f0c088;
+    border-radius:8px;padding:10px 12px;font-size:12.5px;margin-top:10px}
+  details{margin-top:10px}summary{cursor:pointer;color:var(--td);font-size:13px}
+  .tabs{display:flex;gap:6px;padding:12px 18px 0}
+  .tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--td);
+    padding:7px 12px;cursor:pointer;font:600 13px inherit}
+  .tab.on{color:var(--t);border-color:var(--a)}
+  .tabc{display:none;padding:18px}.tabc.on{display:block}
+  code{background:#0a0a12;padding:2px 6px;border-radius:4px;font-size:12.5px;color:var(--g)}
+  .kbd{background:var(--s2);border:1px solid var(--l);border-bottom-width:2px;border-radius:5px;
+    padding:1px 6px;font-size:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  td{padding:7px 6px;border-bottom:1px solid var(--l);vertical-align:top}
+  td:first-child{color:var(--g);font-family:monospace;white-space:nowrap;width:1%;padding-right:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top" style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+  <img src="assets/brand/icon-180.png" alt="Clawmark" width="76" height="76"
+       style="border-radius:14px;box-shadow:0 0 0 2px rgba(31,253,255,.35),0 0 26px rgba(31,253,255,.25)">
+  <div style="min-width:0;flex:1">
+  <h1>Clawmark <span>Builder</span></h1>
+  <p class="lede">A Twitch shoutout overlay for OBS, by <b>Hardclaws</b>.<br>
+  Pick a layout, pick or <b>generate</b> a theme, set your options, and copy the URL into an OBS Browser Source.<br>
+  138 layouts × unlimited generated skins. Everything runs client-side — your token never leaves your machine.</p>
+  </div>
+</header>
+
+<div class="cols">
+  <!-- ======================= LEFT ======================= -->
+  <div>
+    <div class="panel">
+      <h2>Live preview</h2>
+      <div class="in">
+        <div class="stagebox"><iframe id="pv"></iframe></div>
+        <div class="previewbar">
+          <button class="btn sm" id="replay">↻ Replay</button>
+          <button class="btn sm sec" id="shuffle" title="Pick a random colour theme — the layout stays the same">🎲 Random theme</button>
+          <button class="btn sm sec" id="randlayout" title="Jump to a random layout — the theme stays the same">🎲 Random layout</button>
+          <button class="btn sm sec" id="cycle">▶ Cycle layouts</button>
+          <span class="hint" style="margin:0 0 0 auto" id="pvinfo"></span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:10px;
+             border-top:1px solid var(--l);padding-top:12px;flex-wrap:wrap">
+          <span style="font-size:12.5px;color:var(--td);flex:0 0 auto">Preview with a real channel:</span>
+          <input type="text" id="pvuser" placeholder="e.g. zwift" style="flex:1;min-width:150px;
+            background:#0a0a12;border:1px solid var(--l);color:var(--t);border-radius:8px;
+            padding:8px 11px;font:13px inherit">
+          <button class="btn sm g" id="pvgo">▶ Test</button>
+          <button class="btn sm sec" id="pvdemo">Back to demo</button>
+          <label class="chk" style="margin:0;flex:0 0 auto;font-size:12.5px">
+            <input type="checkbox" id="pvsound"><span>Sound</span></label>
+        </div>
+        <div class="hint" id="pvstatus" style="margin-top:8px">
+          Showing fake demo data. Enter a real Twitch username above to fetch their actual
+          profile and play a real clip — no credentials needed.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>1 · Layout <span style="color:var(--td);text-transform:none;letter-spacing:0">— structure</span></h2>
+      <div class="tabs">
+        <button class="tab on" data-tab="builtin">138 built-in</button>
+        <button class="tab" data-tab="random">🎲 Random mix</button>
+        <button class="tab" data-tab="genlayout">More variations</button>
+      </div>
+      <div class="tabc on" id="tab-builtin">
+        <div class="lgrid" id="lgrid"></div>
+      </div>
+
+      <div class="tabc" id="tab-random">
+        <div class="hint" style="margin-top:0">Tick the layouts you like. Each shoutout picks
+          one at random, so it changes every time. The same layout never plays twice in a row.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
+          <button class="btn sec sm" id="rAll">Select all</button>
+          <button class="btn sec sm" id="rNone">Clear</button>
+          <button class="btn sec sm" id="rThemed">Themed only</button>
+          <button class="btn sec sm" id="rClassic">Classic only</button>
+          <button class="btn sec sm" id="rRetro">Retro only</button>
+          <button class="btn sec sm" id="rMagic">Magic &amp; dragons</button>
+          <button class="btn sec sm" id="rEpic">Epic fantasy</button>
+          <button class="btn sec sm" id="rAllFantasy">All fantasy</button>
+          <button class="btn sec sm" id="rScifi">Sci-fi &amp; cyberpunk</button>
+          <button class="btn sec sm" id="rHorror">Horror</button>
+          <button class="btn sec sm" id="rAnime">Anime</button>
+          <button class="btn sec sm" id="rIRL">Nature, sport &amp; food</button>
+          <button class="btn sec sm" id="rMedia">Print &amp; broadcast</button>
+          <span class="hint" id="rCount" style="margin:0 0 0 auto"></span>
+        </div>
+        <div class="lgrid" id="rgrid"></div>
+        <div id="rEditor" style="display:none;margin-top:14px;padding:14px 16px;
+             background:#0e0e17;border:1px solid var(--l);border-radius:10px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <b id="rEditName" style="font-size:13.5px"></b>
+            <span class="hint" style="margin:0">— options just for this layout</span>
+            <button class="btn sec sm" id="rEditClose" style="margin-left:auto">Done</button>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <div style="flex:1;min-width:140px"><label style="margin-top:0">Detail</label>
+              <select id="rDetail"><option value="">Use global</option>
+                <option value="m">Minimal</option><option value="s">Standard</option>
+                <option value="r">Rich</option></select></div>
+            <div style="flex:1;min-width:140px"><label style="margin-top:0">Info duration</label>
+              <select id="rHold"><option value="">Use global</option>
+                <option value="a">Stays</option><option value="l">8s</option>
+                <option value="m">5s</option><option value="s">3s</option></select></div>
+            <div style="flex:1;min-width:140px"><label style="margin-top:0">Video fit</label>
+              <select id="rFit"><option value="">Use global</option>
+                <option value="n">Letterbox</option><option value="c">Fill</option></select></div>
+            <div style="flex:1;min-width:140px"><label style="margin-top:0">Backdrop</label>
+              <select id="rBackdrop"><option value="">Use global</option>
+                <option value="n">None</option><option value="b">Blur</option>
+                <option value="d">Dim</option><option value="s">Scrim</option></select></div>
+            <div style="flex:1;min-width:140px"><label style="margin-top:0">Expand on clear</label>
+              <select id="rExpand"><option value="">Use global</option>
+                <option value="1">Yes</option><option value="0">No</option></select></div>
+          </div>
+        </div>
+      </div>
+      <div id="layoutopts" style="padding:14px 18px;border-top:1px solid var(--l);
+           background:#0e0e17">
+        <div style="font-size:12.5px;color:var(--td);margin-bottom:10px">
+          <b style="color:var(--t)">Options for the selected layout</b> — these apply to every
+          built-in layout and to the random mix.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Detail level</label>
+            <select id="oDetail">
+              <option value="">Layout default</option>
+              <option value="minimal">Minimal — name + one stat</option>
+              <option value="standard">Standard</option>
+              <option value="rich">Rich — everything</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Info duration</label>
+            <select id="oHold">
+              <option value="">Stays on screen</option>
+              <option value="long">Clear after 8s</option>
+              <option value="medium">Clear after 5s</option>
+              <option value="short">Clear after 3s</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Video fit</label>
+            <select id="oFit">
+              <option value="">Layout default</option>
+              <option value="contain">Letterbox — never crop</option>
+              <option value="cover">Fill — may crop</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Backdrop</label>
+            <select id="oBackdrop">
+              <option value="">None</option>
+              <option value="blur">Blurred</option>
+              <option value="dim">Dimmed</option>
+              <option value="scrim">Gradient scrim</option>
+            </select>
+          </div>
+        </div>
+        <label class="chk" style="margin-top:10px"><input type="checkbox" id="oExpand">
+          <span>Grow the clip to full screen once the info clears
+          <small>Only does anything when Info duration is set.</small></span></label>
+      </div>
+
+      <div class="tabc" id="tab-genlayout">
+        <div class="hint" style="margin-top:0">Structural variations built from the layout
+          engine — different clip framing, info placement, panel style, entrance and detail
+          level. Filter the set, or leave everything on and browse.</div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px">
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Clip framing</label>
+            <select id="fFrame">
+              <option value="">Any</option>
+              <option value="fullbleed">Full bleed</option>
+              <option value="window">Floating window</option>
+              <option value="split">Split screen</option>
+              <option value="portrait">Tall pillar</option>
+              <option value="strip">Wide strip</option>
+              <option value="card">Card</option>
+              <option value="inset">Inset over blur</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Info position</label>
+            <select id="fPos">
+              <option value="">Any</option>
+              <option value="bottom">Bottom</option><option value="top">Top</option>
+              <option value="left">Left</option><option value="right">Right</option>
+              <option value="centre">Centre</option><option value="corner">Corner</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Detail level</label>
+            <select id="fDens">
+              <option value="">Any</option>
+              <option value="minimal">Minimal</option>
+              <option value="standard">Standard</option>
+              <option value="rich">Rich</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Info duration</label>
+            <select id="fHold">
+              <option value="">Any</option>
+              <option value="always">Stays on screen</option>
+              <option value="long">Clears after 8s</option>
+              <option value="medium">Clears after 5s</option>
+              <option value="short">Clears after 3s</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Video fit</label>
+            <select id="fFit">
+              <option value="">Any</option>
+              <option value="contain">Letterbox (never crop)</option>
+              <option value="cover">Fill (may crop)</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:150px">
+            <label style="margin-top:0">Ornament</label>
+            <select id="fOrn">
+              <option value="">Any</option>
+              <option value="none">None</option>
+              <option value="behind">Behind</option>
+              <option value="corner">Corner</option>
+              <option value="flank">Flanking</option>
+              <option value="orbit">Orbit</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button class="btn g sm" id="lgen">Show variations</button>
+          <button class="btn sec sm" id="lmore">Load 12 more</button>
+          <button class="btn sec sm" id="lreset">Reset filters</button>
+          <span class="hint" id="lcount" style="margin:0 0 0 auto"></span>
+        </div>
+
+        <div class="lgrid" id="lgengrid" style="margin-top:14px"></div>
+        <div class="hint" id="lgeninfo" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>2 · Theme <span style="color:var(--td);text-transform:none;letter-spacing:0">— colour, type, texture</span></h2>
+      <div class="tabs">
+        <button class="tab on" data-tab="preset">Presets</button>
+        <button class="tab" data-tab="gen">Generate</button>
+      </div>
+      <div class="tabc on" id="tab-preset">
+        <div class="sgrid" id="sgrid"></div>
+      </div>
+      <div class="tabc" id="tab-gen">
+        <div class="hint" style="margin-top:0">Click things. Every choice shows you the
+          result — there are no colour codes to work out.</div>
+
+        <label style="margin-top:16px">Colour</label>
+        <div id="paletteGrid"></div>
+
+        <label style="margin-top:18px">Mood</label>
+        <div id="moodRow" class="pickrow"></div>
+
+        <label style="margin-top:18px">Type</label>
+        <div id="typeRow" class="pickrow"></div>
+
+        <label style="margin-top:18px">Shape</label>
+        <div id="shapeRow" class="pickrow"></div>
+
+        <label style="margin-top:18px">Overlay background</label>
+        <div id="bgRow" class="pickrow"></div>
+
+        <div id="cWarn"></div>
+
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button class="btn sec sm" id="cRandomTheme">🎲 Surprise me</button>
+          <button class="btn sec sm" id="cCustomToggle">Pick my own colour</button>
+          <input type="color" id="cAccent" value="#9146ff"
+            style="display:none;width:48px;height:36px;padding:2px;background:#0a0a12;
+                   border:1px solid var(--l);border-radius:8px;cursor:pointer">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Reference</h2>
+      <div class="tabs">
+        <button class="tab on" data-tab="cmds">Commands</button>
+        <button class="tab" data-tab="obs">OBS setup</button>
+        <button class="tab" data-tab="scopes">Token &amp; scopes</button>
+      </div>
+      <div class="tabc on" id="tab-cmds"><table>
+        <tr><td>!<span id="cmdname">so</span> user</td><td>Queue a shoutout. Multiple shoutouts stack in a queue and play in order.</td></tr>
+        <tr><td>!watchclip user</td><td>Play a clip for anyone — ignores the mods/VIP restriction.</td></tr>
+        <tr><td>!replayso</td><td>Replay the last shoutout. Aliases: !soreplay, !clipreplay, !replayclip</td></tr>
+        <tr><td>!stopclip</td><td>Stop the current clip immediately. Mods/broadcaster only. Aliases: !sostop, !clipstop</td></tr>
+        <tr><td>!clipreload</td><td>Reload the browser source. Mods/broadcaster only. Alias: !soreload</td></tr>
+      </table>
+      <div class="hint">You can also fire one from the browser console for testing: <code>shoutout('someuser')</code></div>
+      </div>
+      <div class="tabc" id="tab-obs">
+        <p style="margin-top:0">Add a <b>Browser Source</b> and paste the generated URL. Set:</p>
+        <table>
+          <tr><td>Width × Height</td><td>1920 × 1080 — then scale the source in your scene, don't change these</td></tr>
+          <tr><td>Shutdown source when not visible</td><td><b>✓ on</b> — stops audio playing on hidden scenes</td></tr>
+          <tr><td>Refresh browser when scene becomes active</td><td><b>✓ on</b> — reconnects chat reliably</td></tr>
+          <tr><td>Control audio via OBS</td><td><b>✓ on</b> — clip audio becomes a normal mixer channel</td></tr>
+        </table>
+        <div class="warn">Clip audio needs "Control audio via OBS" ticked or you won't hear it. If clips are silent on your stream but audible locally, that's the setting.</div>
+      </div>
+      <div class="tabc" id="tab-scopes">
+        <p style="margin-top:0">Generate a token with these scopes (an implicit-grant token is fine):</p>
+        <table>
+          <tr><td>(none)</td><td>Profile, clips, category, live status, account age — all work with just a valid token</td></tr>
+          <tr><td>moderator:read:followers</td><td>Follower counts. Only returns data for channels you moderate — otherwise the stat is hidden automatically</td></tr>
+          <tr><td>user:write:chat</td><td>Only if you enable "post shoutout message in chat"</td></tr>
+        </table>
+        <div class="warn"><b>Follower counts are restricted by Twitch.</b> The API only returns them for channels you moderate. For everyone else these layouts hide the stat rather than show a zero — this is a Twitch policy limit, not a bug.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= RIGHT ======================= -->
+  <div>
+    <div class="panel">
+      <h2>3 · Channel</h2>
+      <div class="in">
+        <label>Your Twitch channel <small style="color:var(--td)">(where chat commands are read)</small></label>
+        <input type="text" id="channel" placeholder="dungeonsandderailleurs">
+        <label>Command (without the !)</label>
+        <input type="text" id="cmd" value="so">
+        <div class="ok">
+          <b>No access token needed.</b> Profile, avatar, bio, follower count, last category,
+          clips and clip playback all work without one.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>3b · Access token <span style="color:var(--td);text-transform:none;letter-spacing:0">— optional</span></h2>
+      <div class="in">
+        <label class="chk" style="margin-top:0"><input type="checkbox" id="usetoken">
+          <span>I want the overlay to post a message in chat
+          <small>This is the only feature that needs a token. Leave it off otherwise.</small></span></label>
+
+        <div id="tokfields" style="display:none;border-top:1px solid var(--l);margin-top:12px;padding-top:14px">
+          <a class="btn sm" href="token.html" target="_blank" style="text-decoration:none;display:inline-block;margin-bottom:6px">
+            🔑 Get a Client ID &amp; token →</a>
+          <label>Client ID</label>
+          <input type="text" id="clientid" placeholder="from dev.twitch.tv or your token generator">
+          <label>Access token</label>
+          <input type="password" id="token" placeholder="oauth token">
+          <div class="hint">Both must come from the <b>same</b> app, or Twitch returns 401.
+          Stored only in your browser and in the URL you generate.</div>
+          <label>Message to post in chat</label>
+          <input type="text" id="chatmsg" placeholder="Go check out {channel}! They were playing {game} - {url}">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>4 · Behaviour</h2>
+      <div class="in">
+        <label class="chk"><input type="checkbox" id="clip" checked><span>Show clip<small>Play a random clip from their channel</small></span></label>
+        <label class="chk"><input type="checkbox" id="featured"><span>Prefer featured clips<small>Falls back to any clip if none are featured</small></span></label>
+        <label class="chk"><input type="checkbox" id="fallback" checked><span>Use profile image if no clips exist</span></label>
+        <label class="chk"><input type="checkbox" id="raid"><span>Auto-shoutout on raid
+          <small>Fires automatically when someone raids you</small></span></label>
+        <div id="raidopts" style="display:none;padding-left:28px;border-left:2px solid var(--l);margin:4px 0 10px">
+          <label>Minimum raiders <b id="raidcountv" style="color:var(--g);font-weight:600">any</b></label>
+          <div class="rng"><input type="range" id="raidcount" min="0" max="100" value="0"></div>
+          <label>Delay before firing <b id="raiddelayv" style="color:var(--g);font-weight:600">0s</b></label>
+          <div class="rng"><input type="range" id="raiddelay" min="0" max="60" value="0"></div>
+          <div class="hint">A delay lets your own raid alert play first.</div>
+        </div>
+        <label class="chk"><input type="checkbox" id="progress" checked><span>Show progress bar</span></label>
+
+        <label><b style="color:var(--t)">Overlay background</b></label>
+        <select id="obg">
+          <option value="panels">Transparent — show my game/scene behind (recommended)</option>
+          <option value="none">Solid — overlay fills the whole screen</option>
+          <option value="full">Fully transparent — text and clip only, no panels</option>
+        </select>
+        <div class="hint">In OBS the browser source is transparent by default, so
+          <b>Transparent</b> lets your gameplay show through around the overlay.
+          Pick <b>Solid</b> only if the shoutout is its own full scene.</div>
+
+        <label><b style="color:var(--t)">Clip size</b></label>
+        <select id="ovfit">
+          <option value="smart">Fit the clip beside the info (recommended)</option>
+          <option value="shrink">Smaller clip, more room for the info</option>
+          <option value="cover">Full screen clip, info sits on top</option>
+        </select>
+        <div class="hint"><b>Fit</b> gives the clip its own window in the space the
+          text panels do not use, so nothing is drawn over the video and none of the
+          picture is cropped. <b>Full screen</b> is the old behaviour: the clip fills
+          the frame and the panels overlap it.</div>
+
+        <label>Browser source size</label>
+        <select id="osize">
+          <option value="">1920 × 1080 (full size)</option>
+          <option value="1280x720">1280 × 720</option>
+          <option value="960x540">960 × 540</option>
+          <option value="854x480">854 × 480</option>
+          <option value="640x360">640 × 360 (small)</option>
+        </select>
+        <div class="hint">Set this to match the <b>Width/Height</b> you give the OBS Browser
+          Source. Text is enlarged to stay readable, and the least useful details are hidden
+          at the smallest sizes.</div>
+
+
+
+        <label>Clip date range <b id="daysv" style="color:var(--g);font-weight:600">OFF</b></label>
+        <div class="rng"><input type="range" id="days" min="0" max="365" value="0"></div>
+        <div class="hint">Prefer clips from the last N days. Falls back to all-time if none found.</div>
+
+        <label>Max clip duration <b id="maxv" style="color:var(--g);font-weight:600">60s</b></label>
+        <div class="rng"><input type="range" id="max" min="5" max="60" value="60"></div>
+
+        <label>Clip volume <b id="volv" style="color:var(--g);font-weight:600">70%</b></label>
+        <div class="rng"><input type="range" id="vol" min="0" max="100" value="70"></div>
+
+        <label>Hold time when there's no clip <b id="holdv" style="color:var(--g);font-weight:600">8s</b></label>
+        <div class="rng"><input type="range" id="hold" min="3" max="20" value="8"></div>
+
+        <label class="chk"><input type="checkbox" id="mods"><span>Moderators only</span></label>
+        <label class="chk"><input type="checkbox" id="vips"><span>VIPs only</span></label>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>4b · Custom images <span style="color:var(--td);text-transform:none;letter-spacing:0">— optional</span></h2>
+      <div class="in">
+        <label class="chk" style="margin-top:0"><input type="checkbox" id="useassets">
+          <span>Use my own artwork
+          <small>AI-generated or hand-made PNGs, instead of the procedural ornament</small></span></label>
+        <div id="assetfields" style="display:none;border-top:1px solid var(--l);margin-top:12px;padding-top:14px">
+          <label>Ornament / emblem image</label>
+          <input type="text" id="asset" placeholder="assets/emblem.png">
+          <label>Backplate image</label>
+          <input type="text" id="backplate" placeholder="assets/parchment.png">
+          <div class="hint">Relative path or full URL. Bake AI images to transparent PNGs first:
+            <code>python tools/bake-asset.py raw.png --out assets/emblem.png</code>
+            — see <b>docs/AI-ASSETS.md</b>.</div>
+          <div class="warn">Generate artwork <b>once</b> and ship it. Calling an image API at
+            shoutout time would add 3–20s of delay, cost per shoutout, and put an API key in
+            your browser-source URL.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>5 · Copy</h2>
+      <div class="in">
+        <label>Kicker line</label>
+        <input type="text" id="kicker" value="Go check out {channel}">
+        <label>Call to action</label>
+        <input type="text" id="cta" value="Go give them a follow">
+        <label>Show tag / branding</label>
+        <input type="text" id="tag" placeholder="DUNGEONS & DERAILLEURS">
+        <div class="hint">Variables: <code>{channel}</code> <code>{url}</code> <code>{game}</code> <code>{title}</code> <code>{creator_name}</code> <code>{created_at}</code></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>6 · Your overlay URL</h2>
+      <div class="in">
+        <textarea class="out" id="url" readonly rows="4"></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="btn g" id="copy">📋 Copy URL</button>
+          <button class="btn sec" id="open">↗ Open</button>
+        </div>
+        <details>
+          <summary>Export theme as JSON (for sharing / PRs)</summary>
+          <textarea class="out" id="json" readonly rows="6" style="margin-top:8px;color:var(--td)"></textarea>
+        </details>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="src/skins.js"></script>
+<script src="src/layouts.js"></script>
+<script src="src/ornaments.js"></script>
+  <script src="src/layouts2.js"></script>
+  <script src="src/layouts3.js"></script>
+  <script src="src/layouts4.js"></script>
+  <script src="src/layouts5.js"></script>
+  <script src="src/layouts6.js"></script>
+  <script src="src/layouts7.js"></script>
+  <script src="src/layouts8.js"></script>
+  <script src="src/layouts9.js"></script>
+  <script src="src/layouts10.js"></script>
+  <script src="src/layoutgen.js"></script>
+<script>
+/* ---------------- state ---------------- */
+const S = {
+  layoutMode: 'builtin',   // 'builtin' | 'gen'
+  genLayout: null,         // spec object when layoutMode==='gen'
+  layout: 'banner',
+  skinMode: 'preset',      // 'preset' | 'gen'
+  skinId: 'twitch-purple',
+  genOpts: { mood:'clean', hue:265, hue2:168, motif:'none', radius:14, glow:.3, dark:true, uppercase:false, texture:'none', fontDisplay:'grotesk', seed:1 },
+};
+const $ = (id) => document.getElementById(id);
+const skinNow = () => S.skinMode === 'custom' ? Skins.customSkin(S.custom)
+  : S.skinMode === 'preset' ? Skins.presetSkin(S.skinId) : Skins.generateSkin(S.genOpts);
+
+/* ---------------- layout grid ---------------- */
+const lgrid = $('lgrid');
+Layouts.all.forEach(l => {
+  const b = document.createElement('button');
+  b.className = 'lopt' + (l.id === S.layout ? ' on' : '');
+  b.dataset.id = l.id;
+  b.innerHTML = `<div class="thumb">${thumb(l.id)}</div><b>${l.label}</b><small>${l.group}</small>`;
+  b.onclick = () => { S.layoutMode='builtin'; S.genLayout=null; S.pool=[]; S.layout = l.id;
+    if(typeof paintRandomGrid==='function'){paintRandomGrid();updateRCount();}
+    document.querySelectorAll('#lgengrid .lopt').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('#lgrid .lopt').forEach(x=>x.classList.toggle('on', x.dataset.id===l.id));
+    update(); };
+  b.title = l.blurb;
+  lgrid.appendChild(b);
+});
+
+/* tiny inline wireframe thumbnails */
+function thumb(id){
+  const a='var(--a)', d='#2e2e48', g='#8fd14f';
+  const S_=(x,y,w,h,c,r)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"${r?` rx="${r}"`:''}/>`;
+  const m={
+    banner:S_(0,0,100,40,d)+S_(0,40,100,22,a),
+    deck:S_(2,4,56,54,d)+S_(62,6,36,6,a)+S_(62,18,36,4,d)+S_(62,26,36,4,d)+S_(62,34,36,4,d)+S_(62,46,36,8,a),
+    dossier:S_(14,4,72,54,d)+S_(20,10,20,20,a)+S_(48,12,32,18,'#3a3a5c'),
+    ticker:S_(0,0,100,62,'#1a1a28')+S_(6,42,14,14,a)+S_(24,42,58,14,d),
+    cinematic:S_(0,0,100,8,'#000')+S_(0,54,100,8,'#000')+S_(8,40,40,6,a),
+    kinetic:S_(0,0,46,62,d)+S_(4,10,32,10,a)+S_(50,8,46,44,'#3a3a5c'),
+    glass:S_(0,0,100,62,d)+`<path d="M0 34 L64 34 L72 62 L0 62Z" fill="${a}" opacity=".85"/>`,
+    polaroid:S_(46,6,48,50,'#e8e8ee',2)+S_(50,10,40,28,d),
+    terminal:S_(8,6,84,50,'#0c0c14',2)+S_(8,6,84,7,d)+S_(14,20,30,3,g)+S_(14,27,44,3,g)+S_(14,34,36,3,g),
+    spotlight:`<circle cx="50" cy="26" r="18" fill="${a}"/>`+S_(30,50,40,5,d),
+    sidebar:S_(0,0,34,62,d)+S_(6,6,22,14,a)+S_(38,0,62,62,'#3a3a5c'),
+    card:S_(34,2,32,58,d,3)+S_(38,8,24,4,a)+S_(38,16,24,20,'#3a3a5c'),
+    scoreboard:S_(0,34,72,20,d)+S_(0,34,14,20,a)+S_(0,56,100,6,'#1a1a28'),
+    magazine:S_(0,0,100,62,'#3a3a5c')+S_(6,4,46,7,a)+S_(6,40,40,8,'#fff')+S_(6,52,28,3,d),
+    neon:S_(0,0,100,62,'#0a0a14')+S_(22,24,56,10,a,5),
+    receipt:S_(8,2,30,58,'#f0ede4',1)+S_(46,14,48,34,d),
+    hud:S_(4,4,12,3,a)+S_(4,4,3,12,a)+S_(84,4,12,3,a)+S_(93,4,3,12,a)+S_(6,38,60,16,d),
+    scroll:S_(6,36,88,20,d)+S_(2,32,7,28,a,3)+S_(91,32,7,28,a,3),
+    bug:S_(58,40,38,18,d,3)+S_(62,44,10,10,a,5),
+    filmstrip:S_(0,10,100,6,'#222')+S_(0,44,100,6,'#222')+S_(0,16,100,28,'#3a3a5c'),
+    comic:S_(2,2,56,58,d,1)+S_(60,2,38,28,d,1)+S_(60,32,38,28,d,1)+`<polygon points="88,6 92,14 99,10 96,19 88,17" fill="${a}"/>`,
+    cartoon:S_(14,4,72,38,d,6)+S_(6,46,44,12,a,6)+S_(62,46,32,10,'#3a3a5c',5),
+    vhs:S_(0,0,100,62,d)+S_(4,4,20,5,'#c33',1)+S_(4,48,60,4,'#fff')+S_(4,55,40,3,'#888'),
+    newspaper:S_(4,2,92,58,'#e8e2d0',1)+S_(10,7,80,7,'#17140f')+S_(10,18,42,30,'#7a7a7a')+S_(56,18,34,4,'#555')+S_(56,26,34,4,'#555'),
+    arcade:S_(4,10,44,42,d,3)+S_(52,10,44,42,'#2a1a3a',3)+S_(20,2,60,5,a,2),
+    blueprint:S_(0,0,100,62,'#0d2b46')+S_(6,10,54,40,'#1a4364',1)+S_(64,10,32,34,'#1a4364',1),
+    sportscast:S_(0,0,100,62,d)+S_(0,4,34,7,a)+S_(0,42,100,13,'#1a1a28')+S_(0,42,5,13,a)+S_(0,56,100,5,'#2a2a3a'),
+    scrapbook:S_(6,8,50,40,'#f0ece0',1)+S_(58,14,36,32,'#fff8dc',1),
+    boardingpass:S_(8,14,84,34,'#f0eee6',2)+S_(70,14,1,34,'#999')+S_(74,38,14,6,'#333'),
+    glitch:S_(0,0,100,62,d)+S_(0,16,100,5,'#f04')+S_(0,40,100,4,'#0bf')+S_(6,46,50,9,a,1),
+    holocard:S_(30,4,40,54,a,3)+S_(34,10,32,20,d,1)+S_(34,34,32,16,'#2a2a44',1),
+    wanted:S_(24,3,52,56,'#e6d4a8',1)+S_(30,10,40,5,'#2e1f0d')+S_(30,20,40,22,'#8a7a5a'),
+    chatapp:S_(6,4,38,54,d,4)+S_(10,12,26,6,'#3a3a5c',3)+S_(10,22,22,6,'#3a3a5c',3)+S_(18,32,26,6,a,3)+S_(50,18,46,26,'#3a3a5c',2),
+    vinyl:`<circle cx="24" cy="31" r="22" fill="#111"/><circle cx="24" cy="31" r="7" fill="${a}"/>`+S_(54,14,40,8,'#3a3a5c')+S_(54,28,40,20,d,1),
+    storybook:S_(4,6,44,50,'#efe6d0',1)+S_(52,6,44,50,'#efe6d0',1)+S_(8,12,36,28,'#8a7a5a')+S_(56,12,36,4,'#8a6a2f'),
+    bossbar:S_(0,0,100,62,d)+S_(14,6,72,5,a,2)+S_(14,14,72,3,'#3a3a5c')+S_(6,48,40,9,'#1a1a28',1),
+    neontube:S_(0,0,100,62,'#131013')+S_(4,14,44,10,a,4)+S_(54,10,42,40,'#3a3a5c',2),
+    raceboard:S_(0,0,100,62,'#3a3a5c')+S_(4,14,52,34,'#0c1016',1)+S_(4,14,52,7,a)+S_(88,0,12,62,'#e8e8e8'),
+    passport:S_(6,6,88,50,'#e9e6da',1)+S_(12,16,38,28,'#8a8fa0')+S_(56,18,32,3,'#5a6478')+S_(56,26,32,3,'#5a6478')+S_(64,40,26,10,a,2),
+    stage:S_(0,0,100,62,'#0a0710')+S_(0,0,16,62,'#6a1622')+S_(84,0,16,62,'#6a1622')+S_(24,10,52,30,'#3a3a5c',2)+S_(26,46,48,10,'#1a1420',1),
+    racebib:S_(0,0,100,62,'#151a21')+S_(6,8,38,44,'#f5f2e8',1)+S_(50,16,44,28,'#3a3a5c',1),
+    powerhud:S_(0,0,100,62,'#3a3a5c')+S_(4,10,30,42,'#0a0e13',1)+S_(8,16,22,10,a,1)+S_(4,54,60,6,'#0a0e13'),
+    jersey:S_(0,0,100,62,d)+S_(4,8,44,14,'#ffd400',1)+S_(4,24,14,12,'#00a651')+S_(19,24,14,12,'#f2f2f2')+S_(34,24,14,12,'#e8e8e8')+S_(52,8,44,28,'#3a3a5c',1),
+    routeprofile:S_(0,0,100,62,d)+S_(52,6,44,26,'#3a3a5c',1)+`<polyline points=\"0,54 14,48 28,52 42,38 56,44 70,30 84,36 100,24\" fill=\"none\" stroke=\"${a}\" stroke-width=\"3\"/>`,
+    charsheet:S_(3,4,94,54,'#e9dcbb',1)+S_(8,14,20,20,'#c9a44c')+S_(34,12,58,28,'#8a7a5a')+S_(34,44,44,3,'#8a6a2f'),
+    spellscroll:S_(10,6,80,6,'#5a3a18',3)+S_(10,50,80,6,'#5a3a18',3)+S_(12,14,76,34,'#eadcb6')+S_(20,20,60,18,'#8a7a5a'),
+    tavern:S_(0,0,100,62,'#241708')+S_(14,8,72,48,'#eadcb6',1)+S_(22,20,56,22,'#8a7a5a'),
+    runestone:S_(0,0,100,62,'#080c14')+S_(24,8,52,48,'#33383f',2)+S_(30,20,40,20,'#1a1e24')+S_(34,12,32,3,a),
+    lootdrop:S_(0,0,100,62,d)+S_(20,10,60,44,'#12101a',2)+S_(20,10,60,3,a)+S_(26,18,20,20,'#3a3a5c',1),
+    brassgauge:S_(0,0,100,62,'#3a2c18')+`<circle cx=\"24\" cy=\"31\" r=\"20\" fill=\"#c9a44c\"/><circle cx=\"24\" cy=\"31\" r=\"15\" fill=\"#1a1a24\"/>`+S_(50,14,44,34,'#1a1208',2),
+    airship:S_(2,4,96,54,'#eee2c2',1)+S_(8,14,52,34,'#8a7a5a')+`<circle cx=\"78\" cy=\"24\" r=\"9\" fill=\"none\" stroke=\"#8a6a2f\" stroke-width=\"2\"/>`,
+    clockwork:S_(0,0,100,62,'#140f08')+`<circle cx=\"14\" cy=\"12\" r=\"11\" fill=\"none\" stroke=\"#c9a44c\" stroke-width=\"2.5\"/><circle cx=\"84\" cy=\"46\" r=\"13\" fill=\"none\" stroke=\"#c9a44c\" stroke-width=\"2.5\"/>`+S_(6,20,50,30,'#3a3a5c',1),
+    victory:S_(0,0,100,62,d)+S_(0,8,100,14,a)+S_(4,34,22,12,'#1a1a28',1)+S_(28,34,22,12,'#1a1a28',1),
+    blockworld:S_(0,0,100,62,'#79c0f0')+S_(4,10,50,34,'#7a5c31',1)+S_(58,10,38,34,'#1c1814',1)+S_(0,54,100,8,'#4f8f3a'),
+    achievement:S_(0,0,100,62,d)+S_(10,6,80,16,'#0d1018',8)+S_(14,10,8,8,a,4)+S_(6,44,88,14,'#0d1018',2),
+    consoledash:S_(0,0,100,62,'#0b1016')+S_(4,14,56,36,'#182430',2)+S_(64,14,32,10,'#182430',2)+S_(64,28,32,10,'#182430',2)+S_(64,42,32,8,a,2),
+    speedrun:S_(0,0,100,62,d)+S_(4,10,38,44,'#0a0e14',2)+S_(8,16,30,3,'#fff')+S_(8,24,30,3,'#ffd23f')+S_(8,44,30,6,a),
+    mmoquest:S_(0,0,100,62,d)+S_(14,12,72,40,'#120c20',2)+S_(18,18,8,8,'#c9a44c',4)+S_(18,40,64,5,a,2),
+    versus:S_(0,0,50,62,'#5a1428')+S_(50,0,50,62,'#14285a')+`<circle cx=\"18\" cy=\"24\" r=\"12\" fill=\"#3a3a5c\"/>`+S_(44,26,12,10,'#fff',1),
+    kartrace:S_(0,0,100,62,d)+S_(4,6,16,14,'#ffd23f',3)+S_(80,6,16,10,'#0a0e14',2)+S_(6,44,88,14,'#0a0e14',2),
+    initiative:S_(0,0,100,62,d)+`<polygon points=\"14,8 26,15 26,29 14,36 2,29 2,15\" fill=\"#241a34\" stroke=\"#c9a44c\" stroke-width=\"2\"/>`+S_(4,42,56,6,a,1)+S_(4,50,56,5,'#2a2a3a',1),
+    ridehud:S_(0,0,100,62,d)+S_(3,4,18,10,'#2b8fd4',2)+S_(72,14,25,22,'#0a1420',2)+S_(4,48,92,10,'#0a1420',2),
+    telegram:S_(0,4,100,6,'#e8dcc0')+S_(14,16,72,42,'#f2ece0',1)+S_(20,22,60,3,'#241a0c')+S_(20,30,60,3,'#241a0c')+S_(20,40,48,14,'#8a8a8a'),
+    /* ---- set 5: retro, magic, epic fantasy ---- */
+    pixelquest:S_(0,0,100,62,'#0b0f2a')+S_(3,3,56,32,'#f4f4f8')+S_(5,5,52,28,'#1b2450')
+      +S_(62,3,35,32,'#f4f4f8')+S_(64,5,31,28,'#0d1230')+S_(66,9,20,3,'#c9a44c')+S_(66,16,26,3,'#4ade5c')
+      +S_(3,39,94,20,'#f4f4f8')+S_(5,41,90,16,'#0d1230')+S_(8,44,11,11,'#8a7fd6')+S_(23,45,40,5,'#fff'),
+    handheld:S_(4,2,42,58,'#d8d6d0',5)+S_(8,8,34,26,'#26252b',2)+S_(10,10,30,22,'#2f6b2f')
+      +S_(14,40,8,8,'#3a3841')+S_(32,40,6,6,'#7a1e4c',3)+S_(50,4,46,54,'#181826',2)
+      +S_(54,10,30,6,a)+S_(54,22,38,4,'#3a3a5c')+S_(54,30,38,4,'#3a3a5c')+S_(54,46,38,8,a,2),
+    tapeload:S_(0,0,100,62,'#1c1ca8')+S_(0,0,7,62,'#ff2f2f')+S_(7,0,3,62,'#ffd429')
+      +S_(90,0,3,62,'#28d8ff')+S_(93,0,7,62,'#2fe05a')+S_(13,4,60,5,'#ffd429')
+      +S_(16,14,68,34,'#d8d4c4',3)+S_(19,17,62,28,'#000',2)+S_(13,52,74,4,'#28d8ff'),
+    demoscene:S_(0,0,100,62,'#04030f')+S_(0,6,100,3,'#ff0080')+S_(0,12,100,3,'#00c3ff')
+      +S_(0,18,100,3,'#ffe600')+S_(22,2,56,10,'#cfe4ff',1)+S_(28,22,44,26,'#ff0080',1)
+      +S_(30,24,40,22,'#000')+S_(0,54,100,8,'#ffe600'),
+    highscore:S_(0,0,100,62,'#05030e')+S_(24,3,52,7,'#ffe600')+S_(4,16,44,7,'#3a2a5c',1)
+      +S_(4,26,44,6,'#241a3a',1)+S_(4,35,44,6,'#241a3a',1)+S_(4,44,44,6,'#241a3a',1)
+      +S_(53,16,44,26,'#ff0080',1)+S_(55,18,40,22,'#000')+S_(53,46,44,5,'#00ffd0'),
+    arcane:S_(0,0,100,62,'#0e0824')+`<circle cx="34" cy="27" r="25" fill="none" stroke="${a}" stroke-width="1.5"/><circle cx="34" cy="27" r="18" fill="none" stroke="#c9a44c" stroke-width="1.2"/><polygon points="34,8 50,38 18,38" fill="none" stroke="${a}" stroke-width="1.2"/>`
+      +S_(11,13,46,27,'#000',1)+S_(11,46,46,5,'#e8dcff')+S_(62,8,34,46,'#1a1030',2)+S_(66,14,26,4,'#c9a44c'),
+    dragonfire:S_(0,0,100,62,'#180804')+S_(14,2,74,20,'#ff6a12')+S_(20,4,60,14,'#ffd15c')
+      +S_(50,18,46,28,'#3a1c0c',1)+S_(52,20,42,24,'#000')+S_(3,26,44,32,'#120a06',1)
+      +S_(7,30,14,14,'#8a7fd6',7)+S_(24,31,20,6,'#ffe9cf')+S_(7,48,36,4,'#ffb347'),
+    grimoire:S_(0,0,100,62,'#14101c')+S_(4,6,45,50,'#f0e5c8',1)+S_(51,6,45,50,'#f0e5c8',1)
+      +S_(48,6,4,50,'#5a3a18')+S_(8,11,10,10,'#c9a44c')+S_(21,12,24,5,'#2a1c0c')
+      +S_(8,26,37,3,'#8a7a5a')+S_(8,33,37,3,'#8a7a5a')+S_(55,11,37,24,'#c9a44c',1)+S_(57,13,33,20,'#000'),
+    scrying:S_(0,0,100,62,'#0a1120')+`<circle cx="26" cy="26" r="21" fill="#000" stroke="#bcd8f0" stroke-width="1.5"/><circle cx="26" cy="26" r="17" fill="#16324f"/><ellipse cx="19" cy="18" rx="5" ry="3" fill="#fff" opacity=".55"/>`
+      +S_(16,48,20,7,'#c9a44c',2)+S_(54,6,42,50,'#101a2e',2)+S_(58,12,30,6,a)+S_(58,24,30,4,'#3a4a66')+S_(58,32,30,4,'#3a4a66'),
+    alchemy:S_(0,0,100,62,'#150f0a')+S_(4,20,13,22,'#c46bff',5)+S_(20,26,13,16,'#2fe0c0',5)
+      +S_(36,30,13,12,'#ffb347',5)+S_(4,44,45,2,'#6a4a22')
+      +S_(53,4,44,34,'#8a6a2f',1)+S_(55,6,40,30,'#000')+S_(53,42,44,16,'#f0e5c8',1)+S_(57,46,26,5,'#2a1c0c'),
+    ringpower:S_(0,0,100,62,'#1a0a03')+`<ellipse cx="66" cy="31" rx="30" ry="27" fill="none" stroke="#f0c04a" stroke-width="7"/><ellipse cx="66" cy="31" rx="23" ry="20" fill="#000"/>`
+      +S_(4,10,34,7,'#f5e2c0')+S_(4,24,30,3,'#e2c79a')+S_(4,31,30,3,'#e2c79a')+S_(4,38,30,3,'#e2c79a')+S_(4,50,22,4,'#ff8a1a'),
+    heraldry:S_(0,0,100,62,'#1c1a18')+S_(5,2,18,34,a)+`<path d="M14 8 L20 11 V21 C20 27 17 30 14 32 C11 30 8 27 8 21 V11 Z" fill="#241a10" stroke="#c9a44c" stroke-width="1.2"/>`
+      +S_(30,3,62,38,'#6a5220',1)+S_(32,5,58,32,'#000')+S_(5,44,90,15,'#1e1a14',1)+S_(9,48,26,6,'#f2e6cc')+S_(60,48,30,3,'#c9a44c'),
+    wayfarer:S_(0,0,100,62,'#e6d7b0')+`<path d="M4 34 C18 28 26 38 40 35 C54 32 60 22 76 26" fill="none" stroke="#5a4222" stroke-width="1.2"/><path d="M9 44 C24 40 30 32 46 30 C62 28 70 22 80 20" fill="none" stroke="#a01f16" stroke-width="1.6" stroke-dasharray="3 2"/><path d="M77 17 l6 6 M83 17 l-6 6" stroke="#a01f16" stroke-width="1.8"/><circle cx="12" cy="12" r="7" fill="none" stroke="#5a4222" stroke-width="1.2"/>`
+      +S_(56,4,40,26,'#fdf8ea',1)+S_(58,6,36,20,'#000')+S_(4,40,44,19,'#fdf8ea',1)+S_(8,44,24,5,'#2a1c0c'),
+    darktower:S_(0,0,100,62,'#0d0503')+S_(44,10,12,52,'#231310')+`<ellipse cx="50" cy="10" rx="9" ry="6" fill="#ffb347"/><ellipse cx="50" cy="10" rx="2" ry="5" fill="#000"/>`
+      +S_(3,25,46,32,'#2a1408',1)+S_(5,27,42,28,'#000')+S_(58,22,39,32,'#120a07',1)+S_(62,27,24,6,'#f0dcc4')+S_(62,40,30,3,'#ff9b3d'),
+    starship:S_(0,0,100,62,'#06101c')+S_(24,4,52,34,'#152232',3)+S_(26,6,48,30,'#000')+S_(2,4,20,54,'#0a1420',1)+S_(78,4,20,54,'#0a1420',1)+S_(5,10,14,4,a)+S_(81,10,14,4,'#7fe0ff'),
+    hologram:S_(0,0,100,62,'#03080e')+S_(4,8,52,32,'#00c8ff',1)+S_(6,10,48,28,'#03151f')+S_(60,10,36,6,'#00d8ff')+S_(60,22,36,4,'#0a3a4a')+S_(60,30,36,4,'#0a3a4a')+S_(30,52,40,8,'#00d8ff',4),
+    mech:S_(0,0,100,62,'#0d1418')+S_(0,0,8,62,'#2a3540')+S_(92,0,8,62,'#2a3540')+S_(24,8,52,34,'#0c1418',1)+S_(26,10,48,30,'#000')+`<circle cx="50" cy="25" r="7" fill="none" stroke="#5af0be" stroke-width="1.5"/>`+S_(10,46,22,12,'#101a1e',1)+S_(68,46,22,12,'#101a1e',1),
+    warp:S_(0,0,100,62,'#02030a')+`<path d="M50 31 L10 4 M50 31 L90 4 M50 31 L6 40 M50 31 L94 40 M50 31 L30 60 M50 31 L70 60" stroke="#8fd8ff" stroke-width="1.5"/>`+S_(28,16,44,30,'#1a3350',2)+S_(30,18,40,26,'#000'),
+    xenoscan:S_(0,0,100,62,'#04100c')+S_(0,0,100,7,'#0a2a1c')+S_(3,10,52,34,'#062016',1)+S_(5,12,48,30,'#000')+S_(5,26,48,1.5,'#5fe0a0')+S_(58,10,39,34,'#0a2418',1)+S_(62,15,30,3,'#5fe0a0')+S_(62,22,30,3,'#1d5a3c'),
+    station:S_(0,0,100,62,'#02040c')+`<circle cx="20" cy="70" r="48" fill="#1a4a78"/>`+S_(3,14,50,32,'#39434f',4)+S_(6,17,44,26,'#000',2)+S_(58,10,39,44,'#0a1420',2)+S_(62,16,30,5,a),
+    neonstreet:S_(0,0,100,62,'#0c0a18')+S_(3,6,9,9,'#ff2d95',1)+S_(3,18,9,9,'#2de2ff',1)+S_(3,30,9,9,'#ffd93a',1)+S_(16,4,50,34,'#2b1440',1)+S_(18,6,46,30,'#000')+S_(70,6,27,32,'#0c0814',1)+S_(73,11,20,5,'#2de2ff'),
+    netrunner:S_(0,0,100,62,'#02060a')+S_(3,4,94,54,'#031c14',1)+S_(3,4,94,7,'#0a3a24')+S_(7,16,34,3,'#39ff88')+S_(7,23,28,3,'#39ff88')+S_(7,30,32,3,'#8ef7b8')+S_(48,16,45,26,'#000',1)+S_(7,48,86,4,'#0f8f4a'),
+    augment:S_(0,0,100,62,'#0a0810')+S_(0,0,100,7,'#150c1e')+`<circle cx="18" cy="32" r="12" fill="none" stroke="#c878ff" stroke-width="1.5"/><circle cx="18" cy="32" r="5" fill="#ff7ad9"/>`+S_(38,10,58,32,'#2a1840',1)+S_(40,12,54,28,'#000')+S_(38,46,58,12,'#0e0814',1),
+    megacorp:S_(0,0,100,62,'#0d1014')+S_(4,3,92,56,'#e8ecf0',1)+S_(8,8,30,6,'#101820')+S_(8,20,30,3,'#5a6772')+S_(8,27,30,3,'#5a6772')+S_(46,18,46,26,'#3a4450')+S_(66,46,26,8,'#b4232a',1),
+    dronefeed:S_(0,0,100,62,'#05070a')+S_(3,8,56,44,'#000',1)+`<path d="M31 24 v12 M25 30 h12" stroke="#fff" stroke-width="1.2"/>`+S_(3,8,56,5,'#1a1a1a')+S_(6,9.5,6,2,'#ff4444')+S_(63,8,34,44,'#080c12',1)+S_(67,14,26,5,'#7fd4ff'),
+    synthgrid:S_(0,0,100,38,'#4a1259')+`<circle cx="50" cy="30" r="16" fill="#ff8a2a"/>`+S_(0,38,100,24,'#0a0418')+`<path d="M0 62 L50 38 L100 62" stroke="#ff2db4" stroke-width="1" fill="none"/>`+S_(26,12,48,30,'#000',1)+S_(4,50,92,8,'#0a0418',1),
+    foundfootage:S_(0,0,100,62,'#070707')+S_(3,10,56,44,'#0d1a0d',1)+S_(3,10,56,5,'#111')+S_(6,11.5,5,2,'#ff3b3b')+S_(63,10,34,44,'#dfd9c8',1)+S_(67,15,16,4,'#a8231d')+S_(67,24,26,4,'#1a1814'),
+    seance:S_(0,0,100,62,'#12100a')+S_(3,6,52,52,'#9c7842',2)+S_(8,26,42,20,'#000',1)+S_(20,50,16,8,'#2a1c0c',4)+S_(60,6,37,52,'#0e0904',2)+S_(64,12,28,6,'#d8a860'),
+    eldritch:S_(0,0,100,62,'#0a0714')+`<circle cx="50" cy="31" r="26" fill="none" stroke="#a866ff" stroke-width="1"/><polygon points="50,8 72,46 28,46" fill="none" stroke="#a866ff" stroke-width="1"/>`+S_(18,6,52,32,'#241640',1)+S_(20,8,48,28,'#000')+S_(4,46,56,8,'#e8dcff'),
+    slasher:S_(0,0,100,62,'#070404')+S_(26,6,48,30,'#150808',1)+S_(28,8,44,26,'#000')+`<path d="M4 52 L96 14" stroke="#ff1717" stroke-width="2.5"/>`+S_(18,42,64,9,'#e8e0dc')+S_(30,56,40,3,'#ff5757'),
+    mirror:S_(0,0,100,62,'#0c0c12')+S_(4,4,52,54,'#5a4830',6)+S_(9,9,42,44,'#0a0e14',6)+`<path d="M30 9 L26 30 L34 44" stroke="#e8f4ff" stroke-width="1" fill="none"/>`+S_(62,10,34,42,'#0a0a0e',1)+S_(66,16,26,6,'#e8f0f8'),
+    asylum:S_(0,0,100,62,'#241f18')+S_(4,5,92,54,'#c9a35e',1)+S_(7,9,86,46,'#f2ede0')+S_(11,14,30,4,'#241f18')+S_(11,24,26,3,'#6a6155')+S_(11,32,22,4,'#141414')+S_(48,16,40,26,'#8a8a8a',1),
+    shonen:S_(0,0,100,62,'#1a0f04')+`<circle cx="50" cy="36" r="30" fill="#ff8a1a" opacity=".4"/>`+S_(24,8,52,30,'#ffd23f',1)+S_(26,10,48,26,'#000')+S_(14,42,72,9,'#fff')+S_(70,4,26,10,'#0a0602',1)+S_(4,52,92,7,'#0a0602',1),
+    mangapage:S_(0,0,100,62,'#0e0e10')+S_(3,3,94,56,'#f6f4ef')+S_(6,6,54,30,'#000',1)+S_(63,6,31,17,'#fbfaf7',1)+S_(63,25,31,11,'#efece5',1)+S_(6,39,88,17,'#fbfaf7',1),
+    mechalaunch:S_(0,0,100,62,'#0a0d12')+S_(0,0,100,4,'#f5c518')+S_(0,58,100,4,'#f5c518')+S_(3,9,56,42,'#0d141c',1)+S_(5,11,52,38,'#000')+S_(63,9,34,42,'#0a1016',1)+S_(67,14,26,5,'#f5c518'),
+    magicalgirl:S_(0,0,100,62,'#ffd9ef')+`<circle cx="50" cy="28" r="34" fill="#fff" opacity=".5"/>`+S_(4,14,52,32,'#fff',3)+S_(6,16,48,28,'#000',2)+S_(60,12,36,38,'#fffcfe',3)+S_(64,18,26,5,'#e0559f')+S_(64,40,26,6,'#ff7cc0',3),
+    visualnovel:S_(0,0,100,40,'#1a2438')+S_(20,0,60,40,'#000')+S_(4,42,92,17,'#0e1020',2)+S_(8,39,26,6,a,1)+S_(10,48,60,3,'#eaeefc')+S_(10,54,44,3,'#8f9cc0')+S_(3,20,18,22,'#8a7fd6',9),
+    animetitle:S_(0,0,100,62,'#0c0e14')+S_(10,4,80,40,'#000',1)+S_(88,6,4,18,'#fff')+S_(6,46,12,1.5,a)+S_(6,50,44,7,'#fff')+S_(6,58,30,3,'#9fadc4'),
+    naturedoc:S_(0,0,100,44,'#1a2418')+S_(0,0,100,44,'#2a4a2a')+S_(6,48,50,7,'#f4efe2')+S_(6,57,30,3,'#c9bd9a')+S_(60,48,34,3,'#a89c7e')+S_(60,55,34,3,'#a89c7e'),
+    fieldjournal:S_(0,0,100,62,'#241c12')+S_(5,4,90,54,'#efe6cf',1)+S_(2,8,5,46,'#8f9298')+S_(11,10,34,6,'#2a1f10')+S_(11,22,10,18,'#5a7a3c')+S_(50,10,42,26,'#8a7a5a',1)+S_(11,44,34,3,'#3d5a8a'),
+    aquarium:S_(0,0,100,62,'#0a3a52')+S_(4,10,52,38,'#2b4a58',2)+S_(7,13,46,32,'#000',1)+S_(60,10,36,38,'#8a6a2f',1)+S_(64,16,26,5,'#fff8e8')+`<circle cx="20" cy="54" r="3" fill="none" stroke="#dcfaff"/><circle cx="32" cy="58" r="2" fill="none" stroke="#dcfaff"/>`,
+    stadium:S_(0,0,100,62,'#0a1420')+S_(12,4,76,36,'#0c1018',1)+S_(15,7,70,30,'#000')+S_(4,44,40,7,'#fff')+S_(60,44,34,6,a)+S_(0,54,100,7,a),
+    stickerbook:S_(0,0,100,62,'#1b2a44')+S_(4,4,92,54,'#f4f1e6',1)+S_(8,12,44,32,'#14356b',1)+S_(10,14,40,24,'#000')+S_(56,12,36,5,'#14356b')+S_(56,22,36,3,'#6a7385')+S_(8,48,20,8,'#e6e1d2',1)+S_(32,48,20,8,'#e6e1d2',1),
+    podium:S_(0,0,100,62,'#12141c')+S_(3,8,52,34,'#3a3f52',2)+S_(6,11,46,28,'#000',1)+S_(66,32,14,26,'#d8ae3a')+S_(58,40,8,18,'#a8b0bc')+S_(80,44,8,14,'#b87a45')+S_(58,4,38,24,'#0c0e16',1),
+    gigposter:S_(0,0,100,62,'#1a1614')+S_(6,3,88,56,'#f2e9d8')+S_(10,8,70,12,'#1a1614')+S_(10,24,80,22,'#8a8272',1)+S_(10,50,34,5,'#c8442a')+S_(58,50,32,5,'#2f6b8a'),
+    mixingdesk:S_(0,0,100,62,'#141216')+S_(3,6,52,34,'#0a0a0d',1)+S_(5,8,48,30,'#000')+S_(60,6,36,14,'#e8e2d0',1)+S_(60,24,36,20,'#26232c',1)+`<path d="M64 32 v8 M70 30 v10 M76 34 v6 M82 31 v9 M88 33 v7" stroke="#dcd6c8" stroke-width="2"/>`+S_(3,46,52,12,'#141218',1),
+    mixtape:S_(0,0,100,62,'#171a1f')+S_(3,8,24,48,'#faf6e8',1)+S_(30,8,38,26,'#33383f',2)+`<circle cx="41" cy="22" r="6" fill="#22272e" stroke="#545b66"/><circle cx="57" cy="22" r="6" fill="#22272e" stroke="#545b66"/>`+S_(72,8,25,24,'#000',1)+S_(30,38,38,8,'#f6f2e4',1),
+    diner:S_(0,0,100,62,'#12161c')+S_(3,8,52,48,'#1c2530',2)+S_(3,8,52,3,'#e6ecf2')+S_(8,18,30,7,'#fff')+S_(44,18,8,7,'#7cf08a')+S_(8,32,40,3,'#8fa0b4')+S_(60,14,36,26,'#000',1)+S_(70,4,24,7,'#ff8fa8'),
+    cookingshow:S_(0,0,100,62,'#2a2016')+S_(3,10,52,34,'#5a4426',2)+S_(6,13,46,28,'#000',1)+S_(60,10,36,44,'#fdf8ec',1)+S_(64,16,26,5,'#2c2013')+S_(64,26,26,3,'#8a7a58')+S_(64,32,26,3,'#8a7a58')+`<circle cx="52" cy="12" r="7" fill="#fff6e2"/>`,
+    coffee:S_(0,0,100,62,'#1b1512')+S_(3,10,26,42,'#fbf8f0',1)+S_(38,14,22,10,'#f4f1ec',2)+S_(40,24,18,26,'#e6e1d8')+S_(40,32,18,12,'#8f6244')+S_(66,12,30,30,'#000',2)+S_(7,16,18,3,'#241a10'),
+    departures:S_(0,0,100,62,'#0a0c10')+S_(3,6,56,48,'#0b0f14',1)+S_(6,10,20,4,'#ffd23f')+S_(6,18,50,5,'#e8eef6')+S_(6,26,50,4,'#67788c')+S_(6,34,50,4,'#67788c')+S_(63,6,34,26,'#000',1)+S_(63,36,34,4,'#ffd23f'),
+    luggage:S_(0,0,100,62,'#1a1c22')+S_(4,14,54,42,'#1e4570',4)+S_(8,18,46,30,'#000',2)+S_(62,6,34,44,'#fdfaf0',1)+S_(66,12,26,5,'#c8442a')+S_(66,22,26,4,'#1a2230')+S_(66,34,26,8,'#1a2230'),
+    subway:S_(0,0,100,62,'#f4f1e8')+`<path d="M0 20 H30 L44 34 H100" stroke="#d8382f" stroke-width="4" fill="none"/><path d="M0 46 H40 L54 32 H100" stroke="#2f6fd8" stroke-width="4" fill="none"/>`+S_(4,6,32,10,'#2f4a8a')+S_(58,6,38,26,'#000',1)+S_(4,44,50,14,'#1a1a1a',1),
+    covershoot:S_(0,0,100,62,'#2a3040')+S_(0,0,100,62,'#4a5a70')+S_(14,3,72,12,'#fff')+S_(5,22,32,8,'#ffd23f')+S_(5,34,26,4,'#fff')+S_(5,42,26,4,'#fff')+S_(72,20,20,20,a,10)+S_(74,50,20,8,'#fff'),
+    crossword:S_(0,0,100,62,'#2a2620')+S_(4,4,92,54,'#f6f2e6')+S_(8,10,40,4,'#1a1712')+S_(8,20,7,7,'#fff',0)+S_(16,20,7,7,'#fff',0)+S_(24,20,7,7,'#fff',0)+S_(32,20,7,7,'#1a1712',0)+S_(8,34,40,3,'#2a2620')+S_(56,18,36,26,'#8a8a8a',1),
+    photowall:S_(0,0,100,62,'#241f1a')+S_(6,12,50,34,'#fbf8ef',1)+S_(9,15,44,24,'#000')+S_(62,12,16,18,'#fbf8ef',1)+S_(82,14,14,16,'#fbf8ef',1)+S_(62,36,26,14,'#fbf8ef',1)+S_(6,50,50,9,'#f6e79a',1),
+    patent:S_(0,0,100,62,'#0d2b46')+S_(4,4,92,54,'#0f3355',1)+S_(7,7,86,48,'none',0)+S_(10,14,46,30,'#0a1a2a',1)+S_(12,16,42,26,'#1a2a3a')+S_(60,14,32,5,'#fff')+S_(60,24,32,3,'#8fb8d8')+S_(60,31,32,3,'#8fb8d8'),
+    brickbox:S_(0,0,100,62,'#1c2430')+S_(5,4,90,54,'#ffd23f',2)+S_(9,8,22,7,'#d8232a',1)+S_(9,20,52,30,'#fff',1)+S_(11,24,48,22,'#000')+S_(65,20,26,30,'#fff',1)+S_(78,10,14,14,'#d8232a',7),
+    crossstitch:S_(0,0,100,62,'#2a2a30')+`<circle cx="30" cy="31" r="28" fill="#c9a06a"/><circle cx="30" cy="31" r="23" fill="#f4efdf"/>`+S_(16,26,28,16,'#000')+S_(18,18,24,3,'#3d5a8a')+S_(64,14,32,34,'#f4efdf',1)+S_(68,20,24,3,'#c8442a'),
+    pinball:S_(0,0,100,62,'#0d0a14')+S_(4,4,56,32,'#3a2a52',1)+S_(7,10,50,18,'#000')+S_(7,7,30,3,'#ffd23f')+S_(4,40,56,18,'#241a3a',1)+`<circle cx="18" cy="46" r="4" fill="#ff6ad5"/><circle cx="32" cy="46" r="4" fill="#ff6ad5"/><circle cx="46" cy="46" r="4" fill="#ff6ad5"/>`+S_(64,4,32,30,'#0e0a16',1),
+    weather:S_(0,0,100,62,'#0d2440')+S_(3,8,52,34,'#0b1a2c',1)+S_(6,11,46,28,'#000')+`<circle cx="70" cy="18" r="7" fill="#ffe14a"/>`+S_(80,14,14,8,'#e8f0f8',4)+S_(60,28,36,8,'#fff')+S_(3,48,92,10,'#081a2c',1),
+    election:S_(0,0,100,62,'#0a0f1a')+S_(0,0,100,7,'#080e1a')+S_(3,10,52,34,'#0d1626',1)+S_(6,13,46,28,'#000')+`<path d="M62 40 A16 16 0 0 1 94 40" fill="none" stroke="#2f6fd8" stroke-width="5"/>`+S_(60,46,36,6,a)+S_(3,48,52,8,'#0e1626',1),
+    heist:S_(0,0,100,62,'#1a1814')+S_(8,10,44,38,'none',0)+`<rect x="8" y="10" width="44" height="38" fill="none" stroke="#8fd8ff"/><circle cx="38" cy="36" r="6" fill="none" stroke="#ffd23f"/>`+S_(46,6,40,26,'#f4f0e4',1)+S_(48,8,36,20,'#3a3630')+S_(58,40,36,16,'#f4f0e4',1),
+    western:S_(0,0,100,62,'#c9a068')+S_(5,4,52,54,'#f0e0bc',1)+S_(10,8,42,7,'#3a2712')+S_(10,18,42,22,'#8a6a42',1)+S_(10,44,42,5,'#a8231d')+S_(62,4,32,16,'#6a4a26',1)+S_(0,56,100,6,'#5a3f22'),
+    noir:S_(0,0,100,62,'#0a0a0a')+`<path d="M0 8 H100 M0 22 H100 M0 36 H100 M0 50 H100" stroke="#fff" stroke-width="3" opacity=".14"/>`+S_(4,12,52,34,'#141414',1)+S_(6,14,48,30,'#2a2a2a')+S_(62,12,34,34,'#0e0e0e',1)+S_(62,12,1.5,34,'#e8e2d4')+S_(66,18,26,5,'#f2eee4'),
+    pirate:S_(0,0,100,62,'#0d1a24')+S_(5,4,90,54,'#dcc492',1)+S_(42,7,16,10,'#f4ecd4',5)+S_(10,20,48,28,'#8a7a5a',1)+S_(62,22,28,3,'#2a1c0c')+S_(62,30,28,3,'#2a1c0c')+S_(72,46,14,10,'#c8382a',5),
+    museum:S_(0,0,100,62,'#262229')+S_(6,8,50,44,'#a8874a',2)+S_(10,12,42,36,'#f2ede0')+S_(14,17,34,26,'#000')+S_(62,16,32,26,'#8a6a3a',1)+S_(66,22,24,4,'#241a0c')+S_(66,30,24,3,'#5a4520'),
+    casino:S_(0,0,100,62,'#0a2418')+S_(3,8,52,34,'#c8a85a',2)+S_(6,11,46,28,'#000',1)+S_(6,46,10,4,'#c8442a',2)+S_(18,46,10,4,'#2f6fd8',2)+S_(30,46,10,4,'#3aa860',2)+S_(60,8,36,34,'#081610',1)+S_(64,14,26,5,'#f4ecd4'),
+    courtroom:S_(0,0,100,62,'#1a1410')+S_(3,8,52,38,'#f2ede0',1)+S_(6,11,46,30,'#000')+S_(48,5,12,5,'#a8231d')+S_(60,8,36,34,'#141008',1)+S_(64,14,26,5,'#f4ecd4')+S_(6,50,20,8,'#8a5a2a',2)+S_(0,54,100,8,'#4a3520'),
+    bakery:S_(0,0,100,62,'#fbf2e8')+S_(0,0,100,6,'#e8607a')+S_(4,12,52,38,'#f6d8b8',2)+S_(7,15,46,30,'#000',1)+S_(60,12,36,38,'#3d2b22',2)+S_(64,18,26,6,'#fdf3e6')+S_(64,30,26,3,'#f6c2a0')+S_(10,52,12,6,'#f6a0b8',2),
+    greenhouse:S_(0,0,100,62,'#dfeadd')+`<path d="M20 0 V62 M50 0 V62 M80 0 V62 M0 20 H100 M0 44 H100" stroke="#5a785a" stroke-width="1.5" opacity=".5"/>`+S_(4,14,52,34,'#4f6b4c',1)+S_(7,17,46,28,'#000')+S_(62,16,34,30,'#fdfbf2',1)+S_(66,22,26,5,'#25401f'),
+    skiresort:S_(0,0,100,38,'#8fc4e8')+S_(0,30,100,32,'#fff')+`<path d="M0 40 L20 20 L38 40 L58 16 L80 40 L100 24 V62 H0Z" fill="#dfeaf2"/>`+S_(4,12,52,36,'#5a3f28',2)+S_(7,15,46,28,'#000')+S_(62,12,34,36,'#102030',2)+S_(66,18,26,5,'#f2f9ff'),
+    recordshop:S_(0,0,100,62,'#241c18')+S_(4,14,52,44,'#5a3f28',1)+S_(10,18,34,34,'#0a0806')+S_(12,24,30,17,'#000')+`<circle cx="52" cy="34" r="11" fill="#151515"/><circle cx="52" cy="34" r="4" fill="#9146ff"/>`+S_(62,14,34,36,'#100c09',1)+S_(66,20,26,5,'#f0e2c0'),
+    awards:S_(0,0,100,62,'#120e1c')+S_(6,16,10,40,'#d8ae3a')+S_(20,6,50,34,'#3a2c52',1)+S_(22,8,46,30,'#000')+S_(74,6,22,28,'#fdf8ea',1)+S_(77,14,16,5,'#241a0c')+S_(20,44,50,14,'#0e0a16',1),
+    bladeoath:S_(0,0,100,62,'#0a121c')+S_(47,4,6,44,'#e8f2ff')+S_(43,12,14,2,'#c8dcf0')
+      +S_(38,48,24,12,'#31363e')+S_(3,10,34,7,'#eaf3ff')+S_(3,24,28,3,'#7f96ad')+S_(3,31,28,3,'#7f96ad')
+      +S_(64,8,33,30,'#000',1)+S_(64,44,33,4,'#9db3c9'),
+  };
+  return `<svg viewBox="0 0 100 62" width="100%" height="100%" preserveAspectRatio="none">${m[id]||''}</svg>`;
+}
+
+/* ---------------- random mix (per-layout options) ---------------- */
+S.pool = [];        // [{id, detail, hold, fit, backdrop, expand}]
+S.poolFocus = null; // which pool entry the preview should show
+let rEditing = null;
+
+const poolIdx = (id)=>S.pool.findIndex(x=>x.id===id);
+function poolStr(){
+  return S.pool.map(e=>{
+    const bits=[e.id, e.detail||'_', e.hold||'_', e.fit||'_', e.backdrop||'_', e.expand||'_'];
+    while(bits.length>1 && bits[bits.length-1]==='_') bits.pop();
+    return bits.join('-');
+  }).join(',');
+}
+function hasOpts(e){ return !!(e.detail||e.hold||e.fit||e.backdrop||e.expand); }
+
+const rgrid=$('rgrid');
+function buildRandomGrid(){
+  rgrid.innerHTML='';
+  Layouts.all.forEach(l=>{
+    const b=document.createElement('button');
+    b.className='lopt'; b.dataset.id=l.id;
+    rgrid.appendChild(b);
+  });
+  paintRandomGrid();
+}
+function paintRandomGrid(){
+  rgrid.querySelectorAll('.lopt').forEach(b=>{
+    const l=Layouts.byId(b.dataset.id);
+    const i=poolIdx(l.id);
+    const on=i>=0;
+    b.classList.toggle('on',on);
+    b.classList.toggle('focus',on && S.poolFocus===l.id);
+    const custom = on && hasOpts(S.pool[i]);
+    b.innerHTML=`<div class="thumb">${thumb(l.id)}</div>
+      <b>${l.label}</b>
+      <small>${on?(custom?'<span style="color:var(--g)">custom options</span>':'global options'):l.group}</small>
+      ${on?`<span class="cog" title="Options for this layout"
+        style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:6px;
+        background:${custom?'var(--g)':'var(--s2)'};color:${custom?'#0b1a05':'var(--td)'};
+        display:grid;place-items:center;font-size:12px;border:1px solid var(--l)">⚙</span>`:''}`;
+    b.style.position='relative';
+    b.onclick=(ev)=>{
+      if(ev.target.classList.contains('cog')){ openEditor(l.id); return; }
+      const j=poolIdx(l.id);
+      if(j>=0){ S.pool.splice(j,1); if(rEditing===l.id) closeEditor();
+        if(S.poolFocus===l.id) S.poolFocus = S.pool.length ? S.pool[S.pool.length-1].id : null; }
+      else { S.pool.push({id:l.id}); S.poolFocus=l.id; }
+      S.layoutMode = S.pool.length ? 'random' : 'builtin';
+      paintRandomGrid(); updateRCount(); update();
+    };
+  });
+}
+function updateRCount(){
+  const c=S.pool.filter(hasOpts).length;
+  $('rCount').textContent = S.pool.length
+    ? `${S.pool.length} in the mix${c?` · ${c} with custom options`:''}`
+    : 'None selected — pick at least two';
+}
+function openEditor(id){
+  rEditing=id; S.poolFocus=id; update();
+  const e=S.pool[poolIdx(id)]; if(!e)return;
+  $('rEditName').textContent=Layouts.byId(id).label;
+  $('rDetail').value=e.detail||''; $('rHold').value=e.hold||'';
+  $('rFit').value=e.fit||''; $('rBackdrop').value=e.backdrop||'';
+  $('rExpand').value=e.expand||'';
+  $('rEditor').style.display='block';
+  $('rEditor').scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function closeEditor(){ rEditing=null; $('rEditor').style.display='none'; }
+$('rEditClose').onclick=closeEditor;
+['rDetail','rHold','rFit','rBackdrop','rExpand'].forEach(id=>
+  $(id).addEventListener('change',()=>{
+    if(!rEditing)return;
+    const e=S.pool[poolIdx(rEditing)]; if(!e)return;
+    e.detail=$('rDetail').value; e.hold=$('rHold').value;
+    e.fit=$('rFit').value; e.backdrop=$('rBackdrop').value; e.expand=$('rExpand').value;
+    paintRandomGrid(); updateRCount(); update();
+  }));
+
+function setPool(ids){
+  S.pool=ids.map(id=>{const old=S.pool[poolIdx(id)];return old||{id};});
+  S.layoutMode = S.pool.length ? 'random' : 'builtin';
+  S.poolFocus = S.pool.length ? S.pool[0].id : null;
+  closeEditor(); paintRandomGrid(); updateRCount(); update();
+}
+$('rAll').onclick=()=>setPool(Layouts.all.map(l=>l.id));
+$('rNone').onclick=()=>setPool([]);
+const byGroup=(...g)=>()=>setPool(Layouts.all.filter(l=>g.includes(l.group)).map(l=>l.id));
+$('rThemed').onclick=byGroup('Themed');
+$('rRetro').onclick=byGroup('Retro');
+$('rMagic').onclick=byGroup('Magic');
+$('rEpic').onclick=byGroup('Epic Fantasy');
+$('rAllFantasy').onclick=byGroup('Fantasy','Magic','Epic Fantasy','Steampunk');
+$('rScifi').onclick=byGroup('Sci-fi','Cyberpunk');
+$('rHorror').onclick=byGroup('Horror','Crime');
+$('rAnime').onclick=byGroup('Anime');
+$('rIRL').onclick=byGroup('Nature','Sport','Food','Travel');
+$('rMedia').onclick=byGroup('Print','Broadcast','Music','Culture','Craft','Western','Adventure');
+$('rClassic').onclick=()=>setPool(Layouts.all.filter(l=>l.group!=='Themed').map(l=>l.id));
+buildRandomGrid(); updateRCount();
+
+/* ---------------- per-layout options ---------------- *//* ---------------- per-layout options ---------------- */
+['oDetail','oHold','oFit','oBackdrop','oExpand'].forEach(id=>
+  $(id).addEventListener('input',update));
+$('osize').addEventListener('change',()=>{fit();update(true);});
+$('ovfit').addEventListener('change',()=>update());
+$('obg').addEventListener('change',()=>{
+  S.bgMode=$('obg').value;
+  S.theme.bg=S.bgMode; S.custom.transparency=S.bgMode;
+  // reflect it in the theme tab's picker if that UI is built
+  document.querySelectorAll('#bgRow .pick').forEach(x=>
+    x.classList.toggle('on',x.dataset.id===S.bgMode));
+  update(true);
+});
+
+/* ---------------- layout variations ---------------- */
+let lgenPage=0, lgenList=[];
+const lFilter=()=>({
+  frame:$('fFrame').value||undefined,
+  infoPos:$('fPos').value||undefined,
+  density:$('fDens').value||undefined,
+  ornPos:$('fOrn').value||undefined,
+  hold:$('fHold').value||undefined,
+  fit:$('fFit').value||undefined,
+});
+function genLayouts(page){
+  lgenPage=page||0;
+  const f=lFilter();
+  const total=LayoutGen.countCombos(f);
+  if(!total){
+    $('lgengrid').innerHTML='';
+    $('lcount').textContent='No combinations match those filters.';
+    return;
+  }
+  lgenList=LayoutGen.page(f,lgenPage,12);
+  const g=$('lgengrid'); g.innerHTML='';
+  lgenList.forEach((l,idx)=>{
+    const b=document.createElement('button');
+    b.className='lopt'+(S.layoutMode==='gen'&&S.genLayout&&
+      JSON.stringify(S.genLayout)===JSON.stringify(l.spec)?' on':'');
+    b.innerHTML=`<div class="thumb">${genThumb(l.spec)}</div>
+      <b>#${lgenPage*12+idx+1}</b><small>${l.blurb}</small>`;
+    b.title=l.blurb;
+    b.onclick=()=>{
+      S.layoutMode='gen'; S.genLayout=l.spec;
+      document.querySelectorAll('#lgengrid .lopt').forEach((x,j)=>x.classList.toggle('on',j===idx));
+      document.querySelectorAll('#lgrid .lopt').forEach(x=>x.classList.remove('on'));
+      $('lgeninfo').innerHTML=`<b>Selected:</b> ${l.blurb}`;
+      update();
+    };
+    g.appendChild(b);
+  });
+  const shown=Math.min((lgenPage+1)*12,total);
+  $('lcount').textContent=`${total.toLocaleString()} possible layouts · showing ${lgenPage*12+1}–${shown}`;
+  $('lgeninfo').textContent='Click one to preview it.';
+}
+$('lgen').onclick=()=>genLayouts(0);
+$('lmore').onclick=()=>genLayouts(lgenPage+1);
+$('lreset').onclick=()=>{['fFrame','fPos','fDens','fOrn','fHold','fFit'].forEach(i=>$(i).value='');genLayouts(0);};
+['fFrame','fPos','fDens','fOrn','fHold','fFit'].forEach(i=>$(i).addEventListener('change',()=>{
+  // keep position options honest for the chosen frame
+  if(i==='fFrame'){
+    const fr=$('fFrame').value;
+    const ok=fr?LayoutGen.VALID_POS[fr]:null;
+    Array.from($('fPos').options).forEach(o=>{
+      o.disabled=!!(o.value&&ok&&!ok.includes(o.value));
+    });
+    if(ok&&$('fPos').value&&!ok.includes($('fPos').value))$('fPos').value='';
+  }
+  genLayouts(0);
+}));
+
+/* wireframe thumbnail for a generated layout spec */
+function genThumb(sp){
+  const a='var(--a)', d='#2e2e48';
+  const R=(x,y,w,h,c,r)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"${r?` rx="${r}"`:''}/>`;
+  let clip='';
+  switch(sp.frame){
+    case 'window': clip=R(18,6,64,34,d,2); break;
+    case 'split':  clip=(sp.infoPos==='left')?R(52,5,44,52,d,2):R(4,5,44,52,d,2); break;
+    case 'circle': clip=`<circle cx="50" cy="24" r="18" fill="${d}"/>`; break;
+    case 'strip':  clip=R(4,8,92,30,d,2); break;
+    case 'card':   clip=R(22,5,56,32,d,2); break;
+    default:       clip=R(0,0,100,62,d);
+  }
+  const box={bottom:[6,42,88,15],top:[6,4,88,15],left:[4,16,42,30],
+    right:[54,16,42,30],centre:[20,40,60,18],corner:[58,44,38,14]}[sp.infoPos]||[6,42,88,15];
+  const info=R(box[0],box[1],box[2],box[3],a,2);
+  return `<div style="position:relative;width:100%;height:100%">
+    <svg viewBox="0 0 100 62" width="100%" height="100%" preserveAspectRatio="none"
+      style="position:absolute;inset:0">${clip}${info}</svg>
+    ${ornThumb(sp)}</div>`;
+}
+
+/* real synthesised ornament, positioned like it will be in the layout */
+function ornThumb(sp){
+  if(sp.ornPos==='none'||!sp.feat) return '';
+  const svg=Ornaments.synth(sp.feat,'');
+  const box={behind:'left:26%;top:8%;width:48%;height:70%;opacity:.55',
+    corner:'right:4%;top:6%;width:22%;height:34%;opacity:.85',
+    flank:'left:-4%;top:26%;width:26%;height:42%;opacity:.6',
+    orbit:'left:12%;top:-8%;width:76%;height:110%;opacity:.4'}[sp.ornPos]||'';
+  return `<div style="position:absolute;${box};color:#8fd14f;pointer-events:none">
+    ${svg.replace('<svg ','<svg style="width:100%;height:100%" ')}</div>`;
+}
+
+/* ---------------- skin swatches ---------------- */
+const sgrid = $('sgrid');
+Skins.PRESETS.forEach(p => {
+  const sk = Skins.presetSkin(p.id);
+  const b = document.createElement('div');
+  b.className = 'sopt' + (p.id === S.skinId ? ' on' : '');
+  b.dataset.id = p.id;
+  b.innerHTML = `<div class="sw" style="background:${sk.tokens['--surface']}">
+    <i style="background:${sk.tokens['--accent']}"></i>
+    <i style="background:${sk.tokens['--accent-2']}"></i>
+    <i style="background:${sk.tokens['--accent-3']}"></i>
+    <i style="background:${sk.tokens['--bg']}"></i></div><span>${p.label}</span>`;
+  b.onclick = () => { S.skinMode='preset'; S.skinId=p.id;
+    S.custom=Object.assign({},Skins.CUSTOM_DEFAULTS,Skins.toCustomOpts(Skins.presetSkin(p.id)));
+    S.custom.transparency=(document.querySelector('input[name=\"trans\"]:checked')||{value:'none'}).value;
+    if(typeof syncRoleInputs==='function')syncRoleInputs();
+    document.querySelectorAll('.sopt').forEach(x=>x.classList.toggle('on', x.dataset.id===p.id)); update(); };
+  sgrid.appendChild(b);
+});
+
+/* ---------------- theme editor (visual) ---------------- */
+S.custom = Object.assign({}, Skins.CUSTOM_DEFAULTS,
+  Skins.toCustomOpts(Skins.presetSkin('twitch-purple')));
+S.custom.transparency='panels';
+S.theme = { pal:'twitch-purple', mood:'dark', type:'modern', shape:'rounded', bg:'panels' };
+S.bgMode = 'panels';   // none | panels | full  - applies to every skin mode
+
+/* ---- colour: full preset palettes, shown as real colour bars ---- */
+function buildPalettes(){
+  const g=document.createElement('div'); g.className='palgrid';
+  Skins.PRESETS.forEach(p=>{
+    const sk=Skins.presetSkin(p.id); const t=sk.tokens;
+    const b=document.createElement('button');
+    b.className='pal'+(S.theme.pal===p.id?' on':'');
+    b.dataset.id=p.id;
+    b.innerHTML=`<div class="bars">
+        <i class="wide" style="background:${t['--surface']}"></i>
+        <i style="background:${t['--accent']}"></i>
+        <i style="background:${t['--accent-2']}"></i>
+        <i style="background:${t['--accent-3']}"></i>
+      </div><span>${p.label}</span>`;
+    b.onclick=()=>{
+      S.theme.pal=p.id;
+      document.querySelectorAll('.pal').forEach(x=>x.classList.toggle('on',x.dataset.id===p.id));
+      const src=Skins.toCustomOpts(Skins.presetSkin(p.id));
+      ['bg','surface','surface2','chip','ink','inkDim','line',
+       'accent','accent2','accent3','accentInk'].forEach(k=>S.custom[k]=src[k]);
+      S.theme.mood = Skins.presetSkin(p.id).dark ? 'dark' : 'light';
+      syncPicks(); applyTheme();
+    };
+    g.appendChild(b);
+  });
+  const host=$('paletteGrid'); host.innerHTML=''; host.appendChild(g);
+}
+
+/* ---- the three style axes, each a small set of visual choices ---- */
+const MOODS_UI=[
+  {id:'dark',   label:'Dark',      help:'Deep background'},
+  {id:'light',  label:'Light',     help:'Paper background'},
+  {id:'vivid',  label:'Vivid',     help:'Punchy + glowing'},
+  {id:'muted',  label:'Muted',     help:'Soft and subtle'},
+];
+const TYPES_UI=[
+  {id:'modern', label:'Modern',    help:'Clean sans',      fd:'grotesk',   fb:'grotesk',  up:false},
+  {id:'bold',   label:'Bold',      help:'Condensed caps',  fd:'condensed', fb:'grotesk',  up:true},
+  {id:'classic',label:'Classic',   help:'Serif',           fd:'serif',     fb:'serif',    up:false},
+  {id:'techno', label:'Techno',    help:'Monospace',       fd:'mono',      fb:'mono',     up:true},
+  {id:'playful',label:'Playful',   help:'Rounded',         fd:'rounded',   fb:'rounded',  up:false},
+];
+const SHAPES_UI=[
+  {id:'sharp',  label:'Sharp',     help:'Square corners',  r:0,  bw:2},
+  {id:'rounded',label:'Rounded',   help:'Soft corners',    r:14, bw:1},
+  {id:'pill',   label:'Pill',      help:'Very round',      r:28, bw:0},
+];
+const BGS_UI=[
+  {id:'panels', label:'Transparent', help:'Show my scene'},
+  {id:'none',   label:'Solid',       help:'Fills the screen'},
+  {id:'full',   label:'Text only',   help:'No panels at all'},
+];
+
+function buildRow(host, items, key){
+  const el=$(host); el.innerHTML='';
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.className='pick'+(S.theme[key]===it.id?' on':'');
+    b.dataset.id=it.id;
+    b.innerHTML=`${it.label}<small>${it.help}</small>`;
+    b.onclick=()=>{
+      S.theme[key]=it.id;
+      el.querySelectorAll('.pick').forEach(x=>x.classList.toggle('on',x.dataset.id===it.id));
+      if(key==='bg'){ S.bgMode=it.id; const o=$('obg'); if(o) o.value=it.id; }
+      applyTheme();
+    };
+    el.appendChild(b);
+  });
+}
+function syncPicks(){
+  [['moodRow',MOODS_UI,'mood'],['typeRow',TYPES_UI,'type'],
+   ['shapeRow',SHAPES_UI,'shape'],['bgRow',BGS_UI,'bg']].forEach(([h,i,k])=>buildRow(h,i,k));
+}
+
+/* colour maths */
+function hex2rgb(h){h=h.replace('#','');return [0,2,4].map(i=>parseInt(h.substr(i,2),16));}
+function rgb2hex(r,g,b){return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v)))
+  .toString(16).padStart(2,'0')).join('');}
+function mix(a,b,t){const A=hex2rgb(a),B=hex2rgb(b);
+  return rgb2hex(A[0]+(B[0]-A[0])*t,A[1]+(B[1]-A[1])*t,A[2]+(B[2]-A[2])*t);}
+function sat(h,f){const [r,g,b]=hex2rgb(h);const l=(r+g+b)/3;
+  return rgb2hex(l+(r-l)*f,l+(g-l)*f,l+(b-l)*f);}
+
+/* Recompute the whole skin from the four visual choices. */
+/* What theme is actually showing right now. `skinNow().name` only carries a
+   label in preset mode, so after a shuffle (which switches to custom) it kept
+   reporting the previously selected preset — the label looked frozen even
+   though the colours were changing. */
+function themeLabel(){
+  if(S.skinMode==='preset'){
+    const p=Skins.PRESETS.find(x=>x.id===S.skinId);
+    return p?p.label:'Custom';
+  }
+  if(S.skinMode==='custom'){
+    const p=S.theme.pal && Skins.PRESETS.find(x=>x.id===S.theme.pal);
+    const mood=S.theme.mood&&S.theme.mood!=='dark'?' '+S.theme.mood:'';
+    return p?p.label+mood+' (edited)':'Custom theme';
+  }
+  return 'Generated theme';
+}
+
+function applyTheme(){
+  const T=S.theme;
+  const acc=S.custom.accent;
+  const dark = T.mood!=='light';
+  const base = dark?'#000000':'#ffffff';
+  const anti = dark?'#ffffff':'#000000';
+  const vivid = T.mood==='vivid', muted = T.mood==='muted';
+
+  const A  = vivid ? sat(acc,1.25) : muted ? sat(acc,.62) : acc;
+  const A2 = vivid ? sat(S.custom.accent2,1.2) : muted ? sat(S.custom.accent2,.6) : S.custom.accent2;
+  const A3 = muted ? sat(S.custom.accent3,.6) : S.custom.accent3;
+  const tint = vivid?.22:muted?.05:.12;
+
+  Object.assign(S.custom,{
+    accent:A, accent2:A2, accent3:A3,
+    accentInk: Skins.contrast('#ffffff',A)>=Skins.contrast('#000000',A)?'#ffffff':'#101014',
+    bg:      mix(base,A,dark?.05:.04),
+    surface: mix(base,A,dark?.10:.02),
+    surface2:mix(base,A,dark?.16:.08),
+    chip:    mix(base,A,dark?.19:.10),
+    ink:     mix(anti,A,dark?.05:.16),
+    inkDim:  mix(mix(base,anti,dark?.62:.55),A,tint),
+    line:    mix(base,A,dark?.28:.20),
+    onMedia:'#fafafa', live:'#e91916',
+    glow: vivid?.85:muted?.05:.3,
+  });
+
+  const ty=TYPES_UI.find(x=>x.id===T.type)||TYPES_UI[0];
+  S.custom.fontDisplay=ty.fd; S.custom.fontBody=ty.fb; S.custom.uppercase=ty.up;
+  const sh=SHAPES_UI.find(x=>x.id===T.shape)||SHAPES_UI[1];
+  S.custom.radius=sh.r; S.custom.borderW=sh.bw;
+  S.custom.transparency=T.bg;
+  S.bgMode=T.bg;
+
+  /* auto-fix contrast rather than nagging about it */
+  const fix=(fg,bg)=>{const c=Skins.contrast(fg,bg);
+    if(c!==null&&c>=4.5)return fg;
+    return Skins.contrast('#ffffff',bg)>=Skins.contrast('#000000',bg)?'#ffffff':'#0d0d10';};
+  S.custom.ink=fix(S.custom.ink,S.custom.surface);
+  S.custom.accentInk=fix(S.custom.accentInk,S.custom.accent);
+  if((Skins.contrast(S.custom.inkDim,S.custom.surface)||0)<4.5)
+    S.custom.inkDim = dark?'#bcbccc':'#4d4d58';
+
+  S.skinMode='custom';
+  $('cAccent').value=S.custom.accent;
+  checkContrast(); update();
+}
+
+function checkContrast(){
+  const pairs=[[S.custom.ink,S.custom.surface],[S.custom.inkDim,S.custom.surface],
+               [S.custom.accentInk,S.custom.accent]];
+  const worst=Math.min(...pairs.map(([a,b])=>Skins.contrast(a,b)||21));
+  $('cWarn').innerHTML = worst>=4.5
+    ? `<div class="ok" style="margin-top:14px">✓ Everything is readable (contrast ${worst}:1).</div>`
+    : `<div class="warn" style="margin-top:14px">Some text is low contrast (${worst}:1).
+        Try a different Mood.</div>`;
+}
+
+$('cCustomToggle').onclick=()=>{
+  const el=$('cAccent');
+  const showing = el.style.display!=='none';
+  el.style.display = showing ? 'none' : 'inline-block';
+  if(!showing) el.click();
+};
+$('cAccent').addEventListener('input',()=>{
+  S.custom.accent=$('cAccent').value;
+  // derive companions from the picked colour
+  const [r,g,b]=hex2rgb(S.custom.accent);
+  const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let hu=0;const dd=mx-mn;
+  if(dd){hu=mx===r?((g-b)/dd+(g<b?6:0)):mx===g?((b-r)/dd+2):((r-g)/dd+4);hu*=60;}
+  const spin=(deg)=>{const h2=((hu+deg)%360+360)%360;
+    const l=.55,sa=.7,a=sa*Math.min(l,1-l);
+    const f=nn=>{const k=(nn+h2/30)%12;return 255*(l-a*Math.max(-1,Math.min(k-3,Math.min(9-k,1))));};
+    return rgb2hex(f(0),f(8),f(4));};
+  S.custom.accent2=spin(150); S.custom.accent3=spin(-40);
+  document.querySelectorAll('.pal').forEach(x=>x.classList.remove('on'));
+  S.theme.pal=null;
+  applyTheme();
+});
+$('cRandomTheme').onclick=()=>{
+  const p=Skins.PRESETS[Math.floor(Math.random()*Skins.PRESETS.length)];
+  S.theme.pal=p.id;
+  const src=Skins.toCustomOpts(Skins.presetSkin(p.id));
+  ['bg','surface','surface2','chip','ink','inkDim','line',
+   'accent','accent2','accent3','accentInk'].forEach(k=>S.custom[k]=src[k]);
+  S.theme.mood=['dark','light','vivid','muted'][Math.floor(Math.random()*4)];
+  S.theme.type=TYPES_UI[Math.floor(Math.random()*TYPES_UI.length)].id;
+  S.theme.shape=SHAPES_UI[Math.floor(Math.random()*SHAPES_UI.length)].id;
+  document.querySelectorAll('.pal').forEach(x=>x.classList.toggle('on',x.dataset.id===p.id));
+  syncPicks(); applyTheme();
+};
+$('shuffle').onclick=()=>$('cRandomTheme').click();
+
+/* Jump to a random built-in layout, keeping the current theme. Asked for
+   because "Shuffle skin" read like it would change the layout. */
+$('randlayout').onclick=()=>{
+  const all=Layouts.all;
+  let pick=S.layout;
+  while(all.length>1 && pick===S.layout) pick=all[Math.floor(Math.random()*all.length)].id;
+  S.layoutMode='builtin'; S.genLayout=null; S.pool=[]; S.layout=pick;
+  if(typeof paintRandomGrid==='function'){paintRandomGrid();updateRCount();}
+  document.querySelectorAll('#lgengrid .lopt').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('#lgrid .lopt').forEach(x=>x.classList.toggle('on',x.dataset.id===pick));
+  const tile=document.querySelector(`#lgrid .lopt[data-id="${pick}"]`);
+  if(tile) tile.scrollIntoView({block:'nearest',behavior:'smooth'});
+  update();
+};
+
+buildPalettes(); syncPicks(); checkContrast();
+
+/* ---------------- tabs ---------------- */
+$('useassets').addEventListener('change',()=>{
+  $('assetfields').style.display=$('useassets').checked?'block':'none';
+  update();
+});
+
+$('raid').addEventListener('change',()=>{
+  $('raidopts').style.display=$('raid').checked?'block':'none';
+});
+
+$('usetoken').addEventListener('change',()=>{
+  $('tokfields').style.display=$tok()?'block':'none';
+  update();
+});
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    const box=t.closest('.panel');
+    box.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    box.querySelectorAll('.tabc').forEach(c=>c.classList.toggle('on',c.id==='tab-'+t.dataset.tab));
+    if(t.dataset.tab==='gen'){S.skinMode='custom';applyTheme();}
+    if(t.dataset.tab==='preset'){S.skinMode='preset';update();}
+  };
+});
+
+/* ---------------- ranges with labels ---------------- */
+const RL={};
+const rl = (id,fmt)=>{const e=$(id),o=$(id+'v');const f=()=>o.textContent=fmt(e.value);
+  RL[id]=f; e.addEventListener('input',()=>{f();update();});f();};
+rl('days',v=>+v?v+' days':'OFF');
+rl('raidcount',v=>+v?v+'+ viewers':'any');
+rl('raiddelay',v=>v+'s');
+rl('max',v=>v+'s');
+rl('vol',v=>v+'%');
+rl('hold',v=>v+'s');
+
+/* ---------------- URL build ---------------- */
+const FIELDS=['channel','clientid','token','cmd','kicker','cta','tag','chatmsg','asset','backplate','osize','obg','ovfit'];
+const $tok=()=>document.getElementById('usetoken').checked;
+const CHECKS=['clip','featured','fallback','raid','progress','mods','vips'];
+FIELDS.concat(CHECKS).forEach(id=>$(id).addEventListener('input',update));
+
+let PV = { user:null, sound:false };
+
+function buildURL(forPreview){
+  const p=new URLSearchParams();
+  if(S.layoutMode==='random' && S.pool.length) p.set('pool',poolStr());
+  else if(S.layoutMode==='gen' && S.genLayout) p.set('lg',btoa(JSON.stringify(S.genLayout)));
+  else p.set('layout',S.layout);
+  if($('oDetail').value)p.set('detail',$('oDetail').value);
+  if($('oHold').value)p.set('hold_info',$('oHold').value);
+  if($('oFit').value)p.set('fit',$('oFit').value);
+  if($('oBackdrop').value)p.set('backdrop',$('oBackdrop').value);
+  if($('oExpand').checked)p.set('expand','1');
+  if(S.skinMode==='custom') p.set('sx',btoa(JSON.stringify(S.custom)));
+  else if(S.skinMode==='preset') p.set('skin',S.skinId);
+  else p.set('sk',btoa(JSON.stringify(S.genOpts)));
+  /* Transparency is an overlay-wide setting, not a property of the theme.
+     Previously it was only written when you had used the custom editor, so
+     picking a preset silently produced a solid background. */
+  /* Always write bg=, including 'none'. The overlay now defaults to
+     transparent, so omitting the param would silently mean 'panels'. */
+  if(S.bgMode) p.set('bg',S.bgMode);
+  const put=(k,v,d)=>{ if(v!==d&&v!=='') p.set(k,v); };
+  if(!forPreview){
+    put('channel',$('channel').value.trim().toLowerCase(),'');
+    if($tok()){
+      put('client_id',$('clientid').value.trim(),'');
+      put('token',$('token').value.trim(),'');
+      put('chatmsg',$('chatmsg').value,'');
+    }
+  }
+  put('cmd',$('cmd').value.trim(),'so');
+  put('kicker',$('kicker').value,'Go check out {channel}');
+  put('cta',$('cta').value,'Go give them a follow');
+  put('tag',$('tag').value,'');
+  if(!$('clip').checked)p.set('clip','0');
+  if($('featured').checked)p.set('featured','1');
+  if(!$('fallback').checked)p.set('fallback','0');
+  if($('raid').checked){
+    p.set('raid','1');
+    if(+$('raidcount').value)p.set('raidcount',$('raidcount').value);
+    if(+$('raiddelay').value)p.set('raiddelay',$('raiddelay').value);
+  }
+  if(!$('progress').checked)p.set('progress','0');
+  if($('mods').checked)p.set('mods','1');
+  if($('vips').checked)p.set('vips','1');
+  if($('useassets').checked){
+    if($('asset').value.trim())p.set('asset',$('asset').value.trim());
+    if($('backplate').value.trim())p.set('backplate',$('backplate').value.trim());
+  }
+  if($('osize').value)p.set('size',$('osize').value);
+  /* always emit videofit, the same lesson as bg=: an option that is only
+     written "when it differs from the default" silently vanishes from the
+     URL and the overlay falls back to something the user did not pick */
+  p.set('videofit', ($('ovfit')&&$('ovfit').value)||'smart');
+  if(+$('days').value)p.set('days',$('days').value);
+  if(+$('max').value!==60)p.set('max',$('max').value);
+  if(+$('vol').value!==70)p.set('vol',$('vol').value);
+  if(+$('hold').value!==8)p.set('hold',$('hold').value);
+  if(forPreview){
+    if(S.layoutMode==='random' && S.poolFocus && S.pool.some(x=>x.id===S.poolFocus))
+      p.set('force',S.poolFocus);
+    if(PV.user){ p.set('test',PV.user); p.delete('demo'); }
+    else { p.set('demo','1'); p.set('test','demouser'); }  // demo needs a trigger too
+    if(!PV.sound) p.set('mute','1');
+    p.set('debug','1');
+  }
+  const base=location.href.replace(/index\.html.*$/,'').replace(/\?.*$/,'').replace(/\/$/,'');
+  return base+'/overlay.html?'+p.toString();
+}
+
+/* ---------------- preview ---------------- */
+const pv=$('pv');
+function fit(){
+  const sz=($('osize')&&$('osize').value)||'1920x1080';
+  const [cw,ch]=sz.split('x').map(Number);
+  const w=pv.parentElement.clientWidth;
+  pv.style.width=cw+'px'; pv.style.height=ch+'px';
+  pv.style.transform='scale('+(w/cw)+')';
+  pv.parentElement.style.aspectRatio=cw+' / '+ch;
+}
+addEventListener('resize',fit);
+
+let cycling=null;
+let pvTimer=null, pvLast='';
+function loadPreview(force){
+  const u=buildURL(true);
+  // skip redundant reloads — only navigate when the URL actually changed
+  if(!force && u===pvLast) return;
+  pvLast=u;
+  clearTimeout(pvTimer);
+  pvTimer=setTimeout(()=>{ pv.src=u+'&t='+Date.now(); },180);
+}
+
+function update(force){
+  $('url').value=buildURL(false);
+  $('cmdname').textContent=$('cmd').value.trim()||'so';
+  const sk=skinNow();
+  $('json').value=JSON.stringify({layout:S.layoutMode==='gen'?S.genLayout:S.layout,
+    skin:S.skinMode==='custom'?S.custom:S.skinMode==='preset'?S.skinId:S.genOpts,
+    tokens:sk.tokens},null,2);
+
+  $('pvinfo').textContent=(S.layoutMode==='random'&&S.pool.length
+      ? (S.poolFocus?Layouts.byId(S.poolFocus).label+' · ':'')+'mix of '+S.pool.length
+      : S.layoutMode==='gen'&&S.genLayout
+      ? 'Generated ('+S.genLayout.frame+'/'+S.genLayout.infoPos+')'
+      : Layouts.byId(S.layout).label)+' · '+themeLabel();
+  loadPreview(force===true);
+  fit();
+  save();
+}
+$('replay').onclick=()=>{ update(true); };
+
+$('pvgo').onclick=()=>{
+  const u=$('pvuser').value.trim().toLowerCase().replace(/^@/,'');
+  if(!/^[a-z0-9_]{3,25}$/.test(u)){
+    $('pvstatus').innerHTML='<span style="color:#ff8080">That does not look like a valid Twitch username.</span>';
+    return;
+  }
+  PV.user=u;
+  $('pvstatus').innerHTML=`Fetching <b>${u}</b> from Twitch…`;
+  update(true);
+  setTimeout(()=>{
+    $('pvstatus').innerHTML=`Showing live data for <b>${u}</b>. If the panel stays blank, that
+      username may not exist. Channels with no clips fall back to the profile card.`;
+  },2500);
+};
+$('pvuser').addEventListener('keydown',e=>{if(e.key==='Enter')$('pvgo').click();});
+$('pvdemo').onclick=()=>{
+  PV.user=null; $('pvuser').value='';
+  $('pvstatus').textContent='Showing fake demo data. Enter a real Twitch username above to fetch their actual profile and play a real clip — no credentials needed.';
+  update();
+};
+$('pvsound').onchange=()=>{ PV.sound=$('pvsound').checked; update(); };
+$('cycle').onclick=function(){
+  if(cycling){clearInterval(cycling);cycling=null;this.textContent='▶ Cycle layouts';return;}
+  this.textContent='⏸ Stop';
+  S.layoutMode='builtin'; S.genLayout=null;
+  let i=Layouts.ids.indexOf(S.layout);
+  cycling=setInterval(()=>{
+    i=(i+1)%Layouts.ids.length;S.layout=Layouts.ids[i];
+    document.querySelectorAll('.lopt').forEach(x=>x.classList.toggle('on',x.dataset.id===S.layout));
+    update();
+  },4200);
+};
+$('copy').onclick=()=>{navigator.clipboard.writeText($('url').value);
+  $('copy').textContent='✓ Copied';setTimeout(()=>$('copy').textContent='📋 Copy URL',1400);};
+$('open').onclick=()=>window.open($('url').value,'_blank');
+
+/* ---------------- persistence ---------------- */
+function save(){
+  const o={};FIELDS.forEach(f=>o[f]=$(f).value);
+  CHECKS.forEach(f=>o[f]=$(f).checked);
+  o.usetoken=$('usetoken').checked;
+  o.useassets=$('useassets').checked;
+  o.pool=S.pool;
+  ['oDetail','oHold','oFit','oBackdrop'].forEach(k=>o[k]=$(k).value);
+  o.oExpand=$('oExpand').checked;
+  ['days','max','vol','hold','raidcount','raiddelay'].forEach(f=>o[f]=$(f).value);
+  o._s=S;
+  try{localStorage.setItem('so-builder',JSON.stringify(o));}catch(e){}
+}
+function load(){
+  try{
+    const o=JSON.parse(localStorage.getItem('so-builder')||'{}');
+    FIELDS.forEach(f=>{if(o[f]!==undefined)$(f).value=o[f];});
+    CHECKS.forEach(f=>{if(o[f]!==undefined)$(f).checked=o[f];});
+    if(o.usetoken!==undefined){$('usetoken').checked=o.usetoken;
+      $('tokfields').style.display=o.usetoken?'block':'none';}
+    if(o.useassets!==undefined){$('useassets').checked=o.useassets;
+      $('assetfields').style.display=o.useassets?'block':'none';}
+    if(Array.isArray(o.pool)){
+      S.pool=o.pool.map(x=>typeof x==='string'?{id:x}:x);
+      if(typeof paintRandomGrid==='function'){paintRandomGrid();updateRCount();}}
+    ['oDetail','oHold','oFit','oBackdrop'].forEach(k=>{if(o[k]!==undefined)$(k).value=o[k];});
+    if(o.oExpand!==undefined)$('oExpand').checked=o.oExpand;
+    if(o.obg){S.bgMode=o.obg;S.theme.bg=o.obg;S.custom.transparency=o.obg;}
+    ['days','max','vol','hold','raidcount','raiddelay'].forEach(f=>{if(o[f]!==undefined)$(f).value=o[f];});
+    $('raidopts').style.display=$('raid').checked?'block':'none';
+    if(o._s){Object.assign(S,o._s);
+      document.querySelectorAll('.lopt').forEach(x=>x.classList.toggle('on',x.dataset.id===S.layout));
+      document.querySelectorAll('.sopt').forEach(x=>x.classList.toggle('on',x.dataset.id===S.skinId));}
+  }catch(e){}
+}
+load();
+// refresh slider labels directly — dispatching 'input' would trigger 4 extra previews
+['days','max','vol','hold','raidcount','raiddelay'].forEach(id=>RL[id] && RL[id]());
+update(true);
+</script>
+<footer style="max-width:1600px;margin:48px auto 40px;padding:26px 30px;
+  border-top:1px solid var(--l);color:var(--d);font-size:14px;line-height:1.7">
+  <div style="font-size:17px;color:var(--t);font-weight:700;margin-bottom:8px">
+    Clawmark — Twitch Shoutout Overlay
+  </div>
+  Built by <b style="color:var(--t)">Hardclaws</b> ·
+  <a href="https://twitch.tv/hardclaws" target="_blank" rel="noopener"
+     style="color:var(--a)">twitch.tv/hardclaws</a> ·
+  <a href="mailto:thehardclaws@gmail.com" style="color:var(--a)">thehardclaws@gmail.com</a>
+  <br>
+  Free to use and fork under the MIT licence. If it earns you a follower, a credit is
+  appreciated but never required.
+</footer>
+</body>
+</html>

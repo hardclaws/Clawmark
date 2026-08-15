@@ -1,0 +1,1866 @@
+/* Clawmark — Twitch Shoutout Overlay for OBS
+ * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
+ * MIT licence. Free to use, modify and fork.
+ */
+/* =============================================================
+   OVERLAY CSS — layout structure only.
+   Colour / type / radius / texture all come from skin tokens.
+   ============================================================= */
+
+/* ---------- fallback tokens (overwritten by skins.js) ---------- */
+:root{
+  --bg:#0a0a10; --surface:#12121c; --surface-2:#1a1a28; --chip:#16162a;
+  --ink:#f0f0f6; --ink-dim:#9a9ab4; --line:#2a2a44;
+  --accent:#9146ff; --accent-2:#00e6c3; --accent-3:#c9a44c; --accent-ink:#0a0710;
+  --radius:14px; --radius-sm:6px; --border-w:1px;
+  --font-display:"Inter","Segoe UI",system-ui,sans-serif;
+  --font-body:"Inter","Segoe UI",system-ui,sans-serif;
+  --weight-display:800; --tracking:-0.02em; --label-tracking:0.2em; --transform:none;
+  --glow:.3; --glow-accent:0 0 24px rgba(145,70,255,.5);
+  --shadow:0 30px 80px rgba(0,0,0,.7);
+  --texture:none; --texture-size:auto; --texture-blend:screen;
+  --scrim:rgba(4,4,8,.82); --live:#e91916;
+  --dur:.7s; --ease:cubic-bezier(.2,.9,.2,1);
+  --pad:60px;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:transparent;overflow:hidden}
+body{width:1920px;height:1080px;font-family:var(--font-body);color:var(--ink);
+  -webkit-font-smoothing:antialiased}
+
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden}
+#stage.hidden{opacity:0;pointer-events:none}
+
+.lo{position:absolute;inset:0;overflow:hidden}
+
+/* ---------- shared pieces ---------- */
+.clipvid,.clipfallback{display:block;width:100%;height:100%;object-fit:cover;background:#000}
+.clipfallback{background-size:cover;background-position:center;filter:saturate(1.05)}
+.clipvid.fill,.clipfallback.fill{position:absolute;inset:0}
+.clipvid.circle{border-radius:50%}
+
+.scrim-b{position:absolute;inset:0;background:linear-gradient(0deg,var(--scrim) 0%,rgba(0,0,0,.35) 26%,transparent 48%)}
+.scrim-l{position:absolute;inset:0;background:linear-gradient(90deg,var(--scrim) 0%,rgba(0,0,0,.25) 42%,transparent 68%)}
+.vig{position:absolute;inset:0;background:radial-gradient(120% 90% at 60% 40%,transparent 30%,rgba(0,0,0,.72) 100%)}
+
+h1{margin:0;font-family:var(--font-display);font-weight:var(--weight-display);
+  letter-spacing:var(--tracking);line-height:1;color:var(--ink)}
+
+.kicker{font-family:var(--font-body);font-weight:700;letter-spacing:var(--label-tracking);
+  text-transform:var(--transform);color:var(--accent);font-size:22px}
+
+.bio{margin:0;font-size:27px;line-height:1.5;color:var(--ink-dim)}
+.bio.quote{border-left:3px solid var(--line);padding-left:20px}
+
+.av{width:var(--s);height:var(--s);border-radius:50%;padding:5px;flex:0 0 var(--s);
+  background:conic-gradient(from 210deg,var(--accent),var(--accent-2),var(--accent-3),var(--accent));
+  box-shadow:var(--glow-accent)}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:var(--surface);display:block}
+
+.badge{font-size:15px;font-weight:700;letter-spacing:.12em;padding:6px 11px;border-radius:var(--radius-sm);
+  background:var(--accent);color:var(--accent-ink);text-transform:uppercase}
+.livetag{font-size:17px;font-weight:800;letter-spacing:.14em;padding:8px 14px;border-radius:var(--radius-sm);
+  background:var(--live);color:#fff}
+.tag{font-size:17px;font-weight:600;padding:8px 14px;border-radius:var(--radius-sm);
+  background:rgba(0,0,0,.6);color:var(--ink);backdrop-filter:blur(8px)}
+
+.chip{font-size:26px;font-weight:600;padding:14px 26px;border-radius:99px;
+  background:var(--chip);border:var(--border-w) solid var(--line);color:var(--ink)}
+.chip.acc{background:color-mix(in srgb,var(--accent) 18%,transparent);
+  border-color:color-mix(in srgb,var(--accent) 55%,transparent);color:var(--accent)}
+.chip.ghost{background:rgba(255,255,255,.06)}
+
+.stat{text-align:center;padding:0 36px;border-left:var(--border-w) solid var(--line)}
+.stat:first-child{border-left:0}
+.stat-v{font-family:var(--font-display);font-weight:var(--weight-display);font-size:50px;line-height:1;color:var(--ink)}
+.stat-v.acc{color:var(--accent)}
+.stat-l{font-size:17px;font-weight:600;letter-spacing:.22em;color:var(--ink-dim);margin-top:12px;text-transform:uppercase}
+
+.cta{font-family:var(--font-display);font-weight:var(--weight-display);font-size:30px;text-align:center;
+  padding:20px 28px;border-radius:var(--radius);color:var(--accent-ink);
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:var(--glow-accent)}
+
+.ct{font-size:32px;font-weight:700;color:var(--ink);line-height:1.25}
+.cm{font-size:22px;color:var(--ink-dim);margin-top:10px}
+
+.boxart{width:52px;height:70px;border-radius:var(--radius-sm);flex:0 0 52px;
+  background:linear-gradient(160deg,var(--accent),var(--accent-2))}
+
+.progress{position:absolute;left:0;bottom:0;width:100%;height:5px;background:rgba(255,255,255,.14)}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.playing .progress i{animation:prog var(--clipdur,30s) linear forwards}
+@keyframes prog{to{width:100%}}
+
+/* motif glyph, injected by app.js */
+.motif{display:inline-grid;place-items:center;width:36px;height:36px;color:var(--accent-3);flex:0 0 36px}
+.motif svg{width:100%;height:100%;display:block}
+:root[data-motif="none"] .motif{display:none}
+
+/* texture overlay hook */
+.tex::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:var(--texture);background-size:var(--texture-size);
+  mix-blend-mode:var(--texture-blend);opacity:.5}
+
+/* =============================================================
+   ANIMATIONS — .playing on #stage triggers, .leaving reverses
+   ============================================================= */
+@keyframes up{from{transform:translateY(46px);opacity:0}to{transform:none;opacity:1}}
+@keyframes rise{from{transform:translateY(100%);opacity:0}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{transform:scale(.72);opacity:0}to{transform:none;opacity:1}}
+@keyframes inl{from{transform:translateX(-110%);opacity:0}to{transform:none;opacity:1}}
+@keyframes inr{from{transform:translateX(110%);opacity:0}to{transform:none;opacity:1}}
+@keyframes inup{from{transform:translateY(110%);opacity:0}to{transform:none;opacity:1}}
+@keyframes dn{from{transform:translateY(-110%);opacity:0}to{transform:none;opacity:1}}
+@keyframes bt{from{transform:translateY(-100%)}to{transform:none}}
+@keyframes bb{from{transform:translateY(100%)}to{transform:none}}
+@keyframes wide{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes widen{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes slam{from{transform:translateX(-110%) skewX(-7deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes wipe{0%{transform:scaleX(0);transform-origin:left}45%{transform:scaleX(1);transform-origin:left}
+  46%{transform:scaleX(1);transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
+@keyframes bar{from{transform:scaleY(0)}to{transform:none}}
+@keyframes flip{0%{transform:rotateY(-180deg) scale(.3) translateY(90px);opacity:0}
+  40%{opacity:1}100%{transform:none;opacity:1}}
+@keyframes ring{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+@keyframes tilt{from{transform:rotate(-8deg) scale(.8);opacity:0}to{transform:rotate(-2.5deg);opacity:1}}
+@keyframes card{from{transform:translateY(70px) scale(.95);opacity:0}to{transform:none;opacity:1}}
+@keyframes rl{from{transform:translateX(-620px) rotate(-180deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes rr{from{transform:translateX(620px) rotate(180deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes typein{from{clip-path:inset(0 100% 0 0);opacity:.4}to{clip-path:inset(0 0 0 0);opacity:1}}
+@keyframes print{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes flick{0%{opacity:0}10%{opacity:1}12%{opacity:.2}16%{opacity:1}18%{opacity:.4}22%{opacity:1}100%{opacity:1}}
+
+.playing .a-up{animation:up .6s var(--ease) both}
+.playing .a-rise{animation:rise .8s var(--ease) both}
+.playing .a-fade{animation:fade .7s ease-out both}
+.playing .a-pop{animation:pop .6s cubic-bezier(.2,1.4,.4,1) both}
+.playing .a-inl{animation:inl .75s var(--ease) both}
+.playing .a-inr{animation:inr .75s var(--ease) both}
+.playing .a-inup{animation:inup .8s var(--ease) both}
+.playing .a-dn{animation:dn .7s var(--ease) both}
+.playing .a-bt{animation:bt .8s var(--ease) both}
+.playing .a-bb{animation:bb .8s var(--ease) both}
+.playing .a-wide{animation:wide .9s var(--ease) both;transform-origin:left}
+.playing .a-widen{animation:widen .8s var(--ease) .45s both}
+.playing .a-slam{animation:slam .55s var(--ease) both}
+.playing .a-wipe{animation:wipe .9s cubic-bezier(.75,0,.2,1) both}
+.playing .a-bar{animation:bar .7s ease-out both;transform-origin:top}
+.playing .a-flip{animation:flip 1.1s var(--ease) .3s both}
+.playing .a-ring{animation:ring 1s var(--ease) both}
+.playing .a-tilt{animation:tilt .8s cubic-bezier(.2,1.3,.4,1) both}
+.playing .a-card{animation:card .8s var(--ease) both}
+.playing .a-rl{animation:rl .7s var(--ease) both}
+.playing .a-rr{animation:rr .7s var(--ease) both}
+.playing .a-type{animation:typein .5s steps(28) both}
+.playing .a-print{animation:print 1s var(--ease) both}
+.playing .a-flicker{animation:flick 1.3s ease-out both}
+
+.playing .d1{animation-delay:.12s}.playing .d2{animation-delay:.24s}
+.playing .d3{animation-delay:.36s}.playing .d4{animation-delay:.48s}
+.playing .d5{animation-delay:.6s}.playing .d6{animation-delay:.72s}
+.playing .d7{animation-delay:.84s}
+
+#stage.leaving{animation:leave .5s ease-in forwards}
+@keyframes leave{to{opacity:0;transform:translateY(26px) scale(.985)}}
+
+/* reduced motion */
+@media (prefers-reduced-motion:reduce){
+  .playing [class*="a-"]{animation-duration:.01s!important;animation-delay:0s!important}
+}
+
+/* =============================================================
+   1. BANNER
+   ============================================================= */
+.lo-banner .topstrip{position:absolute;top:0;left:0;right:0;padding:26px var(--pad);display:flex;align-items:center;gap:18px;
+  background:linear-gradient(180deg,rgba(0,0,0,.8),transparent)}
+.lo-banner .topstrip .ct{font-size:26px}
+.lo-banner .topstrip .cm{margin:0;font-size:24px}
+.lo-banner .spacer{margin-left:auto}
+.lo-banner .band{position:absolute;left:0;bottom:0;width:100%;height:300px;display:flex;align-items:center;gap:40px;
+  padding:0 var(--pad);background:linear-gradient(90deg,var(--surface),color-mix(in srgb,var(--surface-2) 80%,transparent));
+  backdrop-filter:blur(14px);border-top:2px solid var(--accent)}
+.lo-banner .bandmain{flex:1;min-width:0}
+.lo-banner .row{display:flex;align-items:baseline;gap:18px}
+.lo-banner h1{font-size:76px}
+.lo-banner .url{font-size:30px;color:var(--ink-dim)}
+.lo-banner .bio{margin-top:18px;font-size:28px}
+.lo-banner .stats{display:flex}
+
+/* =============================================================
+   2. DECK
+   ============================================================= */
+.lo-deck{background:var(--bg);padding:var(--pad)}
+.lo-deck .deckhead{position:absolute;left:var(--pad);top:76px;display:flex;align-items:center;gap:16px}
+.lo-deck .rule{position:absolute;left:var(--pad);top:126px;width:calc(100% - var(--pad)*2);height:2px;
+  background:linear-gradient(90deg,var(--accent-3),transparent)}
+.lo-deck .deckclip{position:absolute;left:var(--pad);top:160px;width:1090px;height:613px;border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow),0 0 0 var(--border-w) var(--line)}
+.lo-deck .clipbar{position:absolute;left:0;right:0;bottom:0;padding:28px 32px;
+  background:linear-gradient(0deg,rgba(0,0,0,.92),transparent)}
+.lo-deck .tags{position:absolute;left:26px;top:24px;display:flex;gap:10px}
+.lo-deck .deckside{position:absolute;left:1220px;top:160px;width:calc(100% - 1220px - var(--pad))}
+.lo-deck .idrow{display:flex;align-items:center;gap:24px}
+.lo-deck .nm{display:flex;align-items:center;gap:12px}
+.lo-deck h1{font-size:52px}
+.lo-deck .handle{font-size:25px;color:var(--ink-dim);margin-top:8px}
+.lo-deck .bio{margin-top:30px}
+.lo-deck .rows{margin-top:30px;border-top:var(--border-w) solid var(--line)}
+.lo-deck .r{display:flex;justify-content:space-between;align-items:center;padding:22px 0;
+  border-bottom:var(--border-w) solid var(--line);gap:24px}
+.lo-deck .r.col{align-items:flex-start}
+.lo-deck .rl{font-size:20px;font-weight:600;letter-spacing:.2em;color:var(--ink-dim);text-transform:uppercase;flex:0 0 auto}
+.lo-deck .rv{font-size:30px;font-weight:700;text-align:right}
+.lo-deck .rv.sm{font-size:25px;font-weight:500;color:var(--ink-dim)}
+.lo-deck .rv.acc{color:var(--accent);font-size:34px}
+.lo-deck .cta{margin-top:28px}
+
+/* =============================================================
+   3. DOSSIER
+   ============================================================= */
+.lo-dossier{background:var(--bg)}
+.lo-dossier .bgblur{position:absolute;inset:-40px;filter:blur(40px) saturate(1.2);opacity:.4}
+.lo-dossier .card{position:absolute;left:340px;top:60px;width:1240px;height:960px;border-radius:var(--radius);
+  background:linear-gradient(165deg,var(--surface),var(--bg));border:var(--border-w) solid var(--line);
+  box-shadow:var(--shadow);overflow:hidden}
+.lo-dossier .chead{position:relative;height:210px;background:linear-gradient(120deg,var(--surface-2),var(--surface));overflow:hidden}
+.lo-dossier .chead-g{position:absolute;inset:0;
+  background:radial-gradient(600px 300px at 20% 130%,color-mix(in srgb,var(--accent) 55%,transparent),transparent 70%)}
+.lo-dossier .sonum{position:absolute;right:44px;top:40px;display:flex;align-items:center;gap:12px;
+  font-size:19px;font-weight:700;letter-spacing:.34em;color:var(--accent-3);text-transform:uppercase}
+.lo-dossier .chead-t{position:absolute;left:250px;top:52px}
+.lo-dossier .nm{display:flex;align-items:center;gap:12px}
+.lo-dossier h1{font-size:62px}
+.lo-dossier .handle{font-size:27px;color:var(--ink-dim);margin-top:12px}
+.lo-dossier .cav{position:absolute;left:60px;top:106px}
+.lo-dossier .cav .av{border:6px solid var(--surface)}
+.lo-dossier .cbody{position:absolute;left:0;top:340px;right:0;padding:0 60px;display:flex;gap:60px}
+.lo-dossier .cleft{width:520px;flex:0 0 520px}
+.lo-dossier .cright{flex:1}
+.lo-dossier .grid{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.lo-dossier .gcell{background:var(--chip);border:var(--border-w) solid var(--line);border-radius:var(--radius);padding:22px}
+.lo-dossier .gcell.wide{grid-column:1/-1;display:flex;align-items:center;gap:18px}
+.lo-dossier .gcell .stat{padding:0;border:0;text-align:left}
+.lo-dossier .gcell .stat-v{font-size:44px}
+.lo-dossier .gcell .stat-l{margin-top:8px}
+.lo-dossier .cta{margin-top:30px}
+.lo-dossier .inset{position:relative;width:100%;height:315px;border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow),0 0 0 var(--border-w) var(--line);margin-bottom:26px}
+.lo-dossier .inset .tag{position:absolute;left:14px;top:14px}
+.lo-dossier .lasttitle{margin-top:20px;padding-top:18px;border-top:var(--border-w) solid var(--line);
+  font-size:22px;color:var(--ink-dim)}
+.lo-dossier .lasttitle span{color:var(--ink)}
+.lo-dossier .cfoot{position:absolute;left:0;bottom:0;width:100%;height:4px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-3),var(--accent-2))}
+
+/* =============================================================
+   4. TICKER
+   ============================================================= */
+.lo-ticker .tick{position:absolute;left:80px;bottom:80px;display:flex;height:150px;border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow)}
+.lo-ticker .tav{width:150px;flex:0 0 150px;display:grid;place-items:center;
+  background:linear-gradient(160deg,var(--accent),color-mix(in srgb,var(--accent) 40%,#000))}
+.lo-ticker .tav .av{padding:0;box-shadow:none;background:none}
+.lo-ticker .tnm{background:var(--surface);display:flex;flex-direction:column;justify-content:center;
+  padding:0 40px;border-right:var(--border-w) solid var(--line)}
+.lo-ticker .tnm .kicker{font-size:16px;color:var(--accent-2)}
+.lo-ticker h1{font-size:54px;margin-top:6px}
+.lo-ticker .trot{background:var(--surface);width:900px;position:relative;overflow:hidden}
+.lo-ticker .tslide{position:absolute;inset:0;display:flex;flex-direction:column}
+.lo-ticker .sl{height:150px;flex:0 0 150px;display:flex;align-items:center;gap:26px;padding:0 44px}
+.lo-ticker .sl.gap{gap:44px}
+.lo-ticker .rl{font-size:15px;font-weight:600;letter-spacing:.24em;color:var(--ink-dim);text-transform:uppercase}
+.lo-ticker .rv{font-size:36px;font-weight:700;margin-top:4px}
+.lo-ticker .rv.big{font-size:40px}
+.lo-ticker .rv.acc,.lo-ticker .acc{color:var(--accent)}
+.lo-ticker .rv.live{color:var(--live)}
+.lo-ticker .tcap{width:96px;display:grid;place-items:center;
+  background:linear-gradient(160deg,var(--accent-3),color-mix(in srgb,var(--accent-3) 45%,#000))}
+.lo-ticker .tcap .motif{width:46px;height:46px;color:var(--accent-ink)}
+.playing .lo-ticker .tslide{animation:cyc calc(var(--slides) * 3.4s) cubic-bezier(.6,0,.2,1) .9s infinite}
+@keyframes cyc{
+  0%,18%{transform:translateY(0)}25%,43%{transform:translateY(-150px)}
+  50%,68%{transform:translateY(-300px)}75%,93%{transform:translateY(-450px)}
+  100%{transform:translateY(0)}}
+
+/* =============================================================
+   5. CINEMATIC
+   ============================================================= */
+.lo-cine .bar{position:absolute;left:0;width:100%;height:96px;background:#000}
+.lo-cine .bar.top{top:0}.lo-cine .bar.bot{bottom:0}
+.lo-cine .mark{position:absolute;left:var(--pad);top:140px;display:flex;align-items:center;gap:22px}
+.lo-cine .mark .sub{font-size:22px;color:var(--ink-dim);margin-top:8px}
+.lo-cine .line{position:absolute;left:var(--pad);bottom:300px;height:3px;width:calc(100% - var(--pad)*2);
+  background:linear-gradient(90deg,var(--ink),transparent);transform-origin:left}
+.lo-cine .cname{position:absolute;left:var(--pad);bottom:180px;overflow:hidden;height:112px;width:1500px}
+.lo-cine h1{font-size:96px;font-weight:300}
+.lo-cine .cmeta{position:absolute;left:var(--pad);bottom:130px;font-size:28px;letter-spacing:.3em;
+  color:var(--ink-dim);text-transform:uppercase}
+.lo-cine .progress{bottom:96px}
+
+/* =============================================================
+   6. KINETIC
+   ============================================================= */
+.lo-kinetic{background:var(--bg)}
+.lo-kinetic .kpanel{position:absolute;left:0;top:0;width:920px;height:100%;
+  background:linear-gradient(180deg,var(--surface),var(--bg))}
+.lo-kinetic .kbar{position:absolute;left:0;top:0;width:16px;height:100%;
+  background:linear-gradient(180deg,var(--accent),var(--accent-3),var(--accent-2))}
+.lo-kinetic .kwin{position:absolute;right:90px;top:150px;width:1000px;height:562px;border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow),0 0 0 3px var(--line)}
+.lo-kinetic .ktext{position:absolute;left:96px;top:200px;width:790px}
+.lo-kinetic .kicker{font-size:34px;color:var(--accent-2)}
+.lo-kinetic h1{font-size:132px;line-height:.94;margin-top:14px;word-break:break-word}
+.lo-kinetic .ksub{font-size:32px;line-height:1.5;color:var(--ink-dim);margin-top:26px}
+.lo-kinetic .ksub b{color:var(--accent);font-size:40px}
+.lo-kinetic .krail{display:flex;margin-top:36px;border:2px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.lo-kinetic .krail .stat{padding:20px 30px;background:var(--chip);border-left:2px solid var(--line);text-align:left}
+.lo-kinetic .krail .stat:first-child{border-left:0}
+.lo-kinetic .kurl{margin-top:28px;font-size:28px;color:var(--ink-dim)}
+.lo-kinetic .kav{position:absolute;left:760px;top:96px;z-index:3}
+.lo-kinetic .kwipe{position:absolute;inset:0;background:var(--accent);transform-origin:left}
+
+/* =============================================================
+   7. GLASS
+   ============================================================= */
+.lo-glass .slab{position:absolute;left:0;bottom:0;width:1250px;height:330px;
+  background:linear-gradient(100deg,color-mix(in srgb,var(--surface) 92%,transparent),
+    color-mix(in srgb,var(--surface-2) 68%,transparent));
+  backdrop-filter:blur(18px);clip-path:polygon(0 0,1100px 0,1250px 100%,0 100%);
+  border-top:2px solid var(--accent)}
+.lo-glass .seam{position:absolute;left:0;bottom:330px;width:640px;height:8px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2),transparent)}
+.lo-glass .hexav{position:absolute;left:70px;bottom:56px}
+.lo-glass .hexav .av{border-radius:0;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.lo-glass .hexav .av img{border-radius:0;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.lo-glass .gtext{position:absolute;left:330px;bottom:96px;right:80px}
+.lo-glass h1{font-size:92px;margin-top:16px}
+.lo-glass .chips{display:flex;gap:14px;margin-top:24px;flex-wrap:wrap}
+.lo-glass .corner{position:absolute;right:var(--pad);top:56px;display:flex;align-items:center;gap:14px;
+  padding:16px 30px;border-radius:var(--radius-sm);background:color-mix(in srgb,var(--surface) 78%,transparent);
+  border:var(--border-w) solid var(--line);backdrop-filter:blur(10px);
+  font-size:28px;font-weight:700;letter-spacing:.24em;text-transform:uppercase}
+
+/* =============================================================
+   8. POLAROID
+   ============================================================= */
+.lo-polaroid{background:var(--bg)}
+.lo-polaroid .pbg{position:absolute;inset:0;background:
+  radial-gradient(900px 700px at 70% 40%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%),var(--bg)}
+.lo-polaroid .pframe{position:absolute;right:120px;top:110px;width:1000px;padding:26px 26px 0;
+  background:var(--surface);border-radius:var(--radius-sm);box-shadow:var(--shadow);transform:rotate(-2.5deg)}
+.lo-polaroid .pphoto{width:100%;height:560px;overflow:hidden;background:#000}
+.lo-polaroid .pcap{padding:30px 8px 40px}
+.lo-polaroid .pnm{display:flex;align-items:center;gap:14px}
+.lo-polaroid h1{font-size:64px}
+.lo-polaroid .pmeta{font-size:26px;color:var(--ink-dim);margin-top:12px}
+.lo-polaroid .ptape{position:absolute;left:50%;top:-28px;width:220px;height:60px;margin-left:-110px;
+  background:color-mix(in srgb,var(--accent-3) 55%,transparent);transform:rotate(-3deg);
+  border-left:2px dashed rgba(255,255,255,.25);border-right:2px dashed rgba(255,255,255,.25)}
+.lo-polaroid .pside{position:absolute;left:110px;top:200px;width:620px}
+.lo-polaroid .pside .kicker{margin-top:30px;font-size:26px}
+.lo-polaroid .pside .bio{margin-top:22px}
+.lo-polaroid .pside .cta{margin-top:34px}
+.lo-polaroid .purl{margin-top:20px;font-size:26px;color:var(--ink-dim);text-align:center}
+
+/* =============================================================
+   9. TERMINAL
+   ============================================================= */
+.lo-terminal{background:var(--bg);font-family:var(--font-body)}
+.lo-terminal .twin{position:absolute;left:150px;top:80px;width:1400px;height:920px;border-radius:var(--radius-sm);
+  overflow:hidden;background:var(--surface);border:var(--border-w) solid var(--line);box-shadow:var(--shadow)}
+.lo-terminal .tbarw{height:60px;display:flex;align-items:center;gap:10px;padding:0 22px;background:var(--surface-2)}
+.lo-terminal .dot{width:16px;height:16px;border-radius:50%;background:var(--line)}
+.lo-terminal .dot:first-child{background:var(--live)}
+.lo-terminal .tpath{margin-left:18px;font-size:20px;color:var(--ink-dim);font-family:var(--font-body)}
+.lo-terminal .tbody{padding:34px 40px;font-size:30px;line-height:1.55;font-family:var(--font-body);white-space:pre-wrap}
+.lo-terminal .tl{color:var(--ink)}
+.lo-terminal .k{color:var(--ink-dim)}
+.lo-terminal .v{color:var(--accent-2)}
+.lo-terminal .v.acc,.lo-terminal .acc{color:var(--accent)}
+.lo-terminal .v.live{color:var(--live)}
+.lo-terminal .tpane{width:100%;height:400px;margin:20px 0;border:var(--border-w) solid var(--line);overflow:hidden}
+.lo-terminal .caret{display:inline-block;width:16px;height:30px;background:var(--accent);
+  margin-left:8px;vertical-align:-4px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.lo-terminal .tav{position:absolute;right:170px;top:140px;z-index:3}
+
+/* =============================================================
+   10. SPOTLIGHT
+   ============================================================= */
+.lo-spotlight{background:radial-gradient(circle at 50% 45%,var(--surface),var(--bg) 70%);
+  display:grid;place-items:center}
+.lo-spotlight .rings{position:absolute;left:50%;top:44%;width:1000px;height:1000px;margin:-500px 0 0 -500px}
+.lo-spotlight .rings i{position:absolute;inset:0;border-radius:50%;border:2px solid var(--line)}
+.lo-spotlight .rings i:nth-child(2){inset:80px;border-color:color-mix(in srgb,var(--accent) 45%,transparent);border-style:dashed}
+.lo-spotlight .rings i:nth-child(3){inset:170px;border-color:color-mix(in srgb,var(--accent-2) 35%,transparent)}
+.lo-spotlight .orb{position:absolute;left:50%;top:44%;width:520px;height:520px;margin:-260px 0 0 -260px;
+  border-radius:50%;overflow:hidden;box-shadow:var(--glow-accent),var(--shadow);border:6px solid var(--accent)}
+.lo-spotlight .orb video,.lo-spotlight .orb .clipfallback{width:100%;height:100%;object-fit:cover}
+.lo-spotlight h1{position:absolute;left:0;right:0;top:78%;text-align:center;font-size:104px}
+.lo-spotlight .kicker{position:absolute;left:0;right:0;top:73%;text-align:center;font-size:26px}
+.lo-spotlight .surl{position:absolute;left:0;right:0;bottom:70px;text-align:center;font-size:30px;color:var(--ink-dim)}
+.lo-spotlight .op{position:absolute;padding:16px 30px;border-radius:99px;background:var(--chip);
+  border:var(--border-w) solid var(--line);font-size:26px;font-weight:600;white-space:nowrap}
+.lo-spotlight .o1{left:180px;top:230px}
+.lo-spotlight .o2{right:180px;top:300px}
+.lo-spotlight .o3{left:220px;bottom:330px}
+.lo-spotlight .o4{right:200px;bottom:280px}
+
+/* =============================================================
+   11. SIDEBAR
+   ============================================================= */
+.lo-sidebar{background:var(--bg);display:flex}
+.lo-sidebar .rail{width:620px;flex:0 0 620px;height:100%;padding:60px 50px;background:var(--surface);
+  border-right:2px solid var(--accent);display:flex;flex-direction:column;gap:22px;overflow:hidden}
+.lo-sidebar .rtop{display:flex;align-items:center;gap:14px}
+.lo-sidebar h1{font-size:62px}
+.lo-sidebar .handle{font-size:26px;color:var(--ink-dim)}
+.lo-sidebar .rstats{display:flex;flex-direction:column;gap:0;margin-top:6px}
+.lo-sidebar .rstats .stat{border-left:0;border-top:var(--border-w) solid var(--line);
+  text-align:left;padding:20px 0;display:flex;align-items:baseline;justify-content:space-between}
+.lo-sidebar .rstats .stat-l{margin:0;order:-1}
+.lo-sidebar .rstats .stat-v{font-size:40px}
+.lo-sidebar .cta{margin-top:auto}
+.lo-sidebar .rurl{text-align:center;font-size:24px;color:var(--ink-dim)}
+.lo-sidebar .sclip{position:absolute;left:620px;top:0;right:0;height:100%;overflow:hidden}
+.lo-sidebar .clipbar{position:absolute;left:0;right:0;bottom:0;padding:36px 50px;
+  background:linear-gradient(0deg,rgba(0,0,0,.92),transparent)}
+
+/* =============================================================
+   12. TRADING CARD
+   ============================================================= */
+.lo-tcard{background:radial-gradient(circle at 50% 45%,var(--surface),var(--bg) 72%);display:grid;place-items:center}
+.lo-tcard .circle{position:absolute;left:50%;top:50%;width:1050px;height:1050px;margin:-525px 0 0 -525px;
+  border-radius:50%;border:2px solid color-mix(in srgb,var(--accent-3) 32%,transparent)}
+.lo-tcard .tcwrap{width:820px;height:940px;perspective:1600px}
+.lo-tcard .tcinner{width:100%;height:100%;transform-style:preserve-3d}
+.lo-tcard .tc{position:absolute;inset:0;border-radius:var(--radius);border:6px solid var(--accent-3);
+  background:linear-gradient(165deg,var(--surface),var(--surface-2));box-shadow:var(--shadow),var(--glow-accent);
+  padding:26px;display:flex;flex-direction:column}
+.lo-tcard .tchead{text-align:center;padding:12px 0 18px;border-bottom:3px double var(--line)}
+.lo-tcard .tchead .kicker{font-size:19px}
+.lo-tcard h1{font-size:60px;margin-top:8px}
+.lo-tcard .tcart{margin:20px 4px 0;height:390px;border:5px solid var(--accent-3);border-radius:var(--radius-sm);
+  overflow:hidden;box-shadow:inset 0 0 36px rgba(0,0,0,.7)}
+.lo-tcard .tctype{margin:20px 4px 0;font-size:28px;font-weight:700;font-style:italic;text-align:center;
+  color:var(--ink-dim);border-bottom:var(--border-w) solid var(--line);padding-bottom:12px;
+  display:flex;align-items:center;justify-content:center;gap:12px}
+.lo-tcard .tcrules{margin:18px 8px 0;font-size:26px;line-height:1.5;color:var(--ink)}
+.lo-tcard .tcrules p{margin:0 0 12px}
+.lo-tcard .flavour{font-style:italic;color:var(--ink-dim)}
+.lo-tcard .tcfoot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;
+  font-size:22px;font-weight:700;letter-spacing:.16em;color:var(--ink-dim)}
+.lo-tcard .pt{font-family:var(--font-display);font-size:44px;color:var(--ink);
+  border:3px solid var(--accent-3);border-radius:var(--radius-sm);padding:2px 20px;letter-spacing:0}
+.lo-tcard .tcside{position:absolute;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;
+  font-size:30px;font-weight:700;letter-spacing:.5em;text-transform:uppercase}
+.lo-tcard .tcside.l{left:130px;color:color-mix(in srgb,var(--accent-3) 70%,transparent)}
+.lo-tcard .tcside.r{right:130px;color:color-mix(in srgb,var(--accent-2) 70%,transparent)}
+
+/* =============================================================
+   13. SCOREBOARD
+   ============================================================= */
+.lo-score .sb{position:absolute;left:0;bottom:150px;display:flex;align-items:stretch;height:170px;
+  box-shadow:var(--shadow)}
+.lo-score .sbav{width:170px;display:grid;place-items:center;background:var(--accent)}
+.lo-score .sbnm{background:var(--surface);padding:0 44px;display:flex;flex-direction:column;justify-content:center}
+.lo-score .sbnm .kicker{font-size:16px}
+.lo-score h1{font-size:64px;margin-top:6px}
+.lo-score .sbnums{display:flex;background:var(--surface-2)}
+.lo-score .sbn{padding:0 44px;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  border-left:var(--border-w) solid var(--line)}
+.lo-score .sbn b{font-family:var(--font-display);font-size:52px;line-height:1;color:var(--accent)}
+.lo-score .sbn span{font-size:16px;letter-spacing:.22em;color:var(--ink-dim);margin-top:10px}
+.lo-score .sbcap{width:110px;display:grid;place-items:center;background:var(--accent-3)}
+.lo-score .sbcap .motif{color:var(--accent-ink);width:48px;height:48px}
+.lo-score .sbstrip{position:absolute;left:0;bottom:96px;height:54px;display:flex;align-items:center;gap:40px;
+  padding:0 40px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);
+  font-size:24px;color:var(--ink-dim);max-width:100%;white-space:nowrap;overflow:hidden}
+
+/* =============================================================
+   14. MAGAZINE
+   ============================================================= */
+.lo-mag .masthead{position:absolute;left:var(--pad);top:50px;font-family:var(--font-display);
+  font-size:64px;font-weight:var(--weight-display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.lo-mag .magbody{position:absolute;left:var(--pad);bottom:90px;width:1100px}
+.lo-mag .issue{font-size:22px;letter-spacing:.3em;color:var(--accent-3);text-transform:uppercase}
+.lo-mag h1{font-size:130px;margin-top:14px;line-height:.92}
+.lo-mag .pull{font-size:38px;line-height:1.4;font-style:italic;color:var(--ink);margin:28px 0 0;max-width:900px}
+.lo-mag .lines{margin-top:34px;display:flex;flex-direction:column;gap:12px}
+.lo-mag .cl{font-size:26px;color:var(--ink-dim);border-left:4px solid var(--accent);padding-left:18px}
+.lo-mag .cl b{color:var(--accent);letter-spacing:.16em;margin-right:12px}
+.lo-mag .magurl{margin-top:28px;font-size:28px;color:var(--ink)}
+
+/* =============================================================
+   15. NEON
+   ============================================================= */
+.lo-neon{background:#05050a}
+.lo-neon .nbg{position:absolute;inset:0;opacity:.5;filter:saturate(1.3)}
+.lo-neon .nglass{position:absolute;inset:0;backdrop-filter:blur(6px);background:rgba(5,5,12,.5)}
+.lo-neon .nwrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
+.lo-neon .ntube h1{font-size:130px;color:#fff;
+  text-shadow:0 0 8px #fff,0 0 22px var(--accent),0 0 54px var(--accent),0 0 100px var(--accent)}
+.lo-neon .nsub{font-size:30px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent-2);
+  text-shadow:0 0 20px var(--accent-2)}
+.lo-neon .nchips{display:flex;gap:16px;margin-top:10px}
+.lo-neon .nchips .chip{background:rgba(0,0,0,.5);border-color:color-mix(in srgb,var(--accent) 60%,transparent);
+  box-shadow:0 0 20px color-mix(in srgb,var(--accent) 35%,transparent)}
+.lo-neon .nurl{font-size:28px;color:var(--ink-dim);margin-top:14px}
+.lo-neon .nav{position:absolute;left:50%;top:150px;transform:translateX(-50%)}
+
+/* =============================================================
+   16. RECEIPT
+   ============================================================= */
+.lo-receipt{background:var(--bg)}
+.lo-receipt .rbg{position:absolute;inset:0;opacity:.25;filter:blur(20px)}
+.lo-receipt .rpaper{position:absolute;left:150px;top:60px;width:620px;padding:50px 46px 40px;
+  background:#f4f1e8;color:#14110c;box-shadow:var(--shadow);font-family:var(--font-body);
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),96% 100%,92% calc(100% - 14px),88% 100%,84% calc(100% - 14px),
+    80% 100%,76% calc(100% - 14px),72% 100%,68% calc(100% - 14px),64% 100%,60% calc(100% - 14px),56% 100%,
+    52% calc(100% - 14px),48% 100%,44% calc(100% - 14px),40% 100%,36% calc(100% - 14px),32% 100%,
+    28% calc(100% - 14px),24% 100%,20% calc(100% - 14px),16% 100%,12% calc(100% - 14px),8% 100%,4% calc(100% - 14px),0 100%)}
+.lo-receipt .rhead{text-align:center;font-size:30px;font-weight:800;letter-spacing:.2em;line-height:1.4}
+.lo-receipt .rhead span{font-size:20px;font-weight:600;letter-spacing:.32em}
+.lo-receipt .rdiv{border-top:2px dashed #b9b2a0;margin:22px 0}
+.lo-receipt .ritem{display:flex;justify-content:space-between;gap:20px;font-size:23px;line-height:1.9;letter-spacing:.04em}
+.lo-receipt .ritem.big{font-size:40px;font-weight:800;justify-content:center;letter-spacing:0}
+.lo-receipt .ritem.total{font-size:28px;font-weight:800}
+.lo-receipt .rfoot{text-align:center;font-size:21px;line-height:1.7;margin-top:8px}
+.lo-receipt .barcode{height:64px;margin-top:20px;
+  background:repeating-linear-gradient(90deg,#14110c 0 3px,transparent 3px 6px,#14110c 6px 8px,transparent 8px 14px)}
+.lo-receipt .rclip{position:absolute;right:120px;top:170px;width:940px;height:529px;overflow:hidden;
+  border-radius:var(--radius);box-shadow:var(--shadow),0 0 0 var(--border-w) var(--line)}
+
+/* =============================================================
+   17. HUD
+   ============================================================= */
+.lo-hud .brk{position:absolute;width:120px;height:120px;border:4px solid var(--accent)}
+.lo-hud .brk.tl{left:50px;top:50px;border-right:0;border-bottom:0}
+.lo-hud .brk.tr{right:50px;top:50px;border-left:0;border-bottom:0}
+.lo-hud .brk.bl{left:50px;bottom:50px;border-right:0;border-top:0}
+.lo-hud .brk.br{right:50px;bottom:50px;border-left:0;border-top:0}
+.lo-hud .hudtop{position:absolute;left:0;right:0;top:0;padding:80px var(--pad) 0;display:flex;align-items:center;gap:18px;
+  font-size:24px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--accent)}
+.lo-hud .hudmain{position:absolute;left:var(--pad);bottom:200px;display:flex;align-items:center;gap:34px;
+  padding:30px 44px;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(12px);
+  border-left:5px solid var(--accent);border-radius:var(--radius-sm)}
+.lo-hud h1{font-size:70px}
+.lo-hud .hbars{margin-top:20px;display:flex;flex-direction:column;gap:12px;width:700px}
+.lo-hud .hb{display:flex;align-items:center;gap:18px;font-size:18px;letter-spacing:.2em;color:var(--ink-dim)}
+.lo-hud .hb span{width:180px;flex:0 0 180px;text-transform:uppercase}
+.lo-hud .hb i{flex:1;height:14px;background:var(--chip);border:var(--border-w) solid var(--line);position:relative}
+.lo-hud .hb i::after{content:'';position:absolute;left:0;top:0;bottom:0;width:calc(var(--p)*100%);
+  background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.lo-hud .hb b{font-size:24px;color:var(--ink);width:130px;text-align:right}
+.lo-hud .hudbot{position:absolute;left:var(--pad);bottom:120px;font-size:24px;letter-spacing:.14em;
+  color:var(--ink-dim);text-transform:uppercase}
+
+/* =============================================================
+   18. SCROLL
+   ============================================================= */
+.lo-scroll .crest{position:absolute;left:80px;top:70px;display:flex;align-items:center;gap:22px}
+.lo-scroll .crest .kicker{font-size:17px}
+.lo-scroll .crest .sub{font-size:26px;color:var(--ink);margin-top:6px}
+.lo-scroll .scrollwrap{position:absolute;left:150px;bottom:110px;width:1620px;height:300px}
+.lo-scroll .roll{position:absolute;top:-24px;width:74px;height:348px;border-radius:37px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--accent-3) 30%,#000),var(--accent-3) 45%,
+    color-mix(in srgb,var(--accent-3) 45%,#000));box-shadow:var(--shadow)}
+.lo-scroll .roll.l{left:0}.lo-scroll .roll.r{right:0}
+.lo-scroll .parch{position:absolute;left:60px;right:60px;top:0;height:100%;overflow:hidden;
+  background:var(--surface);border-top:2px solid var(--accent-3);border-bottom:2px solid var(--accent-3);
+  transform-origin:center}
+.lo-scroll .pinner{position:absolute;inset:0;padding:44px 80px}
+.lo-scroll h1{font-size:74px;margin-top:14px}
+.lo-scroll .smeta{font-size:30px;color:var(--ink-dim);margin-top:16px}
+
+/* =============================================================
+   19. BUG
+   ============================================================= */
+.lo-bug{background:transparent}
+.lo-bug .bugbox{position:absolute;right:60px;bottom:60px;display:flex;align-items:center;gap:22px;
+  padding:22px 30px;border-radius:var(--radius);background:color-mix(in srgb,var(--surface) 92%,transparent);
+  border:var(--border-w) solid var(--line);backdrop-filter:blur(14px);box-shadow:var(--shadow);max-width:900px}
+.lo-bug .kicker{font-size:15px}
+.lo-bug h1{font-size:44px;margin-top:4px}
+.lo-bug .bugmeta{font-size:20px;color:var(--ink-dim);margin-top:8px}
+.lo-bug .bugbar{position:absolute;right:60px;bottom:60px;width:0;height:4px}
+
+/* =============================================================
+   20. FILMSTRIP
+   ============================================================= */
+.lo-film{background:#050505}
+.lo-film .fbg{position:absolute;inset:0;opacity:.28;filter:blur(26px) saturate(1.2)}
+.lo-film .fstrip{position:absolute;left:0;top:120px;width:100%;background:#111;padding:0}
+.lo-film .sprock{height:46px;background:repeating-linear-gradient(90deg,
+  transparent 0 26px,#000 26px 30px,transparent 30px 34px,#3a3a3a 34px 60px);
+  background-color:#141414;
+  position:relative}
+.lo-film .sprock::after{content:'';position:absolute;inset:12px 0;
+  background:repeating-linear-gradient(90deg,#f2f2f2 0 34px,transparent 34px 90px);
+  border-radius:4px;opacity:.85}
+.lo-film .fframe{height:520px;overflow:hidden;border-top:3px solid #000;border-bottom:3px solid #000}
+.lo-film .fcred{position:absolute;left:var(--pad);bottom:90px;right:var(--pad)}
+.lo-film h1{font-size:96px;margin-top:12px}
+.lo-film .frow{display:flex;gap:44px;margin-top:24px;font-size:24px;color:var(--ink-dim);
+  letter-spacing:.1em;text-transform:uppercase}
+.lo-film .frow b{color:var(--accent);margin-right:10px}
+.lo-film .furl{margin-top:20px;font-size:26px;color:var(--ink)}
+
+/* =============================================================
+   DEMO CLIP — stand-in animation used by the builder preview
+   ============================================================= */
+.clipwrap{position:absolute;inset:0;overflow:hidden}
+.clipwrap:not(.fill){position:relative;width:100%;height:100%}
+.democlip{position:absolute;inset:0;overflow:hidden;background:#0d1b2a}
+.democlip i{display:block;position:absolute}
+.democlip .sky{inset:0;background:linear-gradient(170deg,#7fc4e8 0%,#bfe3f2 38%,#f6d9a0 70%,#7bb661 70%,#4e8f45 100%)}
+.democlip .hills{bottom:32%;left:0;width:200%;height:22%;opacity:.9;
+  background:repeating-linear-gradient(110deg,#5d9c52 0 90px,#6faa5e 90px 180px);
+  clip-path:polygon(0 60%,10% 20%,20% 55%,32% 12%,44% 50%,56% 18%,68% 52%,80% 22%,92% 56%,100% 30%,100% 100%,0 100%);
+  animation:dscroll 9s linear infinite}
+.democlip .road{bottom:0;left:-10%;width:120%;height:34%;
+  background:linear-gradient(180deg,#4a4a52,#2c2c33);transform:perspective(400px) rotateX(38deg);transform-origin:bottom}
+.democlip .dash{bottom:6%;left:0;width:200%;height:8px;
+  background:repeating-linear-gradient(90deg,#f2f2f2 0 70px,transparent 70px 150px);animation:dscroll 1.6s linear infinite}
+@keyframes dscroll{to{transform:translateX(-50%)}}
+.democlip .rider{bottom:16%;left:44%;width:120px;height:150px;
+  background:linear-gradient(180deg,#ff5f2e,#c93a12);
+  clip-path:polygon(30% 0,70% 6%,88% 46%,66% 100%,26% 96%,8% 44%);
+  animation:dbob .5s ease-in-out infinite alternate}
+@keyframes dbob{to{transform:translateY(-8px)}}
+.democlip .grain{inset:0;opacity:.07;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:4px 4px}
+.democlip .hud{top:40px;left:48px;width:auto;font:700 26px/1.5 system-ui;color:#fff;
+  text-shadow:0 2px 6px rgba(0,0,0,.6);white-space:nowrap}
+.circle .democlip,.clipwrap.circle{border-radius:50%}
+
+/* =============================================================
+   FIXES — text over media, overflow, collisions
+   ============================================================= */
+
+/* demo HUD readout must not collide with layout chrome */
+.democlip .hud{display:none}
+.lo-deck .democlip .hud,.lo-dossier .inset .democlip .hud,
+.lo-polaroid .democlip .hud,.lo-receipt .democlip .hud,
+.lo-terminal .democlip .hud,.lo-card .democlip .hud{display:block;font-size:20px;top:20px;left:24px}
+
+/* ---- anything sitting directly on video uses --on-media ---- */
+.lo-banner .topstrip,.lo-banner .topstrip .ct,.lo-banner .topstrip .cm,
+.lo-cine .cname h1,.lo-cine .cmeta,.lo-cine .mark .sub,
+.lo-mag .masthead,.lo-mag h1,.lo-mag .pull,.lo-mag .cl,.lo-mag .magurl,.lo-mag .issue,
+.lo-hud .hudbot,.lo-hud .hudtop,
+.lo-score .sbstrip,
+.lo-scroll .crest .sub,
+.lo-film .fcred h1,.lo-film .furl,.lo-film .frow,
+.lo-sidebar .clipbar .ct,.lo-sidebar .clipbar .cm,
+.lo-deck .clipbar .ct,.lo-deck .clipbar .cm{color:var(--on-media)}
+
+.lo-banner .topstrip .cm,.lo-cine .cmeta,.lo-cine .mark .sub,
+.lo-mag .cl,.lo-hud .hudbot,.lo-score .sbstrip,
+.lo-film .frow,.lo-sidebar .clipbar .cm,.lo-deck .clipbar .cm{color:var(--on-media-dim)}
+
+.lo-mag .cl b,.lo-film .frow b,.lo-mag .issue{color:var(--on-media-acc)}
+.lo-cine .line{background:linear-gradient(90deg,var(--on-media),transparent)}
+
+/* magazine: readable regardless of skin, and keep off the right edge */
+.lo-mag .scrim-l{background:linear-gradient(90deg,rgba(6,5,10,.94) 0%,rgba(6,5,10,.72) 38%,transparent 72%)}
+.lo-mag .magbody{width:1040px}
+.lo-mag h1{font-size:112px}
+.lo-mag .pull{font-size:34px;max-width:960px}
+
+/* magazine masthead needs its own contrast plate */
+.lo-mag .masthead{text-shadow:0 2px 24px rgba(0,0,0,.9)}
+
+/* cinematic: name block must not clip descenders */
+.lo-cine .cname{height:130px;bottom:172px}
+.lo-cine h1{font-size:92px;line-height:1.18}
+
+/* banner: top strip can overflow with long clip titles */
+.lo-banner .topstrip{flex-wrap:nowrap;overflow:hidden}
+.lo-banner .topstrip .ct{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:900px;flex:0 1 auto}
+.lo-banner .topstrip .cm{white-space:nowrap;flex:0 0 auto}
+.lo-banner .bio{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.lo-banner .stats{flex:0 0 auto}
+
+/* scoreboard: cap width so it can't run off frame */
+.lo-score .sb{max-width:1500px}
+.lo-score .sbnm{max-width:620px}
+.lo-score .sbnm h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lo-score .sbstrip{background:rgba(6,6,12,.88)}
+
+/* hud: bar labels were cramped */
+.lo-hud .hb span{width:200px;flex:0 0 200px;font-size:17px}
+.lo-hud .hb b{width:150px}
+.lo-hud .hudbot{background:rgba(6,6,12,.7);padding:12px 22px;border-radius:var(--radius-sm);
+  display:inline-block;backdrop-filter:blur(6px)}
+.lo-hud .hudtop{text-shadow:0 2px 12px rgba(0,0,0,.9)}
+
+/* filmstrip: credits need a plate over bright footage */
+.lo-film .fcred{background:linear-gradient(0deg,rgba(4,4,6,.94),transparent);
+  padding:60px var(--pad) 0;left:0;right:0;bottom:0}
+.lo-film h1{font-size:88px}
+
+/* scroll: parchment surface must stay light-on-dark aware */
+.lo-scroll .crest .kicker{text-shadow:0 2px 10px rgba(0,0,0,.9)}
+.lo-scroll .crest .sub{text-shadow:0 2px 10px rgba(0,0,0,.9)}
+
+/* trading card: long bios overflowed the card */
+.lo-tcard .tcrules{overflow:hidden;max-height:210px}
+.lo-tcard .tcrules p{overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.lo-tcard h1{font-size:54px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* spotlight: orbit chips collided with the ring on narrow names */
+.lo-spotlight .op{background:rgba(8,8,14,.82);color:var(--on-media);
+  border-color:rgba(255,255,255,.18);backdrop-filter:blur(8px)}
+.lo-spotlight h1{color:var(--ink)}
+
+/* sidebar / deck clip captions get a gradient plate already; ensure clamp */
+.lo-sidebar .clipbar .ct,.lo-deck .clipbar .ct{overflow:hidden;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* bug: guarantee it is visible on light skins too */
+.lo-bug .bugbox{background:rgba(10,10,18,.9);border-color:rgba(255,255,255,.16)}
+.lo-bug h1,.lo-bug .bugmeta{color:#fff}
+.lo-bug .bugmeta{color:rgba(255,255,255,.72)}
+
+/* ticker: clamp long titles */
+.lo-ticker .rv{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:760px}
+.lo-ticker h1{white-space:nowrap}
+
+/* glass: long names */
+.lo-glass h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:1400px}
+
+/* kinetic: very long names must wrap not overflow */
+.lo-kinetic h1{font-size:clamp(70px,11vw,132px)}
+
+/* receipt: keep paper clear of frame edge */
+.lo-receipt .rpaper{top:50px;max-height:980px;overflow:hidden}
+
+/* universal: never let a name run out of frame */
+.lo h1{overflow-wrap:anywhere}
+
+/* demo-only backdrop so transparent layouts (Corner Bug) read correctly
+   in the builder preview. Never applies with real credentials. */
+body.demo:not(.nodemobg) .lo-bug::before{content:'';position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(170deg,#7fc4e8 0%,#bfe3f2 38%,#f6d9a0 70%,#7bb661 70%,#4e8f45 100%)}
+body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layout is transparent in OBS';
+  position:absolute;left:60px;top:60px;font:600 22px system-ui;letter-spacing:.1em;
+  color:rgba(0,0,0,.42);text-transform:uppercase}
+
+/* terminal: content must fit inside the 920px window */
+.lo-terminal .twin{height:auto;max-height:940px;top:70px}
+.lo-terminal .tbody{padding:26px 40px;font-size:25px;line-height:1.42}
+.lo-terminal .tpane{height:330px;margin:14px 0}
+.lo-terminal .tav{top:120px;right:150px}
+
+/* cinematic: top mark was washing out over bright footage */
+.lo-cine .mark{background:rgba(6,6,10,.6);padding:14px 24px 14px 14px;border-radius:99px;
+  backdrop-filter:blur(8px)}
+.lo-cine .mark .kicker{color:var(--on-media-acc)}
+
+/* terminal v2: two columns — log left, clip pane right. Always fits. */
+.lo-terminal .twin{top:90px;height:900px;max-height:900px}
+.lo-terminal .tbody{display:grid;grid-template-columns:1fr 700px;gap:28px 34px;
+  align-content:start;padding:30px 40px;font-size:24px;line-height:1.5;height:840px;overflow:hidden}
+.lo-terminal .tl{grid-column:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lo-terminal .tpane{grid-column:2;grid-row:1 / span 8;align-self:start;
+  width:700px;height:394px;margin:0}
+.lo-terminal .twin{height:auto;max-height:940px}
+.lo-terminal .tbody{height:auto;padding-bottom:40px}
+.lo-terminal .tpane{grid-row:1 / span 9}
+
+/* profile-image fallback: contain + blurred fill behind, never a stretched blob */
+.clipfallback{background-size:cover;background-position:center;position:relative}
+.clipfallback::before{content:'';position:absolute;inset:0;
+  background-image:inherit;background-size:cover;background-position:center;
+  filter:blur(38px) saturate(1.3) brightness(.55);transform:scale(1.15)}
+.clipfallback::after{content:'';position:absolute;inset:0;
+  background-image:inherit;background-size:contain;background-repeat:no-repeat;
+  background-position:center}
+
+/* scroll: keep both rollers inside frame and centre the parchment */
+.lo-scroll .scrollwrap{left:150px;right:150px;width:auto}
+.lo-scroll .parch{left:37px;right:37px}
+.lo-scroll .roll.l{left:0}
+.lo-scroll .roll.r{right:0;left:auto}
+
+/* banner: name must never wrap — give it room and let the bio flex instead */
+.lo-banner .bandmain{flex:1 1 auto;min-width:0;overflow:hidden}
+.lo-banner .row{flex-wrap:nowrap;align-items:baseline;gap:16px}
+.lo-banner .row h1{white-space:nowrap;flex:0 0 auto;max-width:760px;
+  overflow:hidden;text-overflow:ellipsis}
+.lo-banner .url{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto;min-width:0}
+.lo-banner .badge{flex:0 0 auto}
+.lo-banner .stats{flex:0 0 auto;margin-left:auto}
+.lo-banner .stat{padding:0 30px}
+.lo-banner .stat-v{white-space:nowrap}
+/* banner: give the url its natural width, let bio absorb the squeeze */
+.lo-banner .url{flex:0 0 auto;max-width:none;overflow:visible}
+.lo-banner .bandmain{margin-right:20px}
+
+/* =============================================================
+   CLIP CREDIT — title / clipped by / date. Present in every layout.
+   ============================================================= */
+.credit{min-width:0}
+.credit b{display:block;font-weight:700;color:var(--ink);line-height:1.25;
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.credit span{display:block;color:var(--ink-dim);margin-top:6px}
+.credit i{font-style:normal;color:var(--accent)}
+.credit.stack b{font-size:30px}
+.credit.stack span{font-size:22px}
+.credit.line b{font-size:26px}
+.credit.line span{font-size:20px}
+.credit.micro b{font-size:21px;-webkit-line-clamp:1}
+.credit.micro span{font-size:17px;margin-top:3px}
+
+/* credits sitting over footage need the media ink */
+.lo-glass .gcredit,.lo-neon .ncredit,.lo-film .fcredit,
+.lo-spotlight .scredit,.lo-cine .ccredit{color:var(--on-media)}
+.lo-glass .gcredit .credit b,.lo-neon .ncredit .credit b,
+.lo-film .fcredit .credit b,.lo-spotlight .scredit .credit b{color:var(--on-media)}
+.lo-glass .gcredit .credit span,.lo-neon .ncredit .credit span,
+.lo-film .fcredit .credit span,.lo-spotlight .scredit .credit span{color:var(--on-media-dim)}
+
+.lo-glass .gcredit{position:absolute;left:334px;bottom:40px;right:80px}
+.lo-neon .ncredit{text-align:center;margin-top:10px}
+.lo-neon .ncredit .credit b{font-size:24px}
+.lo-spotlight .scredit{position:absolute;left:0;right:0;bottom:118px;text-align:center}
+.lo-film .fcredit{margin-top:14px}
+.lo-cine .ccredit{position:absolute;left:var(--pad);bottom:104px;font-size:21px;
+  color:var(--on-media-dim)}
+.lo-cine .ccredit b{color:var(--on-media)}
+.lo-kinetic .credit.stack{margin-top:18px}
+.lo-polaroid .credit.micro{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.lo-tcard .credit.micro{margin:10px 0}
+.lo-scroll .credit.micro{margin-top:10px}
+.lo-bug .credit.micro{margin-top:8px}
+.lo-bug .credit.micro b{color:#fff;font-size:18px}
+.lo-bug .credit.micro span{color:rgba(255,255,255,.66);font-size:15px}
+.lo-receipt .ritem.wrap{display:block}
+.lo-receipt .ritem.wrap span:last-child{display:block;text-align:right;font-weight:700;
+  white-space:normal;line-height:1.35;margin-top:2px}
+.lo-hud .hudbot{max-width:1700px;white-space:normal;line-height:1.5}
+.lo-score .sbstrip b{color:var(--on-media)}
+
+/* =============================================================
+   GENERATED LAYOUTS — composed by layoutgen.js
+   ============================================================= */
+.lo-gen{background:var(--bg)}
+
+/* ---- ornaments ---- */
+.ornwrap{position:absolute;color:var(--accent);pointer-events:none;z-index:0}
+.ornwrap .orn{width:100%;height:100%;display:block}
+.ornwrap.behind{left:50%;top:50%;width:1150px;height:1150px;margin:-575px 0 0 -575px;opacity:.13}
+.ornwrap.corner{right:70px;top:70px;width:240px;height:240px;opacity:.5}
+.ornwrap.flank{top:50%;width:420px;height:420px;margin-top:-210px;opacity:.16}
+.ornwrap.flank.l{left:-110px}
+.ornwrap.flank.r{right:-110px}
+.ornwrap.orbit{left:50%;top:50%;width:1500px;height:1500px;margin:-750px 0 0 -750px;opacity:.1}
+.playing .spin-slow{animation:ospin 22s linear infinite;transform-origin:50% 50%}
+.playing .spin-rev{animation:ospin 26s linear infinite reverse;transform-origin:50% 50%}
+@keyframes ospin{to{transform:rotate(360deg)}}
+/* chain / mountain are strips, not discs — don't rotate them */
+.lo-gen .ornwrap .orn[viewBox="0 0 240 40"],
+.lo-gen .ornwrap .orn[viewBox="0 0 120 60"]{animation:none!important}
+.ornwrap.behind .orn[viewBox="0 0 240 40"],
+.ornwrap.behind .orn[viewBox="0 0 120 60"]{height:auto}
+
+/* ---- frames ---- */
+.lo-gen .gframe{position:absolute;overflow:hidden;z-index:1;background:#000}
+.lo-gen .gframe.fullbleed{inset:0;background:none}
+.lo-gen .gframe.window{left:50%;top:120px;width:1180px;height:664px;margin-left:-590px;
+  border-radius:var(--radius);box-shadow:var(--shadow),0 0 0 var(--border-w) var(--line)}
+.lo-gen .gframe.split{top:0;bottom:0;width:960px;height:1080px}
+.lo-gen .gframe.split.onleft{left:0}
+.lo-gen .gframe.split.onright{right:0}
+.lo-gen .gframe.circle{left:50%;top:150px;width:620px;height:620px;margin-left:-310px;
+  border-radius:50%;border:8px solid var(--accent);box-shadow:var(--glow-accent),var(--shadow)}
+.lo-gen .gframe.strip{left:0;right:0;top:150px;height:560px;width:100%;
+  border-top:3px solid var(--accent);border-bottom:3px solid var(--accent)}
+.lo-gen .gframe.card{left:50%;top:110px;width:1000px;height:562px;margin-left:-500px;
+  border-radius:var(--radius);box-shadow:var(--shadow);border:var(--border-w) solid var(--line)}
+.lo-gen .gframe video,.lo-gen .gframe .clipwrap,.lo-gen .gframe .clipfallback,
+.lo-gen .gframe .democlip{width:100%;height:100%;object-fit:cover}
+
+/* ---- info block ---- */
+.lo-gen .ginfo{position:absolute;z-index:3;display:flex;flex-direction:column;gap:18px;min-width:0}
+.lo-gen .gid{display:flex;align-items:center;gap:24px;min-width:0}
+.lo-gen .gidtext{min-width:0;flex:1}
+.lo-gen .gname{display:flex;align-items:center;gap:14px;margin-top:8px;min-width:0}
+.lo-gen .gname h1{font-size:66px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lo-gen .gurl{font-size:24px;color:var(--ink-dim);margin-top:8px}
+.lo-gen .kicker{font-size:19px}
+.lo-gen .bio{font-size:25px;line-height:1.45;max-width:900px;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.lo-gen .gstats{display:flex;gap:0;flex-wrap:wrap}
+.lo-gen .gstats .stat{padding:0 30px}
+.lo-gen .gstats .stat-v{font-size:42px}
+.lo-gen .gcred{min-width:0}
+
+/* placement */
+.lo-gen .ginfo.at-bottom{left:70px;right:70px;bottom:70px}
+.lo-gen .ginfo.at-top{left:70px;right:70px;top:70px}
+.lo-gen .ginfo.at-left{left:60px;top:50%;transform:translateY(-50%);width:820px}
+.lo-gen .ginfo.at-right{right:60px;top:50%;transform:translateY(-50%);width:820px}
+.lo-gen .ginfo.at-centre{left:50%;bottom:80px;transform:translateX(-50%);
+  width:1300px;align-items:center;text-align:center}
+.lo-gen .ginfo.at-centre .gid{flex-direction:column;text-align:center}
+.lo-gen .ginfo.at-centre .gname{justify-content:center}
+.lo-gen .ginfo.at-corner{right:60px;bottom:60px;width:auto;max-width:820px}
+
+/* split frames must not sit under the clip */
+.lo-gen.f-split .ginfo.at-left{width:820px;left:60px}
+.lo-gen.f-split .ginfo.at-right{width:820px;right:60px}
+
+/* styles */
+.lo-gen .ginfo.band{background:linear-gradient(90deg,var(--surface),
+  color-mix(in srgb,var(--surface-2) 85%,transparent));backdrop-filter:blur(14px);
+  padding:34px 44px;border-radius:var(--radius)}
+.lo-gen .ginfo.panel{background:var(--surface);border:var(--border-w) solid var(--line);
+  padding:34px 40px;border-radius:var(--radius);box-shadow:var(--shadow)}
+.lo-gen .ginfo.stack{padding:0}
+.lo-gen .ginfo.rail{background:var(--surface);border:var(--border-w) solid var(--line);
+  padding:40px 36px;border-radius:var(--radius);box-shadow:var(--shadow)}
+.lo-gen .ginfo.sheet{background:color-mix(in srgb,var(--surface) 94%,transparent);
+  backdrop-filter:blur(18px);padding:44px 52px;border-radius:var(--radius);
+  box-shadow:var(--shadow);border:var(--border-w) solid var(--line)}
+.lo-gen .ginfo.chip{background:color-mix(in srgb,var(--surface) 92%,transparent);
+  backdrop-filter:blur(14px);padding:22px 30px;border-radius:var(--radius);
+  box-shadow:var(--shadow);border:var(--border-w) solid var(--line);gap:12px}
+.lo-gen .ginfo.chip .gname h1{font-size:40px}
+.lo-gen .ginfo.chip .gurl,.lo-gen .ginfo.chip .kicker{font-size:16px}
+.lo-gen .ginfo.chip .gstats{display:none}
+
+/* text over bare footage needs media ink */
+.lo-gen.f-fullbleed .ginfo.stack .gname h1,
+.lo-gen.f-fullbleed .ginfo.stack .bio{color:var(--on-media)}
+.lo-gen.f-fullbleed .ginfo.stack .gurl,
+.lo-gen.f-fullbleed .ginfo.stack .credit span{color:var(--on-media-dim)}
+.lo-gen.f-fullbleed .ginfo.stack .credit b{color:var(--on-media)}
+
+/* accent bars */
+.lo-gen .ginfo.bar-left{border-left:6px solid var(--accent);padding-left:34px}
+.lo-gen .ginfo.bar-top{border-top:5px solid var(--accent);padding-top:28px}
+.lo-gen .ginfo.bar-underline .gid{border-bottom:3px solid var(--accent);padding-bottom:18px}
+.lo-gen .ginfo.bar-frame{border:3px solid var(--accent)}
+
+/* ---- entrances ---- */
+.playing .lo-gen .ginfo{animation:genin .8s var(--ease) both}
+.playing .lo-gen .gframe{animation:genframe .8s var(--ease) both}
+.playing .lo-gen .ornwrap{animation:fade 1s ease-out both}
+@keyframes genin{from{opacity:0;transform:translateY(50px)}to{opacity:1}}
+@keyframes genframe{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+
+.playing .lo-gen.e-slide .ginfo{animation:genslide .8s var(--ease) both}
+@keyframes genslide{from{opacity:0;transform:translateX(-90px)}to{opacity:1}}
+.playing .lo-gen.e-slide .ginfo.at-right{animation:genslider .8s var(--ease) both}
+@keyframes genslider{from{opacity:0;transform:translateX(90px) translateY(-50%)}
+  to{opacity:1;transform:translateY(-50%)}}
+
+.playing .lo-gen.e-rise .ginfo{animation:genrise .85s var(--ease) both}
+@keyframes genrise{from{opacity:0;transform:translateY(110px)}to{opacity:1}}
+
+.playing .lo-gen.e-spin .gframe{animation:genspin 1s cubic-bezier(.2,1.05,.3,1) both}
+@keyframes genspin{from{opacity:0;transform:rotate(-18deg) scale(.7)}to{opacity:1;transform:none}}
+.playing .lo-gen.e-spin .ornwrap.behind .orn{animation:ospinin 1.4s cubic-bezier(.15,.9,.2,1) both,
+  ospin 22s linear 1.4s infinite}
+@keyframes ospinin{from{transform:rotate(-320deg) scale(.4);opacity:0}
+  to{transform:none;opacity:1}}
+
+.playing .lo-gen.e-wipe .gframe{animation:genwipe .9s cubic-bezier(.75,0,.2,1) both}
+@keyframes genwipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+
+.playing .lo-gen.e-pop .ginfo{animation:genpop .7s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes genpop{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:none}}
+.playing .lo-gen.e-pop .ginfo.at-left,
+.playing .lo-gen.e-pop .ginfo.at-right{animation:genpopv .7s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes genpopv{from{opacity:0;transform:scale(.82) translateY(-50%)}
+  to{opacity:1;transform:translateY(-50%)}}
+
+.playing .lo-gen.e-flip .gframe{animation:genflip 1s var(--ease) both}
+@keyframes genflip{from{opacity:0;transform:perspective(1400px) rotateY(-70deg)}
+  to{opacity:1;transform:none}}
+
+/* centre/corner variants keep their translate during animation */
+.playing .lo-gen .ginfo.at-centre{animation:gencentre .8s var(--ease) both}
+@keyframes gencentre{from{opacity:0;transform:translateX(-50%) translateY(50px)}
+  to{opacity:1;transform:translateX(-50%)}}
+.playing .lo-gen .ginfo.at-left,
+.playing .lo-gen .ginfo.at-right{animation:genside .8s var(--ease) both}
+@keyframes genside{from{opacity:0;transform:translateY(-50%) translateX(-60px)}
+  to{opacity:1;transform:translateY(-50%)}}
+
+/* ---- GEN FIXES: ornament containment + no overlap ---- */
+/* the behind-cog was bleeding off frame; keep it fully visible and centred
+   on the clip, not the canvas */
+.lo-gen .ornwrap.behind{width:900px;height:900px;margin:-450px 0 0 -450px;top:44%;opacity:.14}
+.lo-gen.f-circle .ornwrap.behind{top:min(41%,460px);width:820px;height:820px;margin:-410px 0 0 -410px}
+.lo-gen.f-split .ornwrap.behind{left:auto;right:480px;margin-left:0}
+.lo-gen.f-split.p-right .ornwrap.behind{left:480px;right:auto}
+.lo-gen.f-window .ornwrap.behind,.lo-gen.f-card .ornwrap.behind{top:42%}
+.lo-gen.f-strip .ornwrap.behind{top:40%;width:760px;height:760px;margin:-380px 0 0 -380px}
+
+/* info must never sit on top of the clip frame */
+.lo-gen.f-window .ginfo.at-bottom{bottom:60px}
+.lo-gen.f-window .ginfo.at-right,.lo-gen.f-window .ginfo.at-left{
+  top:auto;bottom:60px;transform:none;width:760px}
+.lo-gen.f-card .ginfo.at-right,.lo-gen.f-card .ginfo.at-left{
+  top:auto;bottom:60px;transform:none;width:760px}
+.lo-gen.f-circle .ginfo.at-bottom{bottom:60px}
+.lo-gen.f-strip .ginfo.at-bottom{bottom:60px}
+.lo-gen.f-split .ginfo.at-left{left:60px;width:820px}
+.lo-gen.f-split .ginfo.at-right{right:60px;width:820px}
+
+/* when info is pinned bottom and the frame is fullbleed, cap its height */
+.lo-gen .ginfo{max-height:calc(100% - 120px);overflow:hidden}
+
+/* window/card frames shift up so the bottom info has room */
+.lo-gen.f-window .gframe.window{top:90px;height:600px}
+.lo-gen.f-card .gframe.card{top:80px}
+.lo-gen.f-circle .gframe.circle{top:110px;width:560px;height:560px;margin-left:-280px}
+.lo-gen.f-strip .gframe.strip{top:120px;height:520px}
+
+/* side-by-side: window/card + side info -> put info beside, not below */
+.lo-gen.f-window.p-right .gframe.window,
+.lo-gen.f-card.p-right .gframe.card{left:60px;margin-left:0;width:1020px}
+.lo-gen.f-window.p-right .ginfo.at-right,
+.lo-gen.f-card.p-right .ginfo.at-right{right:60px;top:50%;transform:translateY(-50%);
+  bottom:auto;width:700px}
+.lo-gen.f-window.p-left .gframe.window,
+.lo-gen.f-card.p-left .gframe.card{right:60px;left:auto;margin-left:0;width:1020px}
+.lo-gen.f-window.p-left .ginfo.at-left,
+.lo-gen.f-card.p-left .ginfo.at-left{left:60px;top:50%;transform:translateY(-50%);
+  bottom:auto;width:700px}
+
+/* chain + mountain ornaments are strips: place them as edge rules */
+.lo-gen .ornwrap.behind .orn[viewBox="0 0 240 40"]{width:100%;height:180px}
+.lo-gen .ornwrap.behind .orn[viewBox="0 0 120 60"]{width:100%;height:300px}
+
+/* strip + split must respect the frame; inset them so nothing is lost */
+.lo-gen.f-strip .gframe.strip{left:60px;right:60px;width:auto;border-radius:var(--radius);
+  border-left:0;border-right:0}
+.lo-gen.f-split .gframe.split{top:60px;bottom:60px;height:auto;width:900px;
+  border-radius:var(--radius);box-shadow:var(--shadow)}
+.lo-gen.f-split .gframe.split.onleft{left:60px}
+.lo-gen.f-split .gframe.split.onright{right:60px}
+.lo-gen.f-split .ginfo.at-left{left:60px;width:820px}
+.lo-gen.f-split .ginfo.at-right{right:60px;width:820px}
+/* the info sits opposite the clip */
+.lo-gen.f-split.p-left .gframe.split{left:auto;right:60px}
+.lo-gen.f-split.p-right .gframe.split{right:auto;left:60px}
+
+/* procedural ornaments honour their own spin duration */
+.playing .orn.spin-slow{animation:ospin var(--ospin,22s) linear infinite;transform-origin:50% 50%}
+.playing .orn.spin-rev{animation:ospin var(--ospin,26s) linear infinite reverse;transform-origin:50% 50%}
+/* linear-form ornaments are strips: don't rotate, stretch across instead */
+.lo-gen .ornwrap .orn[viewBox="0 0 100 60"]{animation:none!important;height:auto}
+.lo-gen .ornwrap.behind .orn[viewBox="0 0 100 60"]{width:120%;margin-left:-10%}
+
+/* ornament visibility: scatter/lattice forms read faintly at .14 —
+   lift them, and make sure nothing bleeds past the canvas edge */
+.lo-gen .ornwrap{overflow:visible}
+.lo-gen .ornwrap.behind{opacity:.20}
+.lo-gen .ornwrap.corner{opacity:.55;right:60px;top:60px;width:200px;height:200px}
+.lo-gen .ornwrap.flank{opacity:.22;width:360px;height:360px;margin-top:-180px}
+.lo-gen .ornwrap.flank.l{left:-60px}
+.lo-gen .ornwrap.flank.r{right:-60px}
+.lo-gen .ornwrap.orbit{opacity:.16;width:1240px;height:1240px;margin:-620px 0 0 -620px}
+/* keep the orbit ring inside 1080 height */
+.lo-gen .ornwrap.orbit{top:50%}
+
+/* =============================================================
+   CUSTOM IMAGE ASSETS (AI-generated or hand-made)
+   ============================================================= */
+.orn.asset{width:100%;height:100%;object-fit:contain;display:block}
+.ornwrap .orn.asset{filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
+/* image assets carry their own colour — don't tint them */
+.lo-gen .ornwrap:has(.orn.asset){color:inherit;opacity:1}
+.lo-gen .ornwrap.behind:has(.orn.asset){opacity:.55}
+.lo-gen .ornwrap.orbit:has(.orn.asset){opacity:.4}
+
+.backplate{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-repeat:no-repeat;background-position:center bottom;background-size:contain}
+.playing .backplate{animation:fade .8s ease-out both}
+
+/* =============================================================
+   TRANSPARENCY MODES
+     none   solid background (default)
+     panels background removed, panels dimmable via --panel-alpha
+     full   background removed and panels fully see-through
+   OBS composites the transparent areas over your scene.
+   ============================================================= */
+:root[data-transparency="panels"] body,
+:root[data-transparency="full"] body,
+:root[data-transparency="panels"] #stage,
+:root[data-transparency="full"] #stage{background:transparent!important}
+
+/* layouts that paint their own solid backdrop must drop it too */
+:root[data-transparency="panels"] .lo,
+:root[data-transparency="full"] .lo,
+:root[data-transparency="panels"] .lo-gen,
+:root[data-transparency="full"] .lo-gen,
+:root[data-transparency="panels"] .lo-deck,
+:root[data-transparency="full"] .lo-deck,
+:root[data-transparency="panels"] .lo-dossier,
+:root[data-transparency="full"] .lo-dossier,
+:root[data-transparency="panels"] .lo-kinetic,
+:root[data-transparency="full"] .lo-kinetic,
+:root[data-transparency="panels"] .lo-terminal,
+:root[data-transparency="full"] .lo-terminal,
+:root[data-transparency="panels"] .lo-polaroid,
+:root[data-transparency="full"] .lo-polaroid,
+:root[data-transparency="panels"] .lo-spotlight,
+:root[data-transparency="full"] .lo-spotlight,
+:root[data-transparency="panels"] .lo-tcard,
+:root[data-transparency="full"] .lo-tcard,
+:root[data-transparency="panels"] .lo-sidebar,
+:root[data-transparency="full"] .lo-sidebar,
+:root[data-transparency="panels"] .lo-receipt,
+:root[data-transparency="full"] .lo-receipt,
+:root[data-transparency="panels"] .lo-film,
+:root[data-transparency="full"] .lo-film,
+:root[data-transparency="panels"] .lo-neon,
+:root[data-transparency="full"] .lo-neon{background:transparent!important}
+
+/* decorative full-frame washes are backdrop, not content */
+:root[data-transparency="panels"] .lo-polaroid .pbg,
+:root[data-transparency="full"] .lo-polaroid .pbg,
+:root[data-transparency="panels"] .lo-dossier .bgblur,
+:root[data-transparency="full"] .lo-dossier .bgblur,
+:root[data-transparency="panels"] .lo-receipt .rbg,
+:root[data-transparency="full"] .lo-receipt .rbg,
+:root[data-transparency="panels"] .lo-film .fbg,
+:root[data-transparency="full"] .lo-film .fbg,
+:root[data-transparency="panels"] .lo-neon .nbg,
+:root[data-transparency="full"] .lo-neon .nbg,
+:root[data-transparency="panels"] .lo-neon .nglass,
+:root[data-transparency="full"] .lo-neon .nglass,
+:root[data-transparency="panels"] .lo-kinetic .kpanel,
+:root[data-transparency="full"] .lo-kinetic .kpanel{display:none!important}
+
+/* scrims/vignettes exist to make text readable over video — keep them in
+   'panels' mode, drop them in 'full' */
+:root[data-transparency="full"] .scrim-b,
+:root[data-transparency="full"] .scrim-l,
+:root[data-transparency="full"] .vig{display:none!important}
+
+/* panel surfaces honour --panel-alpha */
+:root[data-transparency="panels"] .lo-banner .band,
+:root[data-transparency="panels"] .lo-gen .ginfo.band,
+:root[data-transparency="panels"] .lo-gen .ginfo.panel,
+:root[data-transparency="panels"] .lo-gen .ginfo.rail,
+:root[data-transparency="panels"] .lo-gen .ginfo.sheet,
+:root[data-transparency="panels"] .lo-gen .ginfo.chip,
+:root[data-transparency="panels"] .lo-dossier .card,
+:root[data-transparency="panels"] .lo-sidebar .rail,
+:root[data-transparency="panels"] .lo-ticker .tick,
+:root[data-transparency="panels"] .lo-hud .hudmain,
+:root[data-transparency="panels"] .lo-bug .bugbox,
+:root[data-transparency="panels"] .lo-score .sb{opacity:var(--panel-alpha,1)}
+
+/* in full mode the panel fills vanish but text stays */
+:root[data-transparency="full"] .lo-banner .band,
+:root[data-transparency="full"] .lo-gen .ginfo.band,
+:root[data-transparency="full"] .lo-gen .ginfo.panel,
+:root[data-transparency="full"] .lo-gen .ginfo.rail,
+:root[data-transparency="full"] .lo-gen .ginfo.sheet,
+:root[data-transparency="full"] .lo-gen .ginfo.chip,
+:root[data-transparency="full"] .lo-dossier .card,
+:root[data-transparency="full"] .lo-sidebar .rail,
+:root[data-transparency="full"] .lo-ticker .tnm,
+:root[data-transparency="full"] .lo-ticker .trot,
+:root[data-transparency="full"] .lo-hud .hudmain,
+:root[data-transparency="full"] .lo-bug .bugbox,
+:root[data-transparency="full"] .lo-score .sbnm,
+:root[data-transparency="full"] .lo-score .sbnums{
+  background:transparent!important;backdrop-filter:none!important;
+  box-shadow:none!important;border-color:transparent!important}
+
+/* text needs a shadow to survive with no panel behind it */
+:root[data-transparency="full"] .lo h1,
+:root[data-transparency="full"] .lo .kicker,
+:root[data-transparency="full"] .lo .bio,
+:root[data-transparency="full"] .lo .stat-v,
+:root[data-transparency="full"] .lo .stat-l,
+:root[data-transparency="full"] .lo .credit b,
+:root[data-transparency="full"] .lo .credit span,
+:root[data-transparency="full"] .lo .gurl{
+  text-shadow:0 2px 10px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.7)}
+
+/* In transparent modes the full-frame profile-image fallback becomes a
+   backdrop, which defeats the point. Shrink it to a contained badge. */
+:root[data-transparency="panels"] .clipfallback.fill,
+:root[data-transparency="full"] .clipfallback.fill{
+  background:transparent!important}
+:root[data-transparency="panels"] .clipfallback.fill::before,
+:root[data-transparency="full"] .clipfallback.fill::before{display:none!important}
+:root[data-transparency="panels"] .clipfallback.fill::after,
+:root[data-transparency="full"] .clipfallback.fill::after{
+  background-size:contain;background-position:center;opacity:.85}
+
+/* =============================================================
+   FIT — letterbox vs crop.
+   'cover' fills and crops; 'contain' guarantees the whole frame of
+   video is visible. Frames far from 16:9 default to contain, because
+   cover was discarding up to 47% of the picture.
+   ============================================================= */
+.lo-gen .gframe.fit-contain{background:#000}
+.lo-gen .gframe.fit-contain video,
+.lo-gen .gframe.fit-contain .clipwrap,
+.lo-gen .gframe.fit-contain .democlip,
+.lo-gen .gframe.fit-contain .clipfallback{object-fit:contain!important}
+.lo-gen .gframe.fit-contain .democlip{width:100%;height:100%}
+
+/* =============================================================
+   REVISED FRAMES — sized so the info block never sits on the video
+   ============================================================= */
+/* full bleed: info gets a gradient plate rather than a solid panel over the clip */
+.lo-gen.f-fullbleed .ginfo.at-bottom,
+.lo-gen.f-fullbleed .ginfo.at-top{left:0;right:0;bottom:0;padding:80px var(--pad) 56px;
+  background:linear-gradient(0deg,var(--scrim) 12%,transparent 100%);border-radius:0}
+.lo-gen.f-fullbleed .ginfo.at-top{top:0;bottom:auto;padding:56px var(--pad) 80px;
+  background:linear-gradient(180deg,var(--scrim) 12%,transparent 100%)}
+.lo-gen.f-fullbleed .ginfo.band,
+.lo-gen.f-fullbleed .ginfo.panel,
+.lo-gen.f-fullbleed .ginfo.sheet{backdrop-filter:none;box-shadow:none;border:0}
+.lo-gen.f-fullbleed .ginfo.at-left,
+.lo-gen.f-fullbleed .ginfo.at-right{width:640px}
+
+/* split: 16:9 video, letterboxed, never cropped */
+.lo-gen.f-split .gframe.split{top:50%;transform:translateY(-50%);bottom:auto;
+  width:1000px;height:563px;border-radius:var(--radius)}
+.lo-gen.f-split.p-left .gframe.split{left:auto;right:60px}
+.lo-gen.f-split.p-right .gframe.split{right:auto;left:60px}
+.lo-gen.f-split .ginfo.at-left,
+.lo-gen.f-split .ginfo.at-right{width:740px}
+
+/* portrait: a tall pillar of video for vertical scenes, letterboxed */
+.lo-gen .gframe.portrait{top:70px;bottom:70px;height:auto;width:620px;
+  border-radius:var(--radius);box-shadow:var(--shadow)}
+.lo-gen.f-portrait.p-left .gframe.portrait{right:70px;left:auto}
+.lo-gen.f-portrait.p-right .gframe.portrait{left:70px;right:auto}
+.lo-gen.f-portrait.p-corner .gframe.portrait{left:50%;margin-left:-310px}
+.lo-gen.f-portrait .ginfo.at-left,
+.lo-gen.f-portrait .ginfo.at-right{width:1050px}
+
+/* inset: clip fills the frame blurred, sharp copy floats on top */
+.lo-gen .gbleed{position:absolute;inset:0;z-index:0;overflow:hidden}
+.lo-gen .gbleed video,.lo-gen .gbleed .clipwrap,.lo-gen .gbleed .democlip,
+.lo-gen .gbleed .clipfallback{width:100%;height:100%;object-fit:cover;
+  filter:blur(34px) saturate(1.25) brightness(.5);transform:scale(1.12)}
+.lo-gen .gframe.inset{left:50%;top:80px;width:1180px;height:664px;margin-left:-590px;
+  border-radius:var(--radius);box-shadow:var(--shadow),0 0 0 2px rgba(255,255,255,.10)}
+.lo-gen.f-inset .ginfo.at-bottom{bottom:56px}
+.lo-gen.f-inset .ginfo.at-left,
+.lo-gen.f-inset .ginfo.at-right{top:auto;bottom:56px;transform:none;width:760px}
+
+/* strip: leave the top clear too */
+.lo-gen.f-strip .gframe.strip{top:190px;height:520px}
+.lo-gen.f-strip .ginfo.at-top{top:40px}
+
+/* window/card: slightly smaller so bottom info always clears */
+.lo-gen.f-window .gframe.window{top:80px;height:590px}
+.lo-gen.f-card .gframe.card{top:76px;height:540px}
+
+/* =============================================================
+   INFO HOLD — clear the panel so the clip plays unobstructed
+   ============================================================= */
+.playing .lo-gen.hold-long .ginfo{animation-name:genin,infoOut;
+  animation-duration:.8s,.9s;animation-delay:0s,8s;animation-fill-mode:both,forwards;
+  animation-timing-function:var(--ease),cubic-bezier(.5,0,.75,0)}
+.playing .lo-gen.hold-medium .ginfo{animation-name:genin,infoOut;
+  animation-duration:.8s,.9s;animation-delay:0s,5s;animation-fill-mode:both,forwards;
+  animation-timing-function:var(--ease),cubic-bezier(.5,0,.75,0)}
+.playing .lo-gen.hold-short .ginfo{animation-name:genin,infoOut;
+  animation-duration:.8s,.9s;animation-delay:0s,3s;animation-fill-mode:both,forwards;
+  animation-timing-function:var(--ease),cubic-bezier(.5,0,.75,0)}
+@keyframes infoOut{to{opacity:0;transform:translateY(34px) scale(.985);pointer-events:none}}
+
+/* side-positioned panels slide out sideways instead */
+.playing .lo-gen.hold-long .ginfo.at-left,
+.playing .lo-gen.hold-medium .ginfo.at-left,
+.playing .lo-gen.hold-short .ginfo.at-left{animation-name:genside,infoOutL}
+.playing .lo-gen.hold-long .ginfo.at-right,
+.playing .lo-gen.hold-medium .ginfo.at-right,
+.playing .lo-gen.hold-short .ginfo.at-right{animation-name:genside,infoOutR}
+@keyframes infoOutL{to{opacity:0;transform:translateY(-50%) translateX(-70px)}}
+@keyframes infoOutR{to{opacity:0;transform:translateY(-50%) translateX(70px)}}
+
+/* when the info clears, let the clip grow into the space */
+.playing .lo-gen.hold-short .gframe.window,
+.playing .lo-gen.hold-short .gframe.card,
+.playing .lo-gen.hold-medium .gframe.window,
+.playing .lo-gen.hold-medium .gframe.card{animation:genframe .8s var(--ease) both,
+  frameGrow 1.1s cubic-bezier(.3,.9,.25,1) forwards}
+.playing .lo-gen.hold-short .gframe.window,
+.playing .lo-gen.hold-short .gframe.card{animation-delay:0s,3.2s}
+.playing .lo-gen.hold-medium .gframe.window,
+.playing .lo-gen.hold-medium .gframe.card{animation-delay:0s,5.2s}
+@keyframes frameGrow{to{top:60px;height:820px;width:1500px;margin-left:-750px}}
+
+/* =============================================================
+   BROADCAST-GRADE ENTRANCES
+   ============================================================= */
+/* unfold — panel opens from a hairline, content fades up after */
+.playing .lo-gen.e-unfold .ginfo{animation:unfoldY .75s cubic-bezier(.16,1,.3,1) both}
+@keyframes unfoldY{from{transform:scaleY(.02);opacity:.4}60%{opacity:1}to{transform:none;opacity:1}}
+.playing .lo-gen.e-unfold .ginfo > *{animation:up .5s ease-out .42s both}
+
+/* shutter — three vertical bands sweep away */
+.playing .lo-gen.e-shutter .gframe{animation:shutter 1s cubic-bezier(.7,0,.2,1) both}
+@keyframes shutter{
+  from{clip-path:polygon(0 0,0 0,0 100%,0 100%,33% 0,33% 0,33% 100%,33% 100%,66% 0,66% 0,66% 100%,66% 100%)}
+  to{clip-path:polygon(0 0,33% 0,33% 100%,0 100%,33% 0,66% 0,66% 100%,33% 100%,66% 0,100% 0,100% 100%,66% 100%)}}
+.playing .lo-gen.e-shutter .ginfo{animation:genin .7s var(--ease) .45s both}
+
+/* glide — slow cinematic drift with a soft blur settle */
+.playing .lo-gen.e-glide .ginfo{animation:glide 1.15s cubic-bezier(.16,1,.3,1) both}
+@keyframes glide{from{transform:translateY(64px) scale(1.03);opacity:0;filter:blur(9px)}
+  to{transform:none;opacity:1;filter:blur(0)}}
+.playing .lo-gen.e-glide .gframe{animation:glideF 1.25s cubic-bezier(.16,1,.3,1) both}
+@keyframes glideF{from{transform:scale(1.06);opacity:0;filter:blur(12px)}
+  to{transform:none;opacity:1;filter:blur(0)}}
+
+/* stagger — each child lands in sequence, broadcast package style */
+.playing .lo-gen.e-stagger .ginfo{animation:fade .3s ease-out both}
+.playing .lo-gen.e-stagger .ginfo > *{animation:staggerIn .6s cubic-bezier(.2,.9,.2,1) both}
+.playing .lo-gen.e-stagger .ginfo > *:nth-child(1){animation-delay:.10s}
+.playing .lo-gen.e-stagger .ginfo > *:nth-child(2){animation-delay:.22s}
+.playing .lo-gen.e-stagger .ginfo > *:nth-child(3){animation-delay:.34s}
+.playing .lo-gen.e-stagger .ginfo > *:nth-child(4){animation-delay:.46s}
+@keyframes staggerIn{from{transform:translateX(-44px);opacity:0;clip-path:inset(0 100% 0 0)}
+  to{transform:none;opacity:1;clip-path:inset(0 0 0 0)}}
+
+/* mask — a soft wipe reveals the panel left to right */
+.playing .lo-gen.e-mask .ginfo{animation:maskIn .9s cubic-bezier(.5,0,.2,1) both}
+@keyframes maskIn{from{clip-path:inset(0 100% 0 0);opacity:.6}to{clip-path:inset(0 0 0 0);opacity:1}}
+.playing .lo-gen.e-mask .gframe{animation:maskFrame 1s cubic-bezier(.5,0,.2,1) both}
+@keyframes maskFrame{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+
+/* skew — motion-graphics slam with a shear that settles */
+.playing .lo-gen.e-skew .ginfo{animation:skewIn .7s cubic-bezier(.2,1.05,.3,1) both}
+@keyframes skewIn{from{transform:translateX(-90px) skewX(-12deg);opacity:0}
+  60%{transform:translateX(6px) skewX(3deg);opacity:1}to{transform:none}}
+
+/* blurin — rack focus */
+.playing .lo-gen.e-blurin .ginfo{animation:blurIn .9s cubic-bezier(.16,1,.3,1) both}
+@keyframes blurIn{from{filter:blur(16px);opacity:0;transform:scale(1.04)}
+  to{filter:blur(0);opacity:1;transform:none}}
+.playing .lo-gen.e-blurin .gframe{animation:blurIn 1.05s cubic-bezier(.16,1,.3,1) both}
+
+/* a hairline accent sweep under every generated panel — subtle polish */
+.lo-gen .ginfo::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2),transparent);
+  transform-origin:left;border-radius:0 0 var(--radius) var(--radius)}
+.playing .lo-gen .ginfo::after{animation:sweep .9s cubic-bezier(.2,.9,.2,1) .25s both}
+@keyframes sweep{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.lo-gen .ginfo.stack::after{display:none}
+
+/* ---- coverage fixes from the audit ----
+   strip+top, inset+top and fullbleed gradients were eating too much clip. */
+
+/* strip: top info must sit ABOVE the strip, not across it */
+.lo-gen.f-strip .gframe.strip{top:230px;height:480px}
+.lo-gen.f-strip .ginfo.at-top{top:30px;bottom:auto;max-height:170px;overflow:hidden;
+  padding-top:14px;padding-bottom:14px}
+.lo-gen.f-strip .ginfo.at-top .bio,
+.lo-gen.f-strip .ginfo.at-top .gcred{display:none}
+.lo-gen.f-strip .ginfo.at-bottom{bottom:40px;max-height:300px}
+
+/* inset: top info above the inset frame */
+.lo-gen.f-inset .gframe.inset{top:210px;height:600px}
+.lo-gen.f-inset .ginfo.at-top{top:28px;bottom:auto;max-height:160px;overflow:hidden}
+.lo-gen.f-inset .ginfo.at-top .bio,
+.lo-gen.f-inset .ginfo.at-top .gcred{display:none}
+/* inset side info sits beside the frame, not over it */
+.lo-gen.f-inset.p-left .gframe.inset{left:660px;margin-left:0;width:1180px}
+.lo-gen.f-inset.p-right .gframe.inset{left:80px;margin-left:0;width:1180px}
+.lo-gen.f-inset.p-left .ginfo.at-left,
+.lo-gen.f-inset.p-right .ginfo.at-right{top:50%;transform:translateY(-50%);
+  bottom:auto;width:540px}
+.lo-gen.f-inset.p-left .ginfo.at-left{left:60px}
+.lo-gen.f-inset.p-right .ginfo.at-right{right:60px}
+
+/* full bleed: tighten the gradient plate so it covers less picture */
+.lo-gen.f-fullbleed .ginfo.at-bottom{padding:56px var(--pad) 44px;
+  background:linear-gradient(0deg,var(--scrim) 0%,rgba(0,0,0,.55) 45%,transparent 100%)}
+.lo-gen.f-fullbleed .ginfo.at-top{padding:44px var(--pad) 56px}
+.lo-gen.f-fullbleed .ginfo.at-bottom .bio,
+.lo-gen.f-fullbleed .ginfo.at-top .bio{-webkit-line-clamp:1}
+.lo-gen.f-fullbleed .ginfo.at-centre{bottom:60px;max-height:420px;overflow:hidden}
+
+/* centre placement was covering the middle of the action */
+.lo-gen .ginfo.at-centre{bottom:56px;width:1180px}
+/* inset+bottom: lift the frame so the panel sits under it */
+.lo-gen.f-inset.p-bottom .gframe.inset{top:70px;height:560px}
+.lo-gen.f-inset .ginfo.at-bottom{bottom:44px;max-height:340px}
+/* fullbleed gradient plates are intentional (they ARE the readability layer),
+   but clamp their height so they never take half the screen */
+.lo-gen.f-fullbleed .ginfo.at-bottom,
+.lo-gen.f-fullbleed .ginfo.at-top{max-height:380px;overflow:hidden}
+
+/* ---- round 2 fixes: pillarboxing, clipped panels, fullbleed legibility ---- */
+
+/* PORTRAIT: a 16:9 clip in a tall box is mostly black bars. Make the frame
+   16:9-ish and stack the info beneath instead of a true vertical pillar. */
+.lo-gen .gframe.portrait{top:90px;bottom:auto;height:506px;width:900px;
+  border-radius:var(--radius)}
+.lo-gen.f-portrait.p-left .gframe.portrait{right:auto;left:50%;margin-left:-450px}
+.lo-gen.f-portrait.p-right .gframe.portrait{left:50%;right:auto;margin-left:-450px}
+.lo-gen.f-portrait.p-corner .gframe.portrait{left:50%;margin-left:-450px}
+.lo-gen.f-portrait .ginfo.at-left,
+.lo-gen.f-portrait .ginfo.at-right{top:auto;bottom:60px;transform:none;
+  left:50%;right:auto;margin-left:-450px;width:900px}
+.playing .lo-gen.f-portrait .ginfo.at-left,
+.playing .lo-gen.f-portrait .ginfo.at-right{animation:genin .8s var(--ease) both}
+
+/* SPLIT: panel and frame were touching the frame edges */
+.lo-gen.f-split .gframe.split{width:940px;height:529px}
+.lo-gen.f-split.p-left .gframe.split{right:70px}
+.lo-gen.f-split.p-right .gframe.split{left:70px}
+.lo-gen.f-split .ginfo.at-left{left:70px;width:760px}
+.lo-gen.f-split .ginfo.at-right{right:70px;width:760px}
+.lo-gen.f-split .ginfo{max-height:900px}
+
+/* INSET: side panels were running off the left edge */
+.lo-gen.f-inset.p-left .gframe.inset{left:700px;width:1140px}
+.lo-gen.f-inset.p-right .gframe.inset{left:80px;width:1140px}
+.lo-gen.f-inset.p-left .ginfo.at-left{left:70px;width:590px}
+.lo-gen.f-inset.p-right .ginfo.at-right{right:70px;width:590px}
+
+/* FULL BLEED: text must survive on bright footage. The gradient alone
+   was not enough — add a real scrim and force media ink. */
+.lo-gen.f-fullbleed .ginfo.at-bottom,
+.lo-gen.f-fullbleed .ginfo.at-top{
+  background:linear-gradient(0deg,rgba(4,4,8,.94) 0%,rgba(4,4,8,.78) 42%,transparent 100%)}
+.lo-gen.f-fullbleed .ginfo.at-top{
+  background:linear-gradient(180deg,rgba(4,4,8,.94) 0%,rgba(4,4,8,.78) 42%,transparent 100%)}
+.lo-gen.f-fullbleed .ginfo .gname h1,
+.lo-gen.f-fullbleed .ginfo .stat-v{color:var(--on-media)}
+.lo-gen.f-fullbleed .ginfo .gurl,
+.lo-gen.f-fullbleed .ginfo .bio,
+.lo-gen.f-fullbleed .ginfo .stat-l,
+.lo-gen.f-fullbleed .ginfo .credit span{color:var(--on-media-dim)}
+.lo-gen.f-fullbleed .ginfo .credit b{color:var(--on-media)}
+.lo-gen.f-fullbleed .ginfo .stat{border-color:rgba(255,255,255,.22)}
+
+/* names must never ellipsis to a single letter */
+.lo-gen .gname h1{min-width:0;max-width:100%}
+.lo-gen .ginfo.rail .gname h1,
+.lo-gen .ginfo.panel .gname h1{font-size:56px}
+.lo-gen .ginfo{overflow:visible}
+.lo-gen .ginfo > *{min-width:0}
+
+/* keep every generated panel inside the safe area */
+.lo-gen .ginfo.at-left{left:max(60px,var(--pad))}
+.lo-gen .ginfo.at-right{right:max(60px,var(--pad))}
+
+/* ---- round 3: vertical containment ----
+   Side panels with rich detail were taller than the frame and got cut off. */
+.lo-gen .ginfo.at-left,
+.lo-gen .ginfo.at-right{max-height:940px;overflow:hidden}
+.lo-gen.d-rich .ginfo.at-left .bio,
+.lo-gen.d-rich .ginfo.at-right .bio{-webkit-line-clamp:3}
+.lo-gen .ginfo.at-left .gstats,
+.lo-gen .ginfo.at-right .gstats{flex-wrap:wrap;gap:8px 0}
+.lo-gen .ginfo.at-left .gstats .stat,
+.lo-gen .ginfo.at-right .gstats .stat{padding:0 22px}
+.lo-gen .ginfo.at-left .gstats .stat:first-child,
+.lo-gen .ginfo.at-right .gstats .stat:first-child{padding-left:0}
+
+/* inset side panels are narrow — stack stats vertically so nothing clips */
+.lo-gen.f-inset .ginfo.at-left .gstats,
+.lo-gen.f-inset .ginfo.at-right .gstats{flex-direction:column;gap:14px}
+.lo-gen.f-inset .ginfo.at-left .gstats .stat,
+.lo-gen.f-inset .ginfo.at-right .gstats .stat{border-left:0;padding:0;text-align:left;
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.lo-gen.f-inset .ginfo.at-left .gstats .stat-l,
+.lo-gen.f-inset .ginfo.at-right .gstats .stat-l{margin:0;order:-1}
+.lo-gen.f-inset .ginfo.at-left .gstats .stat-v,
+.lo-gen.f-inset .ginfo.at-right .gstats .stat-v{font-size:34px}
+
+/* split panel: same treatment when detail is rich */
+.lo-gen.f-split .ginfo .gstats{flex-wrap:wrap}
+
+/* ---- round 4: fit content to the space instead of cropping it ----
+   Constrained slots shed the lowest-value elements rather than clipping. */
+
+/* compact slots: drop the bio, tighten spacing */
+.lo-gen.f-strip .ginfo.at-top,
+.lo-gen.f-inset .ginfo.at-top{gap:8px;padding-top:12px;padding-bottom:12px}
+.lo-gen.f-strip .ginfo.at-top .gstats,
+.lo-gen.f-inset .ginfo.at-top .gstats{display:none}
+.lo-gen.f-strip .ginfo.at-top .gname h1,
+.lo-gen.f-inset .ginfo.at-top .gname h1{font-size:44px}
+.lo-gen.f-strip .ginfo.at-top .gid,
+.lo-gen.f-inset .ginfo.at-top .gid{gap:16px}
+.lo-gen.f-strip .ginfo.at-top .av,
+.lo-gen.f-inset .ginfo.at-top .av{--s:74px!important}
+
+/* strip bottom + inset bottom: give them the room they need */
+.lo-gen.f-strip .ginfo.at-bottom{max-height:none;bottom:34px}
+.lo-gen.f-strip .gframe.strip{top:180px;height:440px}
+.lo-gen.f-inset .ginfo.at-bottom{max-height:none;bottom:34px}
+.lo-gen.f-inset.p-bottom .gframe.inset{top:60px;height:520px}
+
+/* fullbleed bottom/top: allow the plate to size to its content */
+.lo-gen.f-fullbleed .ginfo.at-bottom,
+.lo-gen.f-fullbleed .ginfo.at-top{max-height:none}
+.lo-gen.f-fullbleed.d-rich .ginfo.at-bottom .bio,
+.lo-gen.f-fullbleed.d-rich .ginfo.at-top .bio{display:none}
+
+/* fullbleed centre: it is a hero card, let it breathe but cap the bio */
+.lo-gen.f-fullbleed .ginfo.at-centre{max-height:none;bottom:50px}
+.lo-gen.f-fullbleed .ginfo.at-centre .bio{-webkit-line-clamp:2}
+
+/* generic: never clip, always shrink gracefully */
+.lo-gen .ginfo{min-height:0}
+.lo-gen .ginfo.at-left,
+.lo-gen .ginfo.at-right{max-height:none}
+
+/* =============================================================
+   GLOBAL INFO-DURATION OVERRIDE (hold_info=)
+   Works on the hand-written layouts too, by fading their info
+   furniture while leaving the clip untouched.
+   ============================================================= */
+.lo.holdable.hold-long .band,   .lo.holdable.hold-long .ginfo,
+.lo.holdable.hold-long .deckside,.lo.holdable.hold-long .card,
+.lo.holdable.hold-long .tick,   .lo.holdable.hold-long .slab,
+.lo.holdable.hold-long .gtext,  .lo.holdable.hold-long .sb,
+.lo.holdable.hold-long .hudmain,.lo.holdable.hold-long .scrollwrap,
+.lo.holdable.hold-long .bugbox, .lo.holdable.hold-long .fcred,
+.lo.holdable.hold-long .cname,  .lo.holdable.hold-long .cmeta,
+.lo.holdable.hold-long .magbody{animation:holdOut .9s ease-in 8s forwards!important}
+
+.lo.holdable.hold-medium .band,   .lo.holdable.hold-medium .ginfo,
+.lo.holdable.hold-medium .deckside,.lo.holdable.hold-medium .card,
+.lo.holdable.hold-medium .tick,   .lo.holdable.hold-medium .slab,
+.lo.holdable.hold-medium .gtext,  .lo.holdable.hold-medium .sb,
+.lo.holdable.hold-medium .hudmain,.lo.holdable.hold-medium .scrollwrap,
+.lo.holdable.hold-medium .bugbox, .lo.holdable.hold-medium .fcred,
+.lo.holdable.hold-medium .cname,  .lo.holdable.hold-medium .cmeta,
+.lo.holdable.hold-medium .magbody{animation:holdOut .9s ease-in 5s forwards!important}
+
+.lo.holdable.hold-short .band,   .lo.holdable.hold-short .ginfo,
+.lo.holdable.hold-short .deckside,.lo.holdable.hold-short .card,
+.lo.holdable.hold-short .tick,   .lo.holdable.hold-short .slab,
+.lo.holdable.hold-short .gtext,  .lo.holdable.hold-short .sb,
+.lo.holdable.hold-short .hudmain,.lo.holdable.hold-short .scrollwrap,
+.lo.holdable.hold-short .bugbox, .lo.holdable.hold-short .fcred,
+.lo.holdable.hold-short .cname,  .lo.holdable.hold-short .cmeta,
+.lo.holdable.hold-short .magbody{animation:holdOut .9s ease-in 3s forwards!important}
+
+@keyframes holdOut{to{opacity:0;transform:translateY(30px);pointer-events:none}}
+
+/* =============================================================
+   HOLD, decoupled from ENTRANCE.
+   The entrance animates .ginfo; the hold animates a pseudo-parent
+   via opacity on .lo-gen itself scoped to the info block, so the two
+   never fight over the animation shorthand.
+   ============================================================= */
+
+.lo-gen.hold-long .ginfo,
+.lo-gen.hold-medium .ginfo,
+.lo-gen.hold-short .ginfo{will-change:opacity,transform}
+
+.playing .lo-gen.hold-long .ginfo{opacity:1;transition:opacity .9s ease-in 8s,transform .9s ease-in 8s}
+.playing .lo-gen.hold-medium .ginfo{opacity:1;transition:opacity .9s ease-in 5s,transform .9s ease-in 5s}
+.playing .lo-gen.hold-short .ginfo{opacity:1;transition:opacity .9s ease-in 3s,transform .9s ease-in 3s}
+/* the entrance animation finishes with fill-mode:both, which pins opacity.
+   Cancel it before transitioning out. */
+.playing .lo-gen.cleared .ginfo,
+.playing .lo-gen.cleared .ginfo > *{animation:none!important}
+.playing .lo-gen.cleared .ginfo{opacity:0!important;transform:translateY(30px)!important;
+  pointer-events:none;transition:opacity .9s ease-in,transform .9s ease-in}
+.playing .lo-gen.cleared .ginfo::after{animation:none!important}
+
+/* =============================================================
+   EXPAND ON CLEAR — once the info panel leaves, the clip grows
+   to fill the frame. This is the payoff for a short info hold.
+   ============================================================= */
+.lo-gen.expands .gframe{transition:all 1.1s cubic-bezier(.22,1,.28,1)}
+.lo-gen.expands.cleared .gframe.split,
+.lo-gen.expands.cleared .gframe.window,
+.lo-gen.expands.cleared .gframe.card,
+.lo-gen.expands.cleared .gframe.portrait,
+.lo-gen.expands.cleared .gframe.inset,
+.lo-gen.expands.cleared .gframe.strip{
+  left:0!important;right:0!important;top:0!important;bottom:0!important;
+  width:100%!important;height:100%!important;margin:0!important;
+  border-radius:0!important;box-shadow:none!important;transform:none!important}
+/* letterboxed clips switch to filling once they own the whole frame */
+.lo-gen.expands.cleared .gframe.fit-contain video,
+.lo-gen.expands.cleared .gframe.fit-contain .clipwrap,
+.lo-gen.expands.cleared .gframe.fit-contain .democlip{
+  object-fit:contain!important}
+.lo-gen.expands.cleared .gbleed{opacity:0;transition:opacity .9s ease}
+.lo-gen.expands.cleared .ornwrap{opacity:0;transition:opacity .7s ease}
+
+/* =============================================================
+   UNIVERSAL LAYOUT OPTIONS
+   These apply to the hand-written layouts as well as generated ones,
+   so every layout gets detail level, video fit, backdrop and expand.
+   ============================================================= */
+
+/* ---- DETAIL LEVEL ---- */
+/* minimal: name, one stat, and the clip credit. Nothing else. */
+.lo.detail-minimal .bio,
+.lo.detail-minimal .gstats .stat:nth-child(n+2),
+.lo.detail-minimal .stats .stat:nth-child(n+2),
+.lo.detail-minimal .rows .r:nth-child(n+3),
+.lo.detail-minimal .grid .gcell:nth-child(n+2),
+.lo.detail-minimal .krail .stat:nth-child(n+2),
+.lo.detail-minimal .rstats .stat:nth-child(n+2),
+.lo.detail-minimal .sbnums .sbn:nth-child(n+2),
+.lo.detail-minimal .hbars .hb:nth-child(n+2),
+.lo.detail-minimal .cm-stats div:nth-child(n+2),
+.lo.detail-minimal .ar-score div:nth-child(n+3),
+.lo.detail-minimal .bp-row:nth-child(n+4),
+.lo.detail-minimal .nw-facts,
+.lo.detail-minimal .st-facts,
+.lo.detail-minimal .sc-list li:nth-child(n+2),
+.lo.detail-minimal .vy-side span:nth-child(n+2),
+.lo.detail-minimal .pa-grid > div:nth-child(n+3),
+.lo.detail-minimal .gl-rows > div:nth-child(n+2),
+.lo.detail-minimal .lines .cl:nth-child(n+2),
+.lo.detail-minimal .chips .chip:nth-child(n+3),
+.lo.detail-minimal .ct-chip:nth-child(n+2){display:none!important}
+
+/* rich: make sure optional copy is visible even in tight slots */
+.lo.detail-rich .bio{display:-webkit-box!important;-webkit-line-clamp:3}
+
+/* ---- VIDEO FIT ---- */
+.lo.forcefit-contain video,
+.lo.forcefit-contain .clipwrap,
+.lo.forcefit-contain .democlip,
+.lo.forcefit-contain .clipfallback{object-fit:contain!important;background:#000}
+.lo.forcefit-cover video,
+.lo.forcefit-cover .clipwrap,
+.lo.forcefit-cover .democlip,
+.lo.forcefit-cover .clipfallback{object-fit:cover!important}
+/* the blurred backdrop copy should still fill, never letterbox */
+.lo.forcefit-contain .bgblur video,.lo.forcefit-contain .bgblur .democlip,
+.lo.forcefit-contain .gbleed video,.lo.forcefit-contain .gbleed .democlip,
+.lo.forcefit-contain .ch-bg video,.lo.forcefit-contain .ch-bg .democlip,
+.lo.forcefit-contain .ho-bg video,.lo.forcefit-contain .ho-bg .democlip,
+.lo.forcefit-contain .pa-bg video,.lo.forcefit-contain .pa-bg .democlip,
+.lo.forcefit-contain .rbg video,.lo.forcefit-contain .rbg .democlip,
+.lo.forcefit-contain .fbg video,.lo.forcefit-contain .fbg .democlip,
+.lo.forcefit-contain .nbg video,.lo.forcefit-contain .nbg .democlip{object-fit:cover!important}
+
+/* ---- BACKDROP behind the info block ---- */
+/* The backdrop must sit BETWEEN the clip and the info panel. Previously it
+   used z-index:0, which put it *behind* the full-bleed video, so it was
+   invisible on every layout that fills the frame. It now uses ::after at a
+   z-index above the media but below the furniture. */
+.lo.backdrop-blur::after,
+.lo.backdrop-dim::after,
+.lo.backdrop-scrim::after{
+  content:'';position:absolute;inset:0;z-index:2;pointer-events:none}
+
+.lo.backdrop-blur::after{
+  backdrop-filter:blur(22px) saturate(1.12);-webkit-backdrop-filter:blur(22px) saturate(1.12);
+  background:rgba(6,8,14,.18)}
+.lo.backdrop-dim::after{background:rgba(4,4,8,.55)}
+.lo.backdrop-scrim::after{
+  background:linear-gradient(0deg,rgba(4,4,8,.95) 0%,rgba(4,4,8,.6) 34%,rgba(4,4,8,.12) 66%,transparent 100%)}
+.lo.backdrop-none::after{display:none}
+
+/* Everything that is not the media layer must render above the backdrop.
+   Note: only elements that already establish a position get a z-index -
+   forcing position:relative on every child broke absolutely-positioned
+   furniture in several layouts. */
+.lo.backdrop-blur > *,
+.lo.backdrop-dim > *,
+.lo.backdrop-scrim > *{z-index:3}
+.lo.backdrop-blur > *:not([class*="clip"]):not(.gbleed):not(.bgblur),
+.lo.backdrop-dim > *:not([class*="clip"]):not(.gbleed):not(.bgblur),
+.lo.backdrop-scrim > *:not([class*="clip"]):not(.gbleed):not(.bgblur){
+  position:relative}
+.lo.backdrop-blur > .progress,.lo.backdrop-dim > .progress,.lo.backdrop-scrim > .progress,
+.lo.backdrop-blur > .band,.lo.backdrop-dim > .band,.lo.backdrop-scrim > .band,
+.lo.backdrop-blur > .topstrip,.lo.backdrop-dim > .topstrip,.lo.backdrop-scrim > .topstrip,
+.lo.backdrop-blur > .ginfo,.lo.backdrop-dim > .ginfo,.lo.backdrop-scrim > .ginfo{
+  position:absolute}
+.lo.backdrop-blur > .clipvid,.lo.backdrop-blur > .clipwrap,.lo.backdrop-blur > .clipfallback,
+.lo.backdrop-blur > .gbleed,.lo.backdrop-blur > .bgblur,
+.lo.backdrop-dim > .clipvid,.lo.backdrop-dim > .clipwrap,.lo.backdrop-dim > .clipfallback,
+.lo.backdrop-dim > .gbleed,.lo.backdrop-dim > .bgblur,
+.lo.backdrop-scrim > .clipvid,.lo.backdrop-scrim > .clipwrap,.lo.backdrop-scrim > .clipfallback,
+.lo.backdrop-scrim > .gbleed,.lo.backdrop-scrim > .bgblur{z-index:1}
+
+/* A backdrop replaces the layout's own scrim, otherwise they stack up. */
+.lo.backdrop-dim > .scrim-b,.lo.backdrop-dim > .scrim-l,.lo.backdrop-dim > .vig,
+.lo.backdrop-scrim > .scrim-b,.lo.backdrop-scrim > .scrim-l,.lo.backdrop-scrim > .vig,
+.lo.backdrop-blur > .scrim-b,.lo.backdrop-blur > .scrim-l,.lo.backdrop-blur > .vig{display:none}
+
+/* ---- EXPAND for built-in layouts ---- */
+.lo.expands.cleared .clipvid.fill,
+.lo.expands.cleared .clipwrap.fill,
+.lo.expands.cleared .clipfallback.fill{transition:all 1.1s cubic-bezier(.22,1,.28,1)}
+.lo.expands.cleared .deckclip,
+.lo.expands.cleared .inset,
+.lo.expands.cleared .kwin,
+.lo.expands.cleared .sclip,
+.lo.expands.cleared .orb,
+.lo.expands.cleared .tcart,
+.lo.expands.cleared .pphoto,
+.lo.expands.cleared .tpane,
+.lo.expands.cleared .fframe,
+.lo.expands.cleared .rclip,
+.lo.expands.cleared .cm-p1,
+.lo.expands.cleared .ar-cab,
+.lo.expands.cleared .bp-clip,
+.lo.expands.cleared .ch-clipcard,
+.lo.expands.cleared .vy-clip,
+.lo.expands.cleared .st-frame,
+.lo.expands.cleared .nw-photo,
+.lo.expands.cleared .wa-photo,
+.lo.expands.cleared .ho-art,
+.lo.expands.cleared .pa-clipbox{
+  transition:all 1.1s cubic-bezier(.22,1,.28,1);
+  position:absolute!important;left:0!important;top:0!important;right:0!important;bottom:0!important;
+  width:100%!important;height:100%!important;margin:0!important;
+  border-radius:0!important;border-width:0!important;box-shadow:none!important;z-index:5}
+
+
+/* =============================================================
+   UNIVERSAL TRANSPARENCY
+   Rather than listing every layout, blank the canvas for all of them
+   and let each layout's own prop keep its surface.
+   ============================================================= */
+:root[data-transparency="panels"] .lo,
+:root[data-transparency="full"] .lo{background:transparent!important}
+
+/* full-frame decorative washes are backdrop, never content */
+:root[data-transparency="panels"] .lo > .bgblur,
+:root[data-transparency="full"] .lo > .bgblur,
+:root[data-transparency="panels"] .lo > .gbleed,
+:root[data-transparency="full"] .lo > .gbleed,
+:root[data-transparency="panels"] .lo > .pbg,
+:root[data-transparency="full"] .lo > .pbg,
+:root[data-transparency="panels"] .lo > .rbg,
+:root[data-transparency="full"] .lo > .rbg,
+:root[data-transparency="panels"] .lo > .fbg,
+:root[data-transparency="full"] .lo > .fbg,
+:root[data-transparency="panels"] .lo > .nbg,
+:root[data-transparency="full"] .lo > .nbg,
+:root[data-transparency="panels"] .lo > .ch-bg,
+:root[data-transparency="full"] .lo > .ch-bg,
+:root[data-transparency="panels"] .lo > .ho-bg,
+:root[data-transparency="full"] .lo > .ho-bg,
+:root[data-transparency="panels"] .lo > .pa-bg,
+:root[data-transparency="full"] .lo > .pa-bg,
+:root[data-transparency="panels"] .lo > .rc-bgclip,
+:root[data-transparency="full"] .lo > .rc-bgclip{display:none!important}
+
+/* =============================================================
+   SMALL-SOURCE READABILITY
+   The overlay is authored at 1920x1080. If the OBS browser source is
+   smaller, we scale the canvas down and push type back up by
+   --text-scale so it stays legible. Low-value furniture is dropped at
+   the smallest sizes rather than shrinking into mush.
+   ============================================================= */
+:root{--text-scale:1}
+body.scaled{overflow:hidden;background:transparent}
+body.scaled #stage{width:1920px;height:1080px}
+
+/* Boost the type layer. `zoom` scales an element and its children
+   including their own font sizes, which is exactly what is needed here -
+   `em` maths cannot do it because each layout sets absolute px sizes. */
+[data-size]:not([data-size="1920x1080"]) .lo h1,
+[data-size]:not([data-size="1920x1080"]) .lo .kicker,
+[data-size]:not([data-size="1920x1080"]) .lo .bio,
+[data-size]:not([data-size="1920x1080"]) .lo .credit,
+[data-size]:not([data-size="1920x1080"]) .lo .stat,
+[data-size]:not([data-size="1920x1080"]) .lo .chip,
+[data-size]:not([data-size="1920x1080"]) .lo .gurl,
+[data-size]:not([data-size="1920x1080"]) .lo .cta,
+[data-size]:not([data-size="1920x1080"]) .lo .badge,
+[data-size]:not([data-size="1920x1080"]) .lo .livetag,
+[data-size]:not([data-size="1920x1080"]) .lo .handle,
+[data-size]:not([data-size="1920x1080"]) .lo .url,
+[data-size]:not([data-size="1920x1080"]) .lo .ct,
+[data-size]:not([data-size="1920x1080"]) .lo .cm,
+[data-size]:not([data-size="1920x1080"]) .lo .rl,
+[data-size]:not([data-size="1920x1080"]) .lo .rv{
+  zoom:var(--text-scale)}
+
+/* at 960 and below, thin out anything that is decoration not information */
+[data-size="854x480"] .lo .bio,
+[data-size="640x360"] .lo .bio,
+[data-size="640x360"] .lo .badge,
+[data-size="640x360"] .lo .motif,
+[data-size="640x360"] .lo .ornwrap{display:none!important}
+
+/* tighten padding so the boosted type still fits its plate */
+[data-size="854x480"] .lo .band,
+[data-size="640x360"] .lo .band,
+[data-size="854x480"] .lo .ginfo,
+[data-size="640x360"] .lo .ginfo{padding:20px 26px}
+
+/* stat rows collapse to the two most useful at the smallest size */
+[data-size="640x360"] .lo .stats .stat:nth-child(n+3),
+[data-size="640x360"] .lo .gstats .stat:nth-child(n+3),
+[data-size="640x360"] .lo .bi-splits div:nth-child(n+3),
+[data-size="640x360"] .lo .sbnums .sbn:nth-child(n+3){display:none!important}
+
+/* heavier text shadow at small sizes so type survives over busy footage */
+[data-size="854x480"] .lo h1,
+[data-size="640x360"] .lo h1,
+[data-size="854x480"] .lo .credit b,
+[data-size="640x360"] .lo .credit b{text-shadow:0 2px 8px rgba(0,0,0,.95)}
+
+/* Boosted type needs more room. Let the name block take the space and
+   drop the secondary URL beside it, which is duplicated in the credit. */
+[data-size]:not([data-size="1920x1080"]) .lo-banner .row .url,
+[data-size]:not([data-size="1920x1080"]) .lo-banner .badge{display:none}
+[data-size]:not([data-size="1920x1080"]) .lo-banner .bandmain{flex:1 1 auto;min-width:0}
+[data-size]:not([data-size="1920x1080"]) .lo-banner .stats{margin-left:auto}
+[data-size]:not([data-size="1920x1080"]) .lo .bio{
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* anything zoomed must not spill its container */
+[data-size]:not([data-size="1920x1080"]) .lo h1,
+[data-size]:not([data-size="1920x1080"]) .lo .gurl,
+[data-size]:not([data-size="1920x1080"]) .lo .url,
+[data-size]:not([data-size="1920x1080"]) .lo .handle{
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* the top clip-title strip gets very cramped once boosted */
+[data-size="854x480"] .lo-banner .topstrip .cm,
+[data-size="640x360"] .lo-banner .topstrip .cm,
+[data-size="640x360"] .lo-banner .topstrip .ct{display:none}
+
+/* Sidebar nests its clip inside .sclip rather than as a direct child of .lo,
+   so the generic backdrop rule missed it. */
+.lo-sidebar.backdrop-blur .sclip::after,
+.lo-sidebar.backdrop-dim .sclip::after,
+.lo-sidebar.backdrop-scrim .sclip::after{
+  content:'';position:absolute;inset:0;z-index:2;pointer-events:none}
+.lo-sidebar.backdrop-blur .sclip::after{
+  backdrop-filter:blur(22px) saturate(1.12);-webkit-backdrop-filter:blur(22px) saturate(1.12);
+  background:rgba(6,8,14,.18)}
+.lo-sidebar.backdrop-dim .sclip::after{background:rgba(4,4,8,.55)}
+.lo-sidebar.backdrop-scrim .sclip::after{
+  background:linear-gradient(0deg,rgba(4,4,8,.95) 0%,rgba(4,4,8,.5) 40%,transparent 100%)}
+.lo-sidebar.backdrop-blur .sclip .clipbar,
+.lo-sidebar.backdrop-dim .sclip .clipbar,
+.lo-sidebar.backdrop-scrim .sclip .clipbar{z-index:3}
+
+
+/* =============================================================
+   OPTIONAL CREDIT BADGE  (URL: credit=1)
+   Deliberately off by default — see the note in app.js. Small,
+   bottom-right, and never sits over the clip window because it is
+   the last child and only 26px tall.
+   ============================================================= */
+.creditbadge{position:absolute;right:18px;bottom:16px;z-index:40;
+  padding:7px 14px;border-radius:99px;
+  background:rgba(8,8,14,.62);backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.18);
+  font:600 15px/1 var(--font-body);letter-spacing:.04em;
+  color:rgba(255,255,255,.82);text-shadow:0 1px 4px rgba(0,0,0,.8);
+  pointer-events:none;white-space:nowrap}
+.playing .creditbadge{animation:fade .8s ease 1.2s both}

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clawmark — Get Client ID &amp; Token</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/brand/icon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/brand/icon-180.png">
+<meta name="theme-color" content="#08192a">
+<meta name="author" content="Hardclaws">
+<meta property="og:title" content="Clawmark — Twitch Shoutout Overlay">
+<meta property="og:description" content="138 hand-designed shoutout layouts for OBS. No access token required. By Hardclaws.">
+<meta property="og:image" content="assets/brand/social-preview.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *{box-sizing:border-box}
+  :root{--b:#0b0b11;--s:#13131d;--s2:#1a1a28;--l:#26263c;--t:#eaeaf4;--td:#8f8fab;
+    --a:#9146ff;--g:#8fd14f;--y:#f0c04a;--r:#ff5f5f}
+  body{margin:0;background:var(--b);color:var(--t);
+    font:15px/1.6 "Inter","Segoe UI",system-ui,sans-serif;padding:24px}
+  .wrap{max-width:880px;margin:0 auto}
+  h1{margin:0 0 4px;font-size:26px}
+  h1 span{background:linear-gradient(90deg,var(--a),var(--g));-webkit-background-clip:text;
+    background-clip:text;color:transparent}
+  .lede{color:var(--td);margin:0 0 22px}
+  .panel{background:var(--s);border:1px solid var(--l);border-radius:12px;margin-bottom:16px;overflow:hidden}
+  .panel h2{margin:0;padding:13px 17px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--td);background:var(--s2);border-bottom:1px solid var(--l)}
+  .in{padding:17px}
+  label{display:block;font-size:12.5px;color:var(--td);margin:13px 0 5px}
+  label:first-child{margin-top:0}
+  input{width:100%;background:#0a0a12;border:1px solid var(--l);color:var(--t);
+    border-radius:8px;padding:10px 12px;font:14px inherit}
+  input:focus{outline:0;border-color:var(--a)}
+  .btn{background:var(--a);border:0;color:#fff;font:600 14px inherit;padding:11px 18px;
+    border-radius:9px;cursor:pointer;text-decoration:none;display:inline-block}
+  .btn:hover{filter:brightness(1.12)}
+  .btn.sec{background:var(--s2);border:1px solid var(--l);color:var(--t)}
+  .btn.g{background:var(--g);color:#0b1a05;font-weight:700}
+  .btn.dis{opacity:.45;pointer-events:none}
+  ol{margin:0;padding-left:22px}
+  ol li{margin-bottom:13px}
+  .copybox{display:flex;gap:8px;align-items:stretch;margin-top:6px}
+  .copybox input{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+  .copybox button{flex:0 0 auto;padding:0 14px}
+  code{background:#0a0a12;padding:2px 6px;border-radius:4px;font-size:12.5px;color:var(--g);
+    word-break:break-all}
+  .note{background:#191320;border-left:3px solid var(--a);border-radius:0 8px 8px 0;
+    padding:11px 14px;font-size:13px;margin:13px 0}
+  .warn{background:#2a1608;border-left:3px solid var(--y);border-radius:0 8px 8px 0;
+    padding:11px 14px;font-size:13px;margin:13px 0;color:#f0d0a0}
+  .ok{background:#132012;border-left:3px solid var(--g);border-radius:0 8px 8px 0;
+    padding:11px 14px;font-size:13px;margin:13px 0}
+  .sc{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;background:#0a0a12;
+    border:1px solid var(--l);border-radius:9px;margin-bottom:8px;cursor:pointer}
+  .sc input{width:auto;margin-top:3px;accent-color:var(--a);flex:0 0 auto}
+  .sc b{display:block;font-size:13px;font-family:ui-monospace,monospace;color:var(--g)}
+  .sc small{display:block;color:var(--td);font-size:12px;margin-top:2px}
+  a{color:var(--a)}
+  .big{font-size:17px;font-weight:600}
+</style>
+</head>
+<body><div class="wrap">
+
+<h1>Get your <span>Client ID &amp; Token</span></h1>
+<p class="lede">Both values are required, and they must come from the <b>same app</b>.
+This page builds the authorisation link for you and catches the token when Twitch sends you back.</p>
+
+<div id="gotit" style="display:none"></div>
+
+<div class="panel">
+  <h2>What these two things are</h2>
+  <div class="in">
+    <p style="margin-top:0"><b>Client ID</b> — a public identifier for an <i>application</i> registered
+    on Twitch. It is not your username, not a password, and not secret. It says
+    <i>"these requests come from this app."</i></p>
+    <p><b>Access token</b> — proves a Twitch account authorised that app to act on its behalf.
+    This one <b>is</b> secret.</p>
+    <div class="warn"><b>They must be a matched pair.</b> A token issued to app A will be rejected
+    if you send it with app B's Client ID. This is the #1 cause of 401 errors — the diagnostics
+    page checks for it explicitly.</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Step 1 · Register an application</h2>
+  <div class="in">
+    <ol>
+      <li>Go to <a href="https://dev.twitch.tv/console/apps" target="_blank" rel="noopener">dev.twitch.tv/console/apps</a>
+        and log in. <b>Two-factor auth must be enabled</b> on your Twitch account, or Twitch won't
+        let you register anything.</li>
+      <li>Click <b>Register Your Application</b>.</li>
+      <li><b>Name:</b> anything unique — e.g. <code>Dungeons &amp; Derailleurs Shoutout</code>.
+        If it says the name is taken, add a word.</li>
+      <li><b>OAuth Redirect URL:</b> paste exactly this — it's where Twitch sends the token back.
+        <div class="copybox">
+          <input id="redir" readonly>
+          <button class="btn sec" onclick="cp('redir',this)">Copy</button>
+        </div>
+        <div class="note" style="margin-bottom:0">This is <b>this page's own address</b>. It must
+        match character for character. If you later serve the overlay from a different address
+        (a different port, or GitHub Pages), come back and add that one too — an app can have
+        several redirect URLs.</div>
+      </li>
+      <li><b>Category:</b> Broadcasting Suite. &nbsp; <b>Client Type:</b> Public.</li>
+      <li>Click <b>Create</b>, then <b>Manage</b> on your new app. Copy the <b>Client ID</b>.</li>
+    </ol>
+    <div class="warn"><b>Ignore the Client Secret.</b> You don't need it, and it should never go
+    into a URL or a browser source. If you accidentally generated one, that's fine — just don't use it.</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Step 2 · Authorise and get your token</h2>
+  <div class="in">
+    <label>Paste your Client ID here</label>
+    <input id="cid" placeholder="e.g. gp762nuuoqcoxypju8c569th9wz7q5" autocomplete="off">
+
+    <label style="margin-top:18px">Permissions to request</label>
+    <label class="sc"><input type="checkbox" checked disabled>
+      <span><b>(no scope needed)</b><small>Profile, avatar, bio, clips, category, live status,
+      account age — the core of every shoutout. Always included.</small></span></label>
+    <label class="sc"><input type="checkbox" id="s1" checked>
+      <span><b>moderator:read:followers</b><small>Follower counts. Twitch only returns these for
+      channels you moderate; the layouts hide the stat elsewhere.</small></span></label>
+    <label class="sc"><input type="checkbox" id="s2">
+      <span><b>user:write:chat</b><small>Only if you want the overlay to post
+      "Go check out X" into your chat.</small></span></label>
+
+    <div style="margin-top:16px">
+      <a class="btn g dis" id="go" href="#" target="_self">Authorise on Twitch →</a>
+      <button class="btn sec" id="showurl">Show the raw URL</button>
+    </div>
+    <div id="rawurl" style="display:none"><div class="copybox" style="margin-top:12px">
+      <input id="raw" readonly><button class="btn sec" onclick="cp('raw',this)">Copy</button>
+    </div></div>
+
+    <div class="note">Twitch will ask you to approve the app, then send you straight back here
+    with the token attached. Nothing is transmitted anywhere except to Twitch.</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Which route should I take?</h2>
+  <div class="in">
+    <p style="margin-top:0"><b>Register your own app (above)</b> — recommended. The token is tied to
+    an app you control, and you can re-issue it whenever you like.</p>
+    <p><b>Or use a token generator site</b> such as twitchtokengenerator.com — quicker, but there's a
+    catch that trips people up constantly:</p>
+    <div class="warn">If you use a generator site, you <b>must</b> use <b>that site's Client ID</b>,
+    which it displays alongside the token. Your own app's Client ID will not work with their token.
+    Use whichever pair came from the same place.</div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Token lifespan</h2>
+  <div class="in">
+    <p style="margin-top:0">Implicit-grant tokens (what this page produces) last around
+    <b>60 days</b>, but can be invalidated sooner if you change your password or revoke the app.</p>
+    <p style="margin-bottom:0">When it expires the overlay goes blank. Just revisit this page and
+    authorise again — same Client ID, new token. The diagnostics page warns you if your token has
+    under 24 hours left, so check it before a big stream.</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* the redirect URI is literally this page's own URL, no query/hash */
+const REDIRECT = location.origin + location.pathname;
+$('redir').value = REDIRECT;
+
+if (location.protocol === 'file:') {
+  $('redir').value = 'You must serve this over http — run serve.bat / serve.sh first';
+  $('redir').style.color = '#ff5f5f';
+}
+
+function cp(id, btn){
+  const el = $(id); el.select(); navigator.clipboard.writeText(el.value);
+  const o = btn.textContent; btn.textContent = '✓'; setTimeout(()=>btn.textContent = o, 1200);
+}
+
+function scopes(){
+  const s = [];
+  if ($('s1').checked) s.push('moderator:read:followers');
+  if ($('s2').checked) s.push('user:write:chat');
+  return s.join(' ');
+}
+function authUrl(){
+  const p = new URLSearchParams({
+    client_id: $('cid').value.trim(),
+    redirect_uri: REDIRECT,
+    response_type: 'token',
+    scope: scopes(),
+  });
+  return 'https://id.twitch.tv/oauth2/authorize?' + p.toString();
+}
+function refresh(){
+  const ok = $('cid').value.trim().length > 8 && location.protocol !== 'file:';
+  $('go').classList.toggle('dis', !ok);
+  $('go').href = ok ? authUrl() : '#';
+  $('raw').value = ok ? authUrl() : '';
+  try{ localStorage.setItem('so-cid', $('cid').value.trim()); }catch(e){}
+}
+['cid','s1','s2'].forEach(id => $(id).addEventListener('input', refresh));
+$('showurl').onclick = () => {
+  const r = $('rawurl'); r.style.display = r.style.display === 'none' ? 'block' : 'none';
+};
+try{ const v = localStorage.getItem('so-cid'); if(v) $('cid').value = v; }catch(e){}
+refresh();
+
+/* ---- catch the token coming back in the URL fragment ----
+   Runs on load, and again on hashchange, so the token is never stranded
+   if the browser restores the page instead of doing a full navigation. ---- */
+addEventListener('hashchange', () => catchToken());
+catchToken();
+
+function catchToken(){
+  const h = new URLSearchParams(location.hash.slice(1));
+  const tok = h.get('access_token');
+  const err = h.get('error_description') || h.get('error');
+
+  if (err) {
+    $('gotit').style.display = 'block';
+    $('gotit').innerHTML = `<div class="panel"><h2>Authorisation failed</h2><div class="in">
+      <div class="warn" style="margin-top:0"><b>${err.replace(/\+/g,' ')}</b></div>
+      <p style="margin-bottom:0">Most often this means the <b>Redirect URL on your Twitch app
+      doesn't exactly match</b> <code>${REDIRECT}</code>. Check for a missing port number,
+      http vs https, or a trailing slash.</p></div></div>`;
+    return;
+  }
+  if (!tok) return;
+
+  const cid = (localStorage.getItem('so-cid') || '').trim();
+  $('gotit').style.display = 'block';
+  $('gotit').innerHTML = `<div class="panel"><h2>Success — here are your two values</h2><div class="in">
+    <div class="ok" style="margin-top:0"><b class="big">Copy both into the builder or diagnostics page.</b>
+    Keep the token private — treat it like a password.</div>
+    <label>Client ID</label>
+    <div class="copybox"><input id="outc" readonly value="${cid}">
+      <button class="btn sec" onclick="cp('outc',this)">Copy</button></div>
+    <label>Access token</label>
+    <div class="copybox"><input id="outt" readonly value="${tok}">
+      <button class="btn sec" onclick="cp('outt',this)">Copy</button></div>
+    <div style="margin-top:16px;display:flex;gap:9px;flex-wrap:wrap">
+      <a class="btn g" href="test.html">Test these in diagnostics →</a>
+      <a class="btn sec" href="index.html">Go to the builder</a>
+    </div>
+    <div class="note" style="margin-bottom:0">Clear the address bar after copying — the token is
+    sitting in this page's URL.</div>
+  </div></div>`;
+  history.replaceState(null, '', REDIRECT);
+}
+</script>
+</body>
+</html>
