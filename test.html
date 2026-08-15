@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Clawmark — Diagnostics</title>
+<title>Clawmark - Diagnostics</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="assets/brand/icon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="assets/brand/icon-180.png">
 <meta name="theme-color" content="#08192a">
 <meta name="author" content="Hardclaws">
-<meta property="og:title" content="Clawmark — Twitch Shoutout Overlay">
+<meta property="og:title" content="Clawmark - Twitch Shoutout Overlay">
 <meta property="og:description" content="138 hand-designed shoutout layouts for OBS. No access token required. By Hardclaws.">
 <meta property="og:image" content="assets/brand/social-preview.png">
 <meta property="og:type" content="website">
@@ -65,7 +65,7 @@
 </head>
 <body><div class="wrap">
 
-<h1>Clawmark — <span>Diagnostics</span></h1>
+<h1>Clawmark - <span>Diagnostics</span></h1>
 <p class="lede">Run this before you go live. It checks your token, scopes, and every API call
 the overlay makes, so you know exactly which layer is broken instead of staring at a blank
 browser source.</p>
@@ -107,20 +107,20 @@ browser source.</p>
   <h2>Manual test checklist</h2>
   <div class="in">
     <ol>
-      <li><b>Diagnostics green</b> — run the checks above first.</li>
-      <li><b>Preview in the builder</b> — open <a href="index.html">index.html</a>, click through layouts.</li>
-      <li><b>Overlay in a normal browser tab</b> — paste your generated URL, add
+      <li><b>Diagnostics green</b> - run the checks above first.</li>
+      <li><b>Preview in the builder</b> - open <a href="index.html">index.html</a>, click through layouts.</li>
+      <li><b>Overlay in a normal browser tab</b> - paste your generated URL, add
         <code>&amp;test=someuser&amp;debug=1</code>. A shoutout should fire on load.
         Open DevTools console for logs.</li>
-      <li><b>Chat command in a browser tab</b> — with the overlay open, type
+      <li><b>Chat command in a browser tab</b> - with the overlay open, type
         <span class="kbd">!so someuser</span> in your channel's chat. It should play.</li>
-      <li><b>Queue</b> — fire three <span class="kbd">!so</span> commands quickly. They should
+      <li><b>Queue</b> - fire three <span class="kbd">!so</span> commands quickly. They should
         play one after another, not overlap.</li>
-      <li><b>Mod commands</b> — <span class="kbd">!stopclip</span> mid-clip should cut it;
+      <li><b>Mod commands</b> - <span class="kbd">!stopclip</span> mid-clip should cut it;
         <span class="kbd">!replayso</span> should replay the last one.</li>
-      <li><b>Into OBS</b> — add the Browser Source with the four settings from the README.
+      <li><b>Into OBS</b> - add the Browser Source with the four settings from the README.
         Confirm you can <b>hear</b> the clip (needs "Control audio via OBS").</li>
-      <li><b>Edge cases</b> — shout out a brand-new channel with no clips (should show the
+      <li><b>Edge cases</b> - shout out a brand-new channel with no clips (should show the
         profile card), and a name that doesn't exist (should fail silently, not hang).</li>
     </ol>
   </div>
@@ -171,7 +171,7 @@ async function publicChecks(target, chan){
     row('p1','User not found','bad',`No Twitch channel named <code>${target}</code>. Check the spelling.`);
     return;
   }
-  row('p1','Public API works — no token needed','ok',
+  row('p1','Public API works - no token needed','ok',
     `Resolved <b>${u.displayName}</b> (id ${u.id}).`);
 
   const bits=[];
@@ -179,18 +179,18 @@ async function publicChecks(target, chan){
   if(u.description) bits.push('bio');
   if(u.createdAt) bits.push('account age');
   if(u.roles && (u.roles.isPartner||u.roles.isAffiliate)) bits.push('badge');
-  row('p2','Profile fields','ok', bits.length?`Got: ${bits.join(', ')}.`:'Sparse profile — layouts will hide empty fields.');
+  row('p2','Profile fields','ok', bits.length?`Got: ${bits.join(', ')}.`:'Sparse profile - layouts will hide empty fields.');
 
   const fol = u.followers && u.followers.totalCount;
   row('p3','Follower count', typeof fol==='number'?'ok':'warn',
     typeof fol==='number'
       ? `<b>${fol.toLocaleString()}</b> followers. The public API returns this for <i>any</i>
-         channel — the official Helix API does not.`
+         channel - the official Helix API does not.`
       : 'Not returned for this channel.');
 
   const lb=u.lastBroadcast||{};
   row('p4','Category & title', (lb.game||lb.title)?'ok':'warn',
-    `${(lb.game&&lb.game.name)||'(no category)'} — ${lb.title||'(no title)'}` +
+    `${(lb.game&&lb.game.name)||'(no category)'} - ${lb.title||'(no title)'}` +
     (u.stream?' · <b>LIVE right now</b>':' · currently offline'));
 
   const edges=(u.clips&&u.clips.edges)||[];
@@ -215,11 +215,11 @@ async function publicChecks(target, chan){
   await new Promise(res=>{
     const v=document.createElement('video'); v.muted=true; v.preload='metadata'; v.src=src;
     const to=setTimeout(()=>{ row('p6','Clip video timed out','warn',
-      'Could not load within 10s — slow network, or something is blocking the CDN.'); res(); },10000);
+      'Could not load within 10s - slow network, or something is blocking the CDN.'); res(); },10000);
     v.onloadedmetadata=()=>{clearTimeout(to);
       row('p6','Clip video plays','ok',
         `${v.videoWidth}×${v.videoHeight}, ${v.duration.toFixed(1)}s.
-         <br><b>This is the most important check — clip playback works with no credentials.</b>`);
+         <br><b>This is the most important check - clip playback works with no credentials.</b>`);
       res();};
     v.onerror=()=>{clearTimeout(to);
       row('p6','Clip video failed to load','bad',
@@ -238,7 +238,7 @@ $('run').onclick=async()=>{
 
   if(!cid||!tok){
     row('mode','Testing no-token mode','ok',
-      'No credentials entered — checking the public API path the overlay uses by default.');
+      'No credentials entered - checking the public API path the overlay uses by default.');
     await publicChecks(target, chan);
     $('run').disabled=false; return;
   }
@@ -261,7 +261,7 @@ $('run').onclick=async()=>{
     const expSoon=v.expires_in<86400;
     row('val','Token is valid',expSoon?'warn':'ok',
       `Logged in as <b>${v.login}</b> · expires in ${days>1?days+' days':hrs+' hours'}` +
-      (expSoon?' — <b>this will expire soon, regenerate before your next stream.</b>':''));
+      (expSoon?' - <b>this will expire soon, regenerate before your next stream.</b>':''));
 
     if(v.client_id!==cid){
       row('cidm','Client ID mismatch','bad',
@@ -274,14 +274,14 @@ $('run').onclick=async()=>{
 
     const sc=v.scopes||[];
     row('sc','Scopes', sc.length?'ok':'warn',
-      sc.length?`<code>${sc.join('</code> <code>')}</code>`:'No scopes — profile and clips still work.');
+      sc.length?`<code>${sc.join('</code> <code>')}</code>`:'No scopes - profile and clips still work.');
     row('scf','Follower counts', sc.includes('moderator:read:followers')?'ok':'warn',
       sc.includes('moderator:read:followers')
-        ? 'Scope present. Note Twitch still only returns counts for channels you moderate — the stat auto-hides elsewhere.'
+        ? 'Scope present. Note Twitch still only returns counts for channels you moderate - the stat auto-hides elsewhere.'
         : 'Missing <code>moderator:read:followers</code>. Follower counts will be hidden on every layout. That is fine unless you want that stat.');
     row('scc','Chat message posting', sc.includes('user:write:chat')?'ok':'warn',
       sc.includes('user:write:chat')
-        ? 'Scope present — the "post in chat" option will work.'
+        ? 'Scope present - the "post in chat" option will work.'
         : 'Missing <code>user:write:chat</code>. Only needed if you enable posting a shoutout message in chat.');
   }catch(e){
     row('val','Could not reach Twitch','bad',
@@ -299,7 +299,7 @@ $('run').onclick=async()=>{
       if(u) row('own','Your channel resolves','ok',
         `<b>${u.display_name}</b> · id ${u.id} · created ${new Date(u.created_at).toLocaleDateString()}`);
       else row('own','Your channel was not found','bad',
-        `No Twitch user named <code>${chan}</code>. Check the spelling — use your login name, not your display name.`);
+        `No Twitch user named <code>${chan}</code>. Check the spelling - use your login name, not your display name.`);
     }catch(e){ row('own','Channel lookup failed','bad',e.message); }
   }
 
@@ -317,7 +317,7 @@ $('run').onclick=async()=>{
   }catch(e){
     row('u','Helix /users failed','bad',
       e.message+(String(e.message).includes('401')
-        ? ' — this almost always means the Client ID does not match the token.':''));
+        ? ' - this almost always means the Client ID does not match the token.':''));
     $('run').disabled=false; return;
   }
 
@@ -335,18 +335,18 @@ $('run').onclick=async()=>{
     row('ch','Channel info', ch?'ok':'warn',
       ch?`Category: <b>${ch.game_name||'(none)'}</b> · Title: ${ch.title||'(none)'} · Lang: ${ch.broadcaster_language||'?'}`
         :'No channel data returned.');
-    row('st','Live status','ok', st?`<b>LIVE</b> now — ${st.viewer_count} viewers`:'Currently offline (the overlay handles both).');
+    row('st','Live status','ok', st?`<b>LIVE</b> now - ${st.viewer_count} viewers`:'Currently offline (the overlay handles both).');
   }catch(e){ row('ch','Channel/stream lookup failed','bad',e.message); }
 
   /* 6. followers */
   row('fol','Checking follower count…','run');
   const f=await api.followers(user.id);
   row('fol','Follower count', f!=null?'ok':'warn',
-    f!=null?`<b>${f.toLocaleString()}</b> followers — this stat will display.`
+    f!=null?`<b>${f.toLocaleString()}</b> followers - this stat will display.`
       :`Not returned for <code>${target}</code>. Twitch restricts this to channels you moderate,
         so the layouts will hide the stat. Expected behaviour for most shoutouts.`);
 
-  /* 7. clips — the big one */
+  /* 7. clips - the big one */
   row('cl','Fetching clips…','run');
   try{
     const clips=await api.clips(user.id,{});
@@ -366,10 +366,10 @@ $('run').onclick=async()=>{
       if(!mp4){
         row('mp4','Could not derive clip video URL','bad',
           `Thumbnail did not match the expected pattern:<pre>${picked.thumbnail_url}</pre>
-           Twitch may have changed their CDN format — please open a GitHub issue.`);
+           Twitch may have changed their CDN format - please open a GitHub issue.`);
       } else {
         row('mp4','Clip video URL derived','run',`<code>${mp4}</code>`);
-        /* actually try to play it — this is the real test */
+        /* actually try to play it - this is the real test */
         await new Promise(res=>{
           const vid=document.createElement('video');
           vid.muted=true; vid.preload='metadata'; vid.src=mp4;
@@ -382,7 +382,7 @@ $('run').onclick=async()=>{
           vid.onloadedmetadata=()=>{clearTimeout(to);
             row('mp4','Clip video loads and is playable','ok',
               `Resolution ${vid.videoWidth}×${vid.videoHeight} · duration ${vid.duration.toFixed(1)}s.
-               <br>This is the single most important check — clip playback works.`);
+               <br>This is the single most important check - clip playback works.`);
             res();};
           vid.onerror=()=>{clearTimeout(to);
             row('mp4','Clip video failed to load','bad',
@@ -408,7 +408,7 @@ $('run').onclick=async()=>{
   el.style.marginTop='14px';
   el.innerHTML=`<div class="ico">${bad?'✕':warn?'!':'✓'}</div><div><b>${
     bad?`${bad} blocking problem${bad>1?'s':''} found`
-      :warn?`Ready to use — ${warn} note${warn>1?'s':''} above`
+      :warn?`Ready to use - ${warn} note${warn>1?'s':''} above`
       :'All checks passed'}</b><small>${
     bad?'Fix the red items above before testing in OBS.'
       :'Next: open your overlay URL in a browser tab with <code>&amp;test='+target+'&amp;debug=1</code> appended.'
@@ -422,11 +422,11 @@ $('chatonly').onclick=()=>{
   reset(); save();
   const chan=$('chan').value.trim().toLowerCase();
   if(!chan){ row('c','Enter your channel name first','bad'); return; }
-  row('c','Connecting to #'+chan+'…','run','Anonymous IRC — no token needed for reading chat.');
+  row('c','Connecting to #'+chan+'…','run','Anonymous IRC - no token needed for reading chat.');
   let got=0;
   const c=Twitch.Chat(chan,{
     onOpen:()=>row('c','Connected to #'+chan,'ok',
-      `Now type <span class="kbd">!so someuser</span> or any message in your chat —
+      `Now type <span class="kbd">!so someuser</span> or any message in your chat -
        it should appear below within a second or two.`),
     onMessage:(m)=>{
       got++;

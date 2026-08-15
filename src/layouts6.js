@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — SET 6
+   LAYOUTS - SET 6
    Sci-fi and cyberpunk.
 
    Same rule as set 5: the clip owns a dedicated 16:9 window and no
@@ -26,7 +26,7 @@
   /* ---------- STARSHIP BRIDGE ---------- */
   add({
     id: 'starship', label: 'Starship Bridge', group: 'Sci-fi',
-    blurb: 'Command console of a capital ship — curved viewport, system readouts, and a hull-status wireframe that pulses.',
+    blurb: 'Command console of a capital ship - curved viewport, system readouts, and a hull-status wireframe that pulses.',
     html: (d) => `
     <div class="lo lo-ship">
       <div class="ss-void"></div>
@@ -76,7 +76,7 @@
   /* ---------- HOLOGRAM ---------- */
   add({
     id: 'hologram', label: 'Hologram', group: 'Sci-fi',
-    blurb: 'A projected light-field — the panel flickers, scan bands roll upward and everything sits on a glowing emitter disc.',
+    blurb: 'A projected light-field - the panel flickers, scan bands roll upward and everything sits on a glowing emitter disc.',
     html: (d) => `
     <div class="lo lo-holo2">
       <div class="hg-dark"></div>
@@ -108,7 +108,7 @@
   /* ---------- MECH COCKPIT ---------- */
   add({
     id: 'mech', label: 'Mech Cockpit', group: 'Sci-fi',
-    blurb: 'Inside a piloted mech — armoured strut frame, targeting reticle, ammo and coolant gauges, warning lamps.',
+    blurb: 'Inside a piloted mech - armoured strut frame, targeting reticle, ammo and coolant gauges, warning lamps.',
     html: (d) => `
     <div class="lo lo-mech">
       <div class="mk-cab"></div>
@@ -182,7 +182,7 @@
   /* ---------- XENO SCAN ---------- */
   add({
     id: 'xenoscan', label: 'Xeno Scan', group: 'Sci-fi',
-    blurb: 'Lifeform analysis terminal — a sweeping scan line crosses the subject while classification data types itself in.',
+    blurb: 'Lifeform analysis terminal - a sweeping scan line crosses the subject while classification data types itself in.',
     html: (d) => `
     <div class="lo lo-xeno">
       <div class="xn-grid"></div>
@@ -205,9 +205,9 @@
           ${d.user.created ? `<div><span>FIRST CONTACT</span><b>${esc(d.user.created)}</b></div>` : ''}
           <div><span>BEACON</span><b>${esc(d.user.url)}</b></div>
         </div>
-        ${d.user.bio ? `<p class="xn-note">FIELD NOTE — ${esc(d.user.bio)}</p>` : ''}
+        ${d.user.bio ? `<p class="xn-note">FIELD NOTE - ${esc(d.user.bio)}</p>` : ''}
         <div class="xn-credit">${credit(d, 'stack')}</div>
-        <div class="xn-status"><i></i>SCAN COMPLETE — ${esc(d.copy.cta).toUpperCase()}</div>
+        <div class="xn-status"><i></i>SCAN COMPLETE - ${esc(d.copy.cta).toUpperCase()}</div>
       </div>
       <div class="progress"><i></i></div>
     </div>`,
@@ -216,7 +216,7 @@
   /* ---------- ORBITAL STATION ---------- */
   add({
     id: 'station', label: 'Orbital Station', group: 'Sci-fi',
-    blurb: 'A window seat above the planet — curved horizon glow, docking chatter, and a slow rotating station ring.',
+    blurb: 'A window seat above the planet - curved horizon glow, docking chatter, and a slow rotating station ring.',
     html: (d) => `
     <div class="lo lo-stn">
       <div class="st2-space"></div>
@@ -255,7 +255,7 @@
   /* ---------- NEON STREET ---------- */
   add({
     id: 'neonstreet', label: 'Neon Street', group: 'Cyberpunk',
-    blurb: 'Rain-slick alley at night — stacked kanji signage, wet reflections and a billboard playing the clip.',
+    blurb: 'Rain-slick alley at night - stacked kanji signage, wet reflections and a billboard playing the clip.',
     html: (d) => `
     <div class="lo lo-street">
       <div class="ns-night"></div>
@@ -291,13 +291,13 @@
   /* ---------- NETRUNNER ---------- */
   add({
     id: 'netrunner', label: 'Netrunner', group: 'Cyberpunk',
-    blurb: 'Breaching a system — cascading code rain, an ICE-break progress meter and a stolen-data readout.',
+    blurb: 'Breaching a system - cascading code rain, an ICE-break progress meter and a stolen-data readout.',
     html: (d) => `
     <div class="lo lo-net">
       <div class="nr-rain">${rep(26, (i) => `<b style="left:${i * 4}%;--dl:${(i % 9) * 0.4}s;--dur:${3 + (i % 5)}s">${rep(14, () => String.fromCharCode(0x30a0 + Math.floor(Math.random() * 90)))}</b>`)}</div>
 
       <div class="nr-term a-nrin">
-        <div class="nr-tbar"><i></i><i></i><i></i><span>ICE BREAKER v9.2 — ${esc((d.user.login || 'target').toUpperCase())}</span></div>
+        <div class="nr-tbar"><i></i><i></i><i></i><span>ICE BREAKER v9.2 - ${esc((d.user.login || 'target').toUpperCase())}</span></div>
         <div class="nr-body">
           <div class="nr-log">
             <div>&gt; handshake .......... <b class="ok">OK</b></div>
@@ -323,12 +323,12 @@
   /* ---------- AUGMENT SHOP ---------- */
   add({
     id: 'augment', label: 'Augment Clinic', group: 'Cyberpunk',
-    blurb: 'Back-alley chrome clinic — an exploded-view implant diagram with callout lines to the channel stats.',
+    blurb: 'Back-alley chrome clinic - an exploded-view implant diagram with callout lines to the channel stats.',
     html: (d) => `
     <div class="lo lo-aug">
       <div class="ag-wall"></div>
       <div class="ag-head a-agdn">
-        <span class="ag-logo">◈</span> CHROME CLINIC — INSTALL MANIFEST
+        <span class="ag-logo">◈</span> CHROME CLINIC - INSTALL MANIFEST
         <span class="ag-price">NO CHARGE</span>
       </div>
 
@@ -340,9 +340,9 @@
           <path d="M148 230 L60 190 M272 230 L360 190 M172 120 L80 96 M248 330 L340 356"/>
           ${rep(6, (i) => `<circle class="ag-node" cx="${150 + (i % 3) * 60}" cy="${150 + Math.floor(i / 3) * 120}" r="5"/>`)}
         </svg>
-        <div class="ag-callout c1">${d.user.followers != null ? `<b>${n(d.user.followers)}</b><span>NEURAL LINKS</span>` : `<b>—</b><span>NEURAL LINKS</span>`}</div>
-        <div class="ag-callout c2">${d.clip ? `<b>${n(d.clip.views)}</b><span>OPTIC PLAYS</span>` : `<b>—</b><span>OPTIC PLAYS</span>`}</div>
-        <div class="ag-callout c3">${d.user.created ? `<b>${esc(d.user.created)}</b><span>INSTALLED</span>` : `<b>—</b><span>INSTALLED</span>`}</div>
+        <div class="ag-callout c1">${d.user.followers != null ? `<b>${n(d.user.followers)}</b><span>NEURAL LINKS</span>` : `<b>-</b><span>NEURAL LINKS</span>`}</div>
+        <div class="ag-callout c2">${d.clip ? `<b>${n(d.clip.views)}</b><span>OPTIC PLAYS</span>` : `<b>-</b><span>OPTIC PLAYS</span>`}</div>
+        <div class="ag-callout c3">${d.user.created ? `<b>${esc(d.user.created)}</b><span>INSTALLED</span>` : `<b>-</b><span>INSTALLED</span>`}</div>
       </div>
 
       <div class="ag-screen a-agpop">
@@ -364,14 +364,14 @@
   /* ---------- MEGACORP ---------- */
   add({
     id: 'megacorp', label: 'Megacorp Memo', group: 'Cyberpunk',
-    blurb: 'A cold corporate directive — watermarked letterhead, clearance stamp, and a surveillance still of the subject.',
+    blurb: 'A cold corporate directive - watermarked letterhead, clearance stamp, and a surveillance still of the subject.',
     html: (d) => `
     <div class="lo lo-corp">
       <div class="mc-sheet a-mcin">
         <div class="mc-mark">CLASSIFIED</div>
         <div class="mc-head">
           <div class="mc-logo">▚</div>
-          <div><b>ARASHI–KANE INDUSTRIES</b><span>INTERNAL DIRECTIVE // TIER 4</span></div>
+          <div><b>ARASHI-KANE INDUSTRIES</b><span>INTERNAL DIRECTIVE // TIER 4</span></div>
           <div class="mc-ref">REF ${String((d.user.followers || 4021) % 9999).padStart(4, '0')}-B</div>
         </div>
 
@@ -386,7 +386,7 @@
               ${d.user.created ? `<div><span>ON FILE SINCE</span><b>${esc(d.user.created)}</b></div>` : ''}
             </div>
             ${d.user.bio ? `<p class="mc-note">${esc(d.user.bio)}</p>` : ''}
-            <div class="mc-action">DIRECTIVE — ${esc(d.copy.cta).toUpperCase()}</div>
+            <div class="mc-action">DIRECTIVE - ${esc(d.copy.cta).toUpperCase()}</div>
           </div>
           <div class="mc-col right">
             <div class="mc-shot">${clip(d)}<span class="mc-scap">SURVEILLANCE CAPTURE</span></div>
@@ -402,7 +402,7 @@
   /* ---------- DRONE FEED ---------- */
   add({
     id: 'dronefeed', label: 'Drone Feed', group: 'Cyberpunk',
-    blurb: 'Live downlink from a surveillance drone — battery and altitude telemetry, REC dot, and a jittering crosshair.',
+    blurb: 'Live downlink from a surveillance drone - battery and altitude telemetry, REC dot, and a jittering crosshair.',
     html: (d) => `
     <div class="lo lo-drone">
       <div class="dr-frame a-drin">
@@ -443,7 +443,7 @@
   /* ---------- SYNTH GRID ---------- */
   add({
     id: 'synthgrid', label: 'Synth Grid', group: 'Cyberpunk',
-    blurb: 'Outrun horizon — chrome sun, endless perspective grid, and a mirrored chrome nameplate.',
+    blurb: 'Outrun horizon - chrome sun, endless perspective grid, and a mirrored chrome nameplate.',
     html: (d) => `
     <div class="lo lo-synth">
       <div class="sg2-sky"></div>

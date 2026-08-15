@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — SET 7
+   LAYOUTS - SET 7
    Horror / occult, and anime / manga.
    Clip window is dedicated 16:9; nothing is drawn over it.
    ============================================================= */
@@ -24,7 +24,7 @@
   /* ---------- FOUND FOOTAGE ---------- */
   add({
     id: 'foundfootage', label: 'Found Footage', group: 'Horror',
-    blurb: 'Camcorder tape recovered from the scene — timecode, low battery, night-vision tint and a jittering handheld frame.',
+    blurb: 'Camcorder tape recovered from the scene - timecode, low battery, night-vision tint and a jittering handheld frame.',
     html: (d) => `
     <div class="lo lo-found">
       <div class="ff-dark"></div>
@@ -40,7 +40,7 @@
           <span class="ff-tc">00:0${(new Date().getSeconds() % 9) + 1}:${String(new Date().getSeconds()).padStart(2, '0')}</span>
         </div>
         <div class="ff-hud b">
-          <span>TAPE ${String((d.user.followers || 13) % 99).padStart(2, '0')} — DO NOT ERASE</span>
+          <span>TAPE ${String((d.user.followers || 13) % 99).padStart(2, '0')} - DO NOT ERASE</span>
           <span class="ff-r">SP · AUTO</span>
         </div>
         <div class="ff-corner tl"></div><div class="ff-corner br"></div>
@@ -66,7 +66,7 @@
   /* ---------- SEANCE ---------- */
   add({
     id: 'seance', label: 'Séance Board', group: 'Horror',
-    blurb: 'A spirit board lit by candles — the planchette slides across to spell out the channel name.',
+    blurb: 'A spirit board lit by candles - the planchette slides across to spell out the channel name.',
     html: (d) => `
     <div class="lo lo-seance">
       <div class="se-room"></div>
@@ -103,7 +103,7 @@
   /* ---------- ELDRITCH ---------- */
   add({
     id: 'eldritch', label: 'Eldritch', group: 'Horror',
-    blurb: 'Something vast and wrong — writhing tentacle silhouettes, a non-euclidean sigil and text that breathes.',
+    blurb: 'Something vast and wrong - writhing tentacle silhouettes, a non-euclidean sigil and text that breathes.',
     html: (d) => `
     <div class="lo lo-eld">
       <div class="el-abyss"></div>
@@ -147,7 +147,7 @@
   /* ---------- SLASHER TITLE ---------- */
   add({
     id: 'slasher', label: 'Slasher Title', group: 'Horror',
-    blurb: '80s video-nasty title card — grain, a knife-slash wipe revealing the name, and blood-drip lettering.',
+    blurb: '80s video-nasty title card - grain, a knife-slash wipe revealing the name, and blood-drip lettering.',
     html: (d) => `
     <div class="lo lo-slash">
       <div class="sl2-black"></div>
@@ -181,7 +181,7 @@
   /* ---------- HAUNTED MIRROR ---------- */
   add({
     id: 'mirror', label: 'Haunted Mirror', group: 'Horror',
-    blurb: 'An antique mirror in a dark hall — cracked glass, fogged edges, and a name written in the condensation.',
+    blurb: 'An antique mirror in a dark hall - cracked glass, fogged edges, and a name written in the condensation.',
     html: (d) => `
     <div class="lo lo-mirror">
       <div class="mr-hall"></div>
@@ -218,7 +218,7 @@
   /* ---------- ASYLUM FILE ---------- */
   add({
     id: 'asylum', label: 'Asylum File', group: 'Horror',
-    blurb: 'A patient file that should have stayed buried — typewriter notes, a redaction bar and a paperclipped photo.',
+    blurb: 'A patient file that should have stayed buried - typewriter notes, a redaction bar and a paperclipped photo.',
     html: (d) => `
     <div class="lo lo-asy">
       <div class="as-desk"></div>
@@ -226,7 +226,7 @@
         <div class="as-tab">PATIENT ${String((d.user.followers || 231) % 999).padStart(3, '0')}</div>
         <div class="as-paper">
           <div class="as-head">
-            <div><b>ST. ALDEN INSTITUTE</b><span>ADMISSION RECORD — CONFIDENTIAL</span></div>
+            <div><b>ST. ALDEN INSTITUTE</b><span>ADMISSION RECORD - CONFIDENTIAL</span></div>
             <div class="as-seal">✚</div>
           </div>
 
@@ -299,7 +299,7 @@
   /* ---------- MANGA PAGE ---------- */
   add({
     id: 'mangapage', label: 'Manga Page', group: 'Anime',
-    blurb: 'Right-to-left manga spread — screentone shading, a diagonal action panel and a hand-lettered sound effect.',
+    blurb: 'Right-to-left manga spread - screentone shading, a diagonal action panel and a hand-lettered sound effect.',
     html: (d) => `
     <div class="lo lo-manga">
       <div class="mg-page">
@@ -341,7 +341,7 @@
   /* ---------- MECHA LAUNCH ---------- */
   add({
     id: 'mechalaunch', label: 'Mecha Launch', group: 'Anime',
-    blurb: 'Catapult launch sequence — bay doors, a countdown, klaxon stripes and a pilot ident slate.',
+    blurb: 'Catapult launch sequence - bay doors, a countdown, klaxon stripes and a pilot ident slate.',
     html: (d) => `
     <div class="lo lo-launch">
       <div class="ml-bay"></div>
@@ -352,7 +352,7 @@
       <div class="ml-screen a-mlin">
         <div class="ml-view">${clip(d)}</div>
         <div class="ml-rails"><i></i><i></i></div>
-        <div class="ml-cap">CATAPULT 03 — CLEAR FOR LAUNCH</div>
+        <div class="ml-cap">CATAPULT 03 - CLEAR FOR LAUNCH</div>
       </div>
 
       <div class="ml-count a-mlcount">GO</div>
@@ -376,7 +376,7 @@
   /* ---------- MAGICAL GIRL ---------- */
   add({
     id: 'magicalgirl', label: 'Magical Girl', group: 'Anime',
-    blurb: 'Transformation sequence — ribbons spiral, hearts and stars burst, and everything is drenched in pastel sparkle.',
+    blurb: 'Transformation sequence - ribbons spiral, hearts and stars burst, and everything is drenched in pastel sparkle.',
     html: (d) => `
     <div class="lo lo-mgirl">
       <div class="mgl-sky"></div>
@@ -443,7 +443,7 @@
   /* ---------- TITLE CARD ---------- */
   add({
     id: 'animetitle', label: 'Episode Title', group: 'Anime',
-    blurb: 'End-of-cold-open title card — vertical Japanese type, a thin rule that draws itself, and an episode number.',
+    blurb: 'End-of-cold-open title card - vertical Japanese type, a thin rule that draws itself, and an episode number.',
     html: (d) => `
     <div class="lo lo-atitle">
       <div class="at-wash"></div>

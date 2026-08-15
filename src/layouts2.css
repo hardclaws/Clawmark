@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS SET 2 — themed designs.
+   LAYOUTS SET 2 - themed designs.
    Colour comes from skin tokens; the *character* is structural.
    ============================================================= */
 
@@ -770,7 +770,7 @@
 .lo-wanted .wa-reward span{color:#6b4a1c!important}
 .lo-wanted .wa-wood{background:repeating-linear-gradient(96deg,#4a3320 0 90px,#5a3f28 90px 184px)}
 
-/* STORYBOOK: same — the page must stay light. */
+/* STORYBOOK: same - the page must stay light. */
 .lo-story .st-book{background:linear-gradient(#f7efdc,#eadfc4)!important;color:#2e2416!important}
 .lo-story .st-name,.lo-story .st-para,.lo-story .st-facts{color:#2e2416!important}
 .lo-story .st-chapter,.lo-story .st-page-no,.lo-story .st-cap{color:#8a6a2f!important}
@@ -810,12 +810,12 @@
 /* CHAT: give the clip card more presence */
 .lo-chat .ch-phone{left:90px;top:60px;height:960px}
 .lo-chat .ch-clipcard{right:80px;width:920px;height:518px}
-/* the slide-in animation overwrote the centring transform — use margins instead */
+/* the slide-in animation overwrote the centring transform - use margins instead */
 .lo-pass .pa-ticket{left:50%;top:50%;transform:none;margin-left:-750px;margin-top:-300px}
 @keyframes slideInR{from{transform:translateX(120%);opacity:0}to{transform:none;opacity:1}}
 
 /* =============================================================
-   36–40
+   36-40
    ============================================================= */
 @keyframes coneIn{from{opacity:0;transform:scaleY(.2) translateY(-120px)}to{opacity:1;transform:none}}
 @keyframes curtL{from{transform:translateX(0)}to{transform:translateX(-78%)}}
@@ -986,7 +986,7 @@
 :root[data-transparency="panels"] .lo-race .rc-veil,:root[data-transparency="full"] .lo-race .rc-veil{display:none!important}
 
 /* ---- fixes from live render of 36-40 ---- */
-/* BOSS BAR: sat on bright footage with no scrim — add a plate */
+/* BOSS BAR: sat on bright footage with no scrim - add a plate */
 .lo-boss .bo-top{background:linear-gradient(180deg,rgba(4,4,8,.92),rgba(4,4,8,.55) 78%,transparent);
   padding:26px 40px 34px;border-radius:0 0 var(--radius) var(--radius);width:1500px;margin-left:-750px}
 .lo-boss .bo-name h1{font-size:66px}
@@ -994,7 +994,7 @@
   padding:22px 40px;left:0;right:0;bottom:56px;border-radius:0}
 .lo-boss .bo-url{left:40px;bottom:20px}
 
-/* NEON TUBE: glow got lost on light skins — force a dark wall */
+/* NEON TUBE: glow got lost on light skins - force a dark wall */
 .lo-tube .nt-wall{background:repeating-linear-gradient(0deg,#141013 0 46px,#100c0f 46px 50px),
   repeating-linear-gradient(90deg,#141013 0 96px,#0e0a0d 96px 100px)!important;filter:none}
 .lo-tube .nt-sign h1{color:#fff!important}
@@ -1002,7 +1002,7 @@
 .lo-tube .nt-credit .credit b{color:#fff!important}
 .lo-tube .nt-credit .credit span{color:rgba(255,255,255,.7)!important}
 
-/* PASSPORT: fields were invisible on dark skins — it is a paper prop */
+/* PASSPORT: fields were invisible on dark skins - it is a paper prop */
 .lo-port .pt-page{background:linear-gradient(#f2f0e6,#e6e2d2)!important;color:#1d2436!important}
 .lo-port .pt-head,.lo-port .pt-fields span{color:#5a6478!important}
 .lo-port .pt-fields b,.lo-port .pt-mrz{color:#1d2436!important}

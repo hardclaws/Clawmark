@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   TWITCH — Helix REST + anonymous IRC chat listener.
+   TWITCH - Helix REST + anonymous IRC chat listener.
    No build step, no dependencies.
    ============================================================= */
 (function (root) {
@@ -18,8 +18,8 @@
     async function get(path, params) {
       const qs = new URLSearchParams(params || {}).toString();
       const res = await fetch(`${HELIX}${path}${qs ? '?' + qs : ''}`, { headers });
-      if (res.status === 401) throw new Error('401 — access token invalid or expired');
-      if (res.status === 429) throw new Error('429 — rate limited by Twitch');
+      if (res.status === 401) throw new Error('401 - access token invalid or expired');
+      if (res.status === 429) throw new Error('429 - rate limited by Twitch');
       if (!res.ok) throw new Error(`${res.status} on ${path}`);
       return res.json();
     }
@@ -43,7 +43,7 @@
       },
 
       /* Followers: requires moderator:read:followers for the target channel.
-         Almost always 401s for arbitrary channels — we swallow and return null
+         Almost always 401s for arbitrary channels - we swallow and return null
          so the layout can simply omit the stat. */
       async followers(userId) {
         try {
@@ -202,7 +202,7 @@
   }
 
   /* =============================================================
-     PUBLIC GQL — no token, no Client ID from the user.
+     PUBLIC GQL - no token, no Client ID from the user.
      Uses Twitch's own public web client id, exactly as the website does.
      This is what powers "no credentials required" mode, and it returns
      data Helix will not give you (follower counts for any channel).
@@ -268,7 +268,7 @@
         return d && d.user ? d.user : null;
       },
 
-      /* look up a single clip by slug — used by !watchclip <url> */
+      /* look up a single clip by slug - used by !watchclip <url> */
       async clipInfo(slug) {
         const d = await call(`query($slug:ID!){clip(slug:$slug){
           slug title viewCount durationSeconds createdAt
@@ -291,7 +291,7 @@
           .find((x) => !maxHeight || +x.quality <= maxHeight) || c.videoQualities[0];
         const t = c.playbackAccessToken;
         if (!q.sourceURL) return null;
-        // unsigned URLs 401 on the CDN — the signature is mandatory
+        // unsigned URLs 401 on the CDN - the signature is mandatory
         if (!t || !t.signature) return q.sourceURL;
         return q.sourceURL + '?sig=' + encodeURIComponent(t.signature) +
                '&token=' + encodeURIComponent(t.value);

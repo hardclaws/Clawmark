@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS SET 5 — retro / 8-bit, magic, dragons, epic fantasy.
+   LAYOUTS SET 5 - retro / 8-bit, magic, dragons, epic fantasy.
 
    Hard rule for this set: the clip owns a dedicated 16:9 window and
    NOTHING is drawn over it. Every window below is sized 16:9 and
@@ -1025,7 +1025,7 @@
   background:linear-gradient(180deg,rgba(190,225,255,.6),rgba(140,190,255,.14) 60%,transparent)}
 
 /* The sword lives in its own column between the copy and the clip. The first
-   pass centred it at 50%, which put the blade straight through the video —
+   pass centred it at 50%, which put the blade straight through the video -
    the exact overlap this set exists to avoid. */
 .lo-blade .bl-sword{position:absolute;left:762px;top:70px;width:130px;
   display:flex;flex-direction:column;align-items:center;z-index:2}
@@ -1090,7 +1090,7 @@
   background:linear-gradient(90deg,var(--accent),var(--accent-2))}
 
 /* =============================================================
-   TRANSPARENCY — these layouts paint full-canvas atmosphere, which is
+   TRANSPARENCY - these layouts paint full-canvas atmosphere, which is
    exactly what must NOT reach OBS when the overlay is transparent.
    In panels/full mode the atmosphere is dropped and each layout falls
    back to its own contained furniture.
@@ -1137,7 +1137,7 @@
 :root[data-transparency="panels"] .lo-tape .tp-inner,
 :root[data-transparency="full"] .lo-tape .tp-inner{display:block!important;background:transparent!important}
 
-/* the map is the layout — without parchment there is nothing, so give it a
+/* the map is the layout - without parchment there is nothing, so give it a
    contained sheet rather than deleting it */
 :root[data-transparency="panels"] .lo-way .wy-parch,
 :root[data-transparency="full"] .lo-way .wy-parch{

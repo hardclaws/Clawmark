@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   OVERLAY APP — config, queue, commands, render.
+   OVERLAY APP - config, queue, commands, render.
    ============================================================= */
 (function () {
   'use strict';
@@ -29,9 +29,9 @@
        over your scene, so a solid fill is almost never what is wanted, and it
        is the single most confusing failure mode when it is wrong. */
     transparency: q('bg', 'panels'),  // none | panels | full
-    holdInfo: q('hold_info', ''),     // always|long|medium|short — clears the info panel
-    detail: q('detail', ''),          // minimal|standard|rich — how much data is shown
-    fit: q('fit', ''),                // cover|contain — video cropping
+    holdInfo: q('hold_info', ''),     // always|long|medium|short - clears the info panel
+    detail: q('detail', ''),          // minimal|standard|rich - how much data is shown
+    fit: q('fit', ''),                // cover|contain - video cropping
     /* How the clip is framed against the info panels.
        smart  = move the clip into the layout's measured clear area so no
                 panel ever sits on the picture. Default: the panels were
@@ -39,7 +39,7 @@
        cover  = old behaviour, clip fills the canvas and panels overlay it
        shrink = smart, at 88% scale, for very busy scenes */
     videoFit: q('videofit', 'smart'),  // smart | cover | shrink
-    backdrop: q('backdrop', ''),      // none|blur|dim|scrim — behind the info block
+    backdrop: q('backdrop', ''),      // none|blur|dim|scrim - behind the info block
     expand: qb('expand', false),      // grow the clip when the info clears
     randomPool: q('pool', ''),        // comma-separated layout ids to pick from
     size: q('size', ''),              // 1920x1080 | 1280x720 | 960x540 | 640x360
@@ -75,7 +75,7 @@
   const stage = document.getElementById('stage');
   const log = (...a) => { if (CFG.debug) console.log('[shoutout]', ...a); };
 
-  /* inline default avatar — works with no network (OBS/iframe safe) */
+  /* inline default avatar - works with no network (OBS/iframe safe) */
   const DEMO_AVATAR = 'data:image/svg+xml;utf8,' + encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
       <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
@@ -120,7 +120,7 @@
   }
   applySize();
 
-  /* custom image assets — AI-generated or hand-made.
+  /* custom image assets - AI-generated or hand-made.
      Kept as URLs, never inlined: a data-URI image would blow past the
      practical length limit for an OBS browser-source URL. */
   window.SHOUTOUT_ASSET = { ornament: CFG.asset, backplate: CFG.backplate };
@@ -275,7 +275,7 @@
         name: 'NovaStrike', login: 'novastrike', url: 'twitch.tv/novastrike',
         avatar: DEMO_AVATAR,
         bio: 'Aussie Zwift racer, WTRL Tuesdays, coffee-powered. Sub goal: one more watt.',
-        game: 'Zwift', title: 'WTRL TTT — Zone 5 and regret',
+        game: 'Zwift', title: 'WTRL TTT - Zone 5 and regret',
         followers: 48214, years: 6, created: 'Mar 2019', live: true, lang: 'en',
         badge: 'Partner',
       });
@@ -642,7 +642,7 @@
       onRaid: (r) => {
         if (!CFG.autoRaid || !r.login) return;
         if (CFG.raidCount && r.viewers < CFG.raidCount) {
-          log('raid from', r.login, 'ignored —', r.viewers, '<', CFG.raidCount);
+          log('raid from', r.login, 'ignored -', r.viewers, '<', CFG.raidCount);
           return;
         }
         log('raid from', r.login, 'with', r.viewers, 'viewers');

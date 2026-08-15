@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — 20 structural arrangements.
+   LAYOUTS - 20 structural arrangements.
    Every layout is skin-agnostic: it only ever references CSS
    custom properties defined by skins.js. That's what makes
    20 layouts x N skins work.
@@ -50,7 +50,7 @@
       ? `${n(d.clip.views)} views · ${d.clip.duration}s · clipped by ${esc(d.clip.creator)} · ${esc(d.clip.created)}`
       : '';
 
-  /* Clip credit block — title + who clipped it + when.
+  /* Clip credit block - title + who clipped it + when.
      Every layout must surface these three. `variant` picks the shape:
        'line'  single inline row
        'stack' title on its own line, credit beneath
@@ -182,7 +182,7 @@
       if (s2.length) slides.push(`<div class="sl gap">${s2.join('')}</div>`);
       if (d.clip) slides.push(`<div class="sl"><div><div class="rl">Playing clip</div><div class="rv">${esc(d.clip.title)}</div></div></div>`);
       if (d.clip) slides.push(`<div class="sl"><div><div class="rl">Clipped by</div><div class="rv">${esc(d.clip.creator)} · ${esc(d.clip.created)} · ${n(d.clip.views)} views</div></div></div>`);
-      slides.push(`<div class="sl"><div class="rv big">${esc(d.user.url)} <span class="acc">— ${esc(d.copy.cta)}</span></div></div>`);
+      slides.push(`<div class="sl"><div class="rv big">${esc(d.user.url)} <span class="acc">- ${esc(d.copy.cta)}</span></div></div>`);
       return `
     <div class="lo lo-ticker">
       ${clip(d, 'fill')}
@@ -343,7 +343,7 @@
   /* ---------- 11. SIDEBAR ---------- */
   add({
     id: 'sidebar', label: 'Sidebar', group: 'Split', needsClip: false,
-    blurb: 'Vertical rail down one edge — designed to sit beside your gameplay, not over it.',
+    blurb: 'Vertical rail down one edge - designed to sit beside your gameplay, not over it.',
     html: (d) => `
     <div class="lo lo-sidebar">
       <div class="rail a-inl">
@@ -379,11 +379,11 @@
           <div class="tcrules">
             ${d.user.bio ? `<p>${esc(d.user.bio)}</p>` : ''}
             ${credit(d,'micro')}
-            <p class="flavour">“${esc(d.copy.cta)} — ${esc(d.user.url)}”</p>
+            <p class="flavour">“${esc(d.copy.cta)} - ${esc(d.user.url)}”</p>
           </div>
           <div class="tcfoot">
             <span>${d.user.created ? 'JOINED ' + esc(d.user.created).toUpperCase() : ''}</span>
-            <span class="pt">${d.user.followers ? n(d.user.followers) : '—'}</span>
+            <span class="pt">${d.user.followers ? n(d.user.followers) : '-'}</span>
           </div>
         </div>
       </div></div>
@@ -418,7 +418,7 @@
   /* ---------- 14. MAGAZINE ---------- */
   add({
     id: 'magazine', label: 'Magazine', group: 'Full frame', needsClip: false,
-    blurb: 'Editorial cover treatment — masthead, pull quote, cover lines down the side.',
+    blurb: 'Editorial cover treatment - masthead, pull quote, cover lines down the side.',
     html: (d) => `
     <div class="lo lo-mag">
       ${clip(d, 'fill')}
@@ -545,7 +545,7 @@
   /* ---------- 19. MINIMAL BUG ---------- */
   add({
     id: 'bug', label: 'Corner Bug', group: 'Corner', needsClip: false,
-    blurb: 'Tiny corner chip — no clip, no takeover. For when you just want a nod on screen.',
+    blurb: 'Tiny corner chip - no clip, no takeover. For when you just want a nod on screen.',
     html: (d) => `
     <div class="lo lo-bug">
       <div class="bugbox a-inr">

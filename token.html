@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Clawmark — Get Client ID &amp; Token</title>
+<title>Clawmark - Get Client ID &amp; Token</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="assets/brand/icon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="assets/brand/icon-180.png">
 <meta name="theme-color" content="#08192a">
 <meta name="author" content="Hardclaws">
-<meta property="og:title" content="Clawmark — Twitch Shoutout Overlay">
+<meta property="og:title" content="Clawmark - Twitch Shoutout Overlay">
 <meta property="og:description" content="138 hand-designed shoutout layouts for OBS. No access token required. By Hardclaws.">
 <meta property="og:image" content="assets/brand/social-preview.png">
 <meta property="og:type" content="website">
@@ -73,13 +73,13 @@ This page builds the authorisation link for you and catches the token when Twitc
 <div class="panel">
   <h2>What these two things are</h2>
   <div class="in">
-    <p style="margin-top:0"><b>Client ID</b> — a public identifier for an <i>application</i> registered
+    <p style="margin-top:0"><b>Client ID</b> - a public identifier for an <i>application</i> registered
     on Twitch. It is not your username, not a password, and not secret. It says
     <i>"these requests come from this app."</i></p>
-    <p><b>Access token</b> — proves a Twitch account authorised that app to act on its behalf.
+    <p><b>Access token</b> - proves a Twitch account authorised that app to act on its behalf.
     This one <b>is</b> secret.</p>
     <div class="warn"><b>They must be a matched pair.</b> A token issued to app A will be rejected
-    if you send it with app B's Client ID. This is the #1 cause of 401 errors — the diagnostics
+    if you send it with app B's Client ID. This is the #1 cause of 401 errors - the diagnostics
     page checks for it explicitly.</div>
   </div>
 </div>
@@ -92,23 +92,23 @@ This page builds the authorisation link for you and catches the token when Twitc
         and log in. <b>Two-factor auth must be enabled</b> on your Twitch account, or Twitch won't
         let you register anything.</li>
       <li>Click <b>Register Your Application</b>.</li>
-      <li><b>Name:</b> anything unique — e.g. <code>Dungeons &amp; Derailleurs Shoutout</code>.
+      <li><b>Name:</b> anything unique - e.g. <code>Dungeons &amp; Derailleurs Shoutout</code>.
         If it says the name is taken, add a word.</li>
-      <li><b>OAuth Redirect URL:</b> paste exactly this — it's where Twitch sends the token back.
+      <li><b>OAuth Redirect URL:</b> paste exactly this - it's where Twitch sends the token back.
         <div class="copybox">
           <input id="redir" readonly>
           <button class="btn sec" onclick="cp('redir',this)">Copy</button>
         </div>
         <div class="note" style="margin-bottom:0">This is <b>this page's own address</b>. It must
         match character for character. If you later serve the overlay from a different address
-        (a different port, or GitHub Pages), come back and add that one too — an app can have
+        (a different port, or GitHub Pages), come back and add that one too - an app can have
         several redirect URLs.</div>
       </li>
       <li><b>Category:</b> Broadcasting Suite. &nbsp; <b>Client Type:</b> Public.</li>
       <li>Click <b>Create</b>, then <b>Manage</b> on your new app. Copy the <b>Client ID</b>.</li>
     </ol>
     <div class="warn"><b>Ignore the Client Secret.</b> You don't need it, and it should never go
-    into a URL or a browser source. If you accidentally generated one, that's fine — just don't use it.</div>
+    into a URL or a browser source. If you accidentally generated one, that's fine - just don't use it.</div>
   </div>
 </div>
 
@@ -121,7 +121,7 @@ This page builds the authorisation link for you and catches the token when Twitc
     <label style="margin-top:18px">Permissions to request</label>
     <label class="sc"><input type="checkbox" checked disabled>
       <span><b>(no scope needed)</b><small>Profile, avatar, bio, clips, category, live status,
-      account age — the core of every shoutout. Always included.</small></span></label>
+      account age - the core of every shoutout. Always included.</small></span></label>
     <label class="sc"><input type="checkbox" id="s1" checked>
       <span><b>moderator:read:followers</b><small>Follower counts. Twitch only returns these for
       channels you moderate; the layouts hide the stat elsewhere.</small></span></label>
@@ -145,9 +145,9 @@ This page builds the authorisation link for you and catches the token when Twitc
 <div class="panel">
   <h2>Which route should I take?</h2>
   <div class="in">
-    <p style="margin-top:0"><b>Register your own app (above)</b> — recommended. The token is tied to
+    <p style="margin-top:0"><b>Register your own app (above)</b> - recommended. The token is tied to
     an app you control, and you can re-issue it whenever you like.</p>
-    <p><b>Or use a token generator site</b> such as twitchtokengenerator.com — quicker, but there's a
+    <p><b>Or use a token generator site</b> such as twitchtokengenerator.com - quicker, but there's a
     catch that trips people up constantly:</p>
     <div class="warn">If you use a generator site, you <b>must</b> use <b>that site's Client ID</b>,
     which it displays alongside the token. Your own app's Client ID will not work with their token.
@@ -161,7 +161,7 @@ This page builds the authorisation link for you and catches the token when Twitc
     <p style="margin-top:0">Implicit-grant tokens (what this page produces) last around
     <b>60 days</b>, but can be invalidated sooner if you change your password or revoke the app.</p>
     <p style="margin-bottom:0">When it expires the overlay goes blank. Just revisit this page and
-    authorise again — same Client ID, new token. The diagnostics page warns you if your token has
+    authorise again - same Client ID, new token. The diagnostics page warns you if your token has
     under 24 hours left, so check it before a big stream.</p>
   </div>
 </div>
@@ -176,7 +176,7 @@ const REDIRECT = location.origin + location.pathname;
 $('redir').value = REDIRECT;
 
 if (location.protocol === 'file:') {
-  $('redir').value = 'You must serve this over http — run serve.bat / serve.sh first';
+  $('redir').value = 'You must serve this over http - run serve.bat / serve.sh first';
   $('redir').style.color = '#ff5f5f';
 }
 
@@ -238,9 +238,9 @@ function catchToken(){
 
   const cid = (localStorage.getItem('so-cid') || '').trim();
   $('gotit').style.display = 'block';
-  $('gotit').innerHTML = `<div class="panel"><h2>Success — here are your two values</h2><div class="in">
+  $('gotit').innerHTML = `<div class="panel"><h2>Success - here are your two values</h2><div class="in">
     <div class="ok" style="margin-top:0"><b class="big">Copy both into the builder or diagnostics page.</b>
-    Keep the token private — treat it like a password.</div>
+    Keep the token private - treat it like a password.</div>
     <label>Client ID</label>
     <div class="copybox"><input id="outc" readonly value="${cid}">
       <button class="btn sec" onclick="cp('outc',this)">Copy</button></div>
@@ -251,7 +251,7 @@ function catchToken(){
       <a class="btn g" href="test.html">Test these in diagnostics →</a>
       <a class="btn sec" href="index.html">Go to the builder</a>
     </div>
-    <div class="note" style="margin-bottom:0">Clear the address bar after copying — the token is
+    <div class="note" style="margin-bottom:0">Clear the address bar after copying - the token is
     sitting in this page's URL.</div>
   </div></div>`;
   history.replaceState(null, '', REDIRECT);

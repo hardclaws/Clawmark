@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Clawmark — builder smoke test.
+"""Clawmark - builder smoke test.
 
 Clicks every interactive control in index.html and asserts it actually changed
 something observable. Written after "Shuffle skin" appeared broken: the theme
@@ -18,7 +18,7 @@ fails, checks = [], 0
 def check(name, ok, detail=""):
     global checks
     checks += 1
-    print(f"  {'PASS' if ok else 'FAIL'}  {name}{('  — ' + detail) if detail else ''}")
+    print(f"  {'PASS' if ok else 'FAIL'}  {name}{('  - ' + detail) if detail else ''}")
     if not ok:
         fails.append(name)
 
@@ -120,6 +120,21 @@ def main():
             pg.evaluate(f"()=>document.getElementById('{cid}').click()")
             pg.wait_for_timeout(600)
             check(f"checkbox '{cid}' changes the URL", url() != before)
+
+        print("\n== credit badge ==")
+        check("credit off by default", "credit=" not in url())
+        check("credit row hidden by default",
+              st("getComputedStyle(document.getElementById('creditrow')).display") == "none")
+        click("ocredit")
+        check("ticking it writes credit=1", "credit=1" in url())
+        check("ticking it reveals the text field",
+              st("getComputedStyle(document.getElementById('creditrow')).display") != "none")
+        pg.fill("#ocredittext", "Shouted by Hardclaws"); pg.wait_for_timeout(700)
+        check("custom credit text reaches the URL",
+              "credit=Shouted" in url(),
+              ",".join(x for x in url().split("&") if x.startswith("credit")))
+        click("ocredit")
+        check("unticking removes it entirely", "credit=" not in url())
 
         print("\n== output ==")
         u = url()

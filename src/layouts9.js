@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — SET 9
+   LAYOUTS - SET 9
    Travel, print media, craft and toy-box themes.
    Clip window is dedicated 16:9; nothing is drawn over it.
    ============================================================= */
@@ -24,7 +24,7 @@
   /* ---------- DEPARTURE BOARD ---------- */
   add({
     id: 'departures', label: 'Departure Board', group: 'Travel',
-    blurb: 'Split-flap airport board — rows clatter into place, the shouted channel on the top line as BOARDING.',
+    blurb: 'Split-flap airport board - rows clatter into place, the shouted channel on the top line as BOARDING.',
     html: (d) => `
     <div class="lo lo-dep">
       <div class="dp2-hall"></div>
@@ -43,13 +43,13 @@
           <span class="dp2-g">${String((d.user.followers || 7) % 40 + 1).padStart(2, '0')}</span>
           <span class="dp2-s go">BOARDING</span>
         </div>
-        ${d.user.game ? `<div class="dp2-row a-dp2flap d1"><span class="dp2-t">—</span>
+        ${d.user.game ? `<div class="dp2-row a-dp2flap d1"><span class="dp2-t">-</span>
           <span class="dp2-d">${esc(d.user.game)}</span><span class="dp2-g">B4</span>
           <span class="dp2-s">ON TIME</span></div>` : ''}
-        ${d.user.followers != null ? `<div class="dp2-row a-dp2flap d2"><span class="dp2-t">—</span>
+        ${d.user.followers != null ? `<div class="dp2-row a-dp2flap d2"><span class="dp2-t">-</span>
           <span class="dp2-d">${n(d.user.followers)} PASSENGERS</span><span class="dp2-g">C1</span>
           <span class="dp2-s">CHECKED IN</span></div>` : ''}
-        ${d.user.created ? `<div class="dp2-row a-dp2flap d3"><span class="dp2-t">—</span>
+        ${d.user.created ? `<div class="dp2-row a-dp2flap d3"><span class="dp2-t">-</span>
           <span class="dp2-d">FLYING SINCE ${esc(d.user.created).toUpperCase()}</span>
           <span class="dp2-g">A2</span><span class="dp2-s">SCHEDULED</span></div>` : ''}
       </div>
@@ -109,7 +109,7 @@
   /* ---------- SUBWAY MAP ---------- */
   add({
     id: 'subway', label: 'Subway Map', group: 'Travel',
-    blurb: 'Transit diagram styling — coloured lines with interchange dots, a roundel station name and a service board.',
+    blurb: 'Transit diagram styling - coloured lines with interchange dots, a roundel station name and a service board.',
     html: (d) => `
     <div class="lo lo-sub">
       <div class="sb2-wall"></div>
@@ -152,7 +152,7 @@
   /* ---------- MAGAZINE COVER ---------- */
   add({
     id: 'covershoot', label: 'Cover Shoot', group: 'Print',
-    blurb: 'Glossy magazine cover — masthead behind the subject, cover lines down the side and a barcode corner.',
+    blurb: 'Glossy magazine cover - masthead behind the subject, cover lines down the side and a barcode corner.',
     html: (d) => `
     <div class="lo lo-cover">
       <div class="cv-bleed">${clip(d)}</div>
@@ -187,7 +187,7 @@
   /* ---------- CROSSWORD ---------- */
   add({
     id: 'crossword', label: 'Crossword', group: 'Print',
-    blurb: 'Newspaper puzzle page — the channel name filled into 1 ACROSS, with clues drawn from the profile.',
+    blurb: 'Newspaper puzzle page - the channel name filled into 1 ACROSS, with clues drawn from the profile.',
     html: (d) => {
       const nm = (d.user.name || 'STREAM').replace(/[^a-z0-9]/gi, '').toUpperCase().slice(0, 11) || 'STREAM';
       return `
@@ -214,7 +214,7 @@
             <div class="cw-ch">ACROSS</div>
             <ol>
               <li><b>1.</b> ${esc(d.copy.kicker)} <i>(${nm.length})</i></li>
-              ${d.user.game ? `<li><b>4.</b> Where they were last seen — ${esc(d.user.game)}</li>` : ''}
+              ${d.user.game ? `<li><b>4.</b> Where they were last seen - ${esc(d.user.game)}</li>` : ''}
               ${d.user.followers != null ? `<li><b>7.</b> ${n(d.user.followers)} of them, and counting</li>` : ''}
               ${d.user.created ? `<li><b>9.</b> Joined Twitch, ${esc(d.user.created)}</li>` : ''}
             </ol>
@@ -286,7 +286,7 @@
   /* ---------- BLUEPRINT PATENT ---------- */
   add({
     id: 'patent', label: 'Patent Filing', group: 'Craft',
-    blurb: 'A patent drawing sheet — numbered callouts, figure labels, spidery technical linework and an office stamp.',
+    blurb: 'A patent drawing sheet - numbered callouts, figure labels, spidery technical linework and an office stamp.',
     html: (d) => `
     <div class="lo lo-patent">
       <div class="pt2-sheet a-pt2in">
@@ -301,7 +301,7 @@
           <div class="pt2-figs">
             <div class="pt2-fig">
               <div class="pt2-figframe">${clip(d)}</div>
-              <div class="pt2-figlabel">FIG. 1 — APPARATUS IN OPERATION</div>
+              <div class="pt2-figlabel">FIG. 1 - APPARATUS IN OPERATION</div>
               <div class="pt2-call c1"><i></i><span>1</span></div>
               <div class="pt2-call c2"><i></i><span>2</span></div>
               <div class="pt2-call c3"><i></i><span>3</span></div>
@@ -331,7 +331,7 @@
   /* ---------- BRICK BOX ---------- */
   add({
     id: 'brickbox', label: 'Toy Box', group: 'Craft',
-    blurb: 'A boxed collectible on shelf card — blister window, age rating, piece count and a "NEW!" starburst.',
+    blurb: 'A boxed collectible on shelf card - blister window, age rating, piece count and a "NEW!" starburst.',
     html: (d) => `
     <div class="lo lo-brick">
       <div class="bk-shelf"></div>
@@ -370,7 +370,7 @@
   /* ---------- CROSS STITCH ---------- */
   add({
     id: 'crossstitch', label: 'Cross Stitch', group: 'Craft',
-    blurb: 'A stitched sampler in a wooden hoop — visible aida weave, floss-thread lettering and a little house motif.',
+    blurb: 'A stitched sampler in a wooden hoop - visible aida weave, floss-thread lettering and a little house motif.',
     html: (d) => `
     <div class="lo lo-stitch">
       <div class="cs2-table"></div>
@@ -415,7 +415,7 @@
   /* ---------- PINBALL ---------- */
   add({
     id: 'pinball', label: 'Pinball Table', group: 'Craft',
-    blurb: 'Backglass and playfield — bumpers light up, a score reel rolls and the ball-in-play counter ticks.',
+    blurb: 'Backglass and playfield - bumpers light up, a score reel rolls and the ball-in-play counter ticks.',
     html: (d) => `
     <div class="lo lo-pin">
       <div class="pb-cab"></div>
@@ -456,7 +456,7 @@
   /* ---------- WEATHER FORECAST ---------- */
   add({
     id: 'weather', label: 'Weather Forecast', group: 'Broadcast',
-    blurb: 'TV weather segment — a presenter chroma wall, a five-day strip and an animated sun/cloud icon set.',
+    blurb: 'TV weather segment - a presenter chroma wall, a five-day strip and an animated sun/cloud icon set.',
     html: (d) => `
     <div class="lo lo-wx">
       <div class="wx-studio"></div>
@@ -502,19 +502,19 @@
   /* ---------- ELECTION NIGHT ---------- */
   add({
     id: 'election', label: 'Election Night', group: 'Broadcast',
-    blurb: 'Results desk graphics — a swingometer needle, called-seat tiles and a rolling percentage bar.',
+    blurb: 'Results desk graphics - a swingometer needle, called-seat tiles and a rolling percentage bar.',
     html: (d) => `
     <div class="lo lo-elec">
       <div class="ec-desk"></div>
       <div class="ec-head a-ecdn">
         <span class="ec-badge">RESULTS</span>
-        <span>DECISION DESK — ${esc(d.user.name).toUpperCase()} DECLARED</span>
+        <span>DECISION DESK - ${esc(d.user.name).toUpperCase()} DECLARED</span>
         <span class="ec-time">${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}</span>
       </div>
 
       <div class="ec-screen a-ecin">
         <div class="ec-view">${clip(d)}</div>
-        <div class="ec-scap">FROM THE COUNT — ${esc(d.clip ? d.clip.title : d.user.title)}</div>
+        <div class="ec-scap">FROM THE COUNT - ${esc(d.clip ? d.clip.title : d.user.title)}</div>
       </div>
 
       <div class="ec-swing a-ecswing">

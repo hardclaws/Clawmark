@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS SET 6 — sci-fi and cyberpunk.
+   LAYOUTS SET 6 - sci-fi and cyberpunk.
    Every clip window is a dedicated 16:9 box with nothing over it.
    ============================================================= */
 
@@ -686,7 +686,7 @@
 .lo-synth .sg2-credit .credit span{font-size:17px;color:#ff9bd0}
 
 /* =============================================================
-   TRANSPARENCY — drop the full-canvas atmosphere in OBS
+   TRANSPARENCY - drop the full-canvas atmosphere in OBS
    ============================================================= */
 :root[data-transparency="panels"] .lo-ship,   :root[data-transparency="full"] .lo-ship,
 :root[data-transparency="panels"] .lo-holo2,  :root[data-transparency="full"] .lo-holo2,

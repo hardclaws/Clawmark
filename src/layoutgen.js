@@ -1,4 +1,4 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
@@ -7,7 +7,7 @@
    The 20 built-in layouts are hand-written. This module *composes*
    new ones from a small set of structural parameters, so a user can
    ask for "cycling style with a spinning cog" and get real variants
-   back — not a fixed list.
+   back - not a fixed list.
 
    A generated layout = a SPEC object:
      {
@@ -47,7 +47,7 @@
   const pick = (a, r) => a[Math.floor(r() * a.length)];
 
   /* =============================================================
-     ORNAMENTS — inline SVG, animated via CSS.
+     ORNAMENTS - inline SVG, animated via CSS.
      These are what make a layout feel "cycling" or "tabletop".
      ============================================================= */
   const ORNAMENTS = {
@@ -122,7 +122,7 @@
   };
 
   /* =============================================================
-     VOCABULARY — words -> spec fragments
+     VOCABULARY - words -> spec fragments
      ============================================================= */
   const WORDS = {
     // ornaments
@@ -185,7 +185,7 @@
 
   /* How the video sits in its frame.
        cover   fill the frame, crop the overflow
-       contain letterbox — never crops, always shows the whole clip
+       contain letterbox - never crops, always shows the whole clip
      Frames whose aspect is far from 16:9 default to 'contain', because
      'cover' was throwing away up to 47% of the picture. */
   const FITS = ['cover', 'contain'];
@@ -251,7 +251,7 @@
       spec.infoStyle = pick(good, r);
     }
     // PROCEDURAL: synthesise an ornament from the phrase itself.
-    // Any input produces a shape — no fixed list, no fallback to 'star'.
+    // Any input produces a shape - no fixed list, no fallback to 'star'.
     if (!spec.feat) {
       spec.feat = root.Ornaments.phraseToFeatures(text || '', seed === undefined ? '' : seed);
       spec.ornament = root.Ornaments.nameFor(spec.feat);
@@ -291,7 +291,7 @@
   }
 
   /* =============================================================
-     RENDERER — turn a spec into HTML
+     RENDERER - turn a spec into HTML
      ============================================================= */
   function build(spec) {
     const fsig = spec.feat
@@ -432,7 +432,7 @@
   function fromSpec(spec) { return build(spec); }
 
   /* =============================================================
-     enumerate — walk the entire valid combination space.
+     enumerate - walk the entire valid combination space.
      No keywords. Optional filters narrow it. Ordered deterministically
      so paging is stable, and interleaved so early pages look varied.
      ============================================================= */

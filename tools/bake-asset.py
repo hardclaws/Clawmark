@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-bake-asset.py — turn an AI-generated image into an overlay-ready asset.
+bake-asset.py - turn an AI-generated image into an overlay-ready asset.
 
 AI image models return opaque rectangles. Overlays need transparent PNGs that
 are small enough to load instantly in OBS. This does the conversion:
@@ -32,7 +32,7 @@ except ImportError:
 def knockout(im, bg="black", tol=42, feather=True):
     """Make the flat background transparent while preserving dark artwork.
 
-    A naive luminance key deletes every dark pixel — which eats dark reds,
+    A naive luminance key deletes every dark pixel - which eats dark reds,
     navy, shadowed detail, anything that happens to be near-black. Instead we
     flood-fill inward from the image border, so only background that is
     actually CONNECTED to the edge is removed. Dark colours enclosed by the

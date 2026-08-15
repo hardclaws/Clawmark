@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS SET 4 — gaming themes, motion-heavy
+   LAYOUTS SET 4 - gaming themes, motion-heavy
    ============================================================= */
 
 @keyframes sweepIn{from{transform:translateX(-110%) skewX(-10deg);opacity:0}

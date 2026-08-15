@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS SET 3 — cycling, fantasy, steampunk
+   LAYOUTS SET 3 - cycling, fantasy, steampunk
    ============================================================= */
 
 @keyframes pinIn{0%{transform:rotate(-5deg) scale(.8) translateY(-40px);opacity:0}
@@ -36,7 +36,7 @@
 .playing .a-slide2{animation:slide2 .8s cubic-bezier(.2,.95,.3,1) both}
 
 /* =============================================================
-   41 RACE BIB — broadcast race bug over full-frame footage
+   41 RACE BIB - broadcast race bug over full-frame footage
    ============================================================= */
 .lo-bib .bi-topbar{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:20px;
   padding:26px 60px;background:linear-gradient(180deg,rgba(0,0,0,.82),transparent)}
@@ -82,7 +82,7 @@
   white-space:nowrap}
 
 /* =============================================================
-   42 POWER METER — telemetry rail
+   42 POWER METER - telemetry rail
    ============================================================= */
 .lo-pwr .pw-vig{position:absolute;inset:0;
   background:linear-gradient(90deg,rgba(4,8,12,.94) 0%,rgba(4,8,12,.55) 34%,transparent 58%),
@@ -129,7 +129,7 @@
   text-shadow:0 2px 10px #000}
 
 /* =============================================================
-   43 TOUR JERSEY — GC leaderboard
+   43 TOUR JERSEY - GC leaderboard
    ============================================================= */
 .lo-jersey .js-panel{position:absolute;left:56px;top:50%;transform:translateY(-50%);width:760px;
   background:rgba(8,9,14,.9);backdrop-filter:blur(14px);border-radius:var(--radius);
@@ -166,7 +166,7 @@
 .lo-jersey .js-url{padding:10px 26px 22px;font:700 21px var(--font-body);color:var(--accent)}
 
 /* =============================================================
-   44 ROUTE PROFILE — stage elevation band
+   44 ROUTE PROFILE - stage elevation band
    ============================================================= */
 .lo-route .rt-head{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:22px;
   padding:26px 60px;background:linear-gradient(180deg,rgba(0,0,0,.82),transparent)}
@@ -604,7 +604,7 @@
 
 /* ---- fixes from live render of set 3 ---- */
 
-/* POWER METER: panel used skin ink on a near-black plate — force light text */
+/* POWER METER: panel used skin ink on a near-black plate - force light text */
 .lo-pwr .pw-panel{background:rgba(6,10,14,.92)}
 .lo-pwr .pw-big b{color:var(--accent)!important}
 .lo-pwr .pw-big span,.lo-pwr .pw-grid span{color:#9fb0c0!important}

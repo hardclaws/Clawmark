@@ -1,11 +1,11 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
    PROCEDURAL ORNAMENT SYNTHESIS
    Generates ornament SVG from a FEATURE VECTOR rather than picking
-   from a fixed list. Any phrase — known or not — maps onto features,
+   from a fixed list. Any phrase - known or not - maps onto features,
    so "steampunk brass pipes", "underwater bubbles" and "pizza" each
    produce a distinct, repeatable shape.
 
@@ -227,7 +227,7 @@
     'please','want','would','make','create','generate','show','using','use','more','very']);
 
   /* =============================================================
-     phraseToFeatures — ALWAYS produces a shape, known words or not
+     phraseToFeatures - ALWAYS produces a shape, known words or not
      ============================================================= */
   function phraseToFeatures(phrase, seed) {
     const raw = String(phrase || '').toLowerCase();

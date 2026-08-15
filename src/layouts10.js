@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — SET 10
+   LAYOUTS - SET 10
    Final batch: heist, western, noir, pirate, museum, casino,
    courtroom, bakery, garden, ski, aquascape and awards night.
    Clip window is dedicated 16:9; nothing is drawn over it.
@@ -21,7 +21,7 @@
   /* ---------- HEIST PLAN ---------- */
   add({
     id: 'heist', label: 'Heist Plan', group: 'Crime',
-    blurb: 'A job laid out on the table — floor plan, red string between pinned photos, and a countdown to the score.',
+    blurb: 'A job laid out on the table - floor plan, red string between pinned photos, and a countdown to the score.',
     html: (d) => `
     <div class="lo lo-heist">
       <div class="hs2-table"></div>
@@ -68,7 +68,7 @@
   /* ---------- WESTERN ---------- */
   add({
     id: 'western', label: 'Wanted Out West', group: 'Western',
-    blurb: 'Sun-bleached saloon board — hand-cut woodtype, a swinging shingle and dust drifting through low light.',
+    blurb: 'Sun-bleached saloon board - hand-cut woodtype, a swinging shingle and dust drifting through low light.',
     html: (d) => `
     <div class="lo lo-west">
       <div class="wt-sun"></div>
@@ -82,7 +82,7 @@
 
       <div class="wt-poster a-wtin">
         <div class="wt-top">WANTED</div>
-        <div class="wt-sub">— DEAD OR STREAMING —</div>
+        <div class="wt-sub">- DEAD OR STREAMING -</div>
         <div class="wt-photo">${clip(d)}</div>
         <h1>${esc(d.user.name)}</h1>
         <div class="wt-reward">
@@ -136,7 +136,7 @@
   /* ---------- PIRATE CHART ---------- */
   add({
     id: 'pirate', label: 'Pirate Charter', group: 'Adventure',
-    blurb: 'Ship\'s articles on burnt parchment — wax seal, crossed sabres and a rope border tied at the corners.',
+    blurb: 'Ship\'s articles on burnt parchment - wax seal, crossed sabres and a rope border tied at the corners.',
     html: (d) => `
     <div class="lo lo-pirate">
       <div class="pr-sea"></div>
@@ -163,7 +163,7 @@
           </div>
           <div class="pr-right">
             <ol class="pr-articles">
-              ${d.user.followers != null ? `<li>Every soul aboard — <b>${n(d.user.followers)}</b> — shall have an equal share.</li>` : ''}
+              ${d.user.followers != null ? `<li>Every soul aboard - <b>${n(d.user.followers)}</b> - shall have an equal share.</li>` : ''}
               ${d.user.game ? `<li>The ship sails for <b>${esc(d.user.game)}</b>.</li>` : ''}
               ${d.user.created ? `<li>Signed and sworn, <b>${esc(d.user.created)}</b>.</li>` : ''}
             </ol>
@@ -294,7 +294,7 @@
   /* ---------- BAKERY ---------- */
   add({
     id: 'bakery', label: 'Bakery Window', group: 'Food',
-    blurb: 'A pastel patisserie display — cake stands, a chalk price board and a paper doily under everything.',
+    blurb: 'A pastel patisserie display - cake stands, a chalk price board and a paper doily under everything.',
     html: (d) => `
     <div class="lo lo-bake">
       <div class="bq-shop"></div>
@@ -330,7 +330,7 @@
   /* ---------- GREENHOUSE ---------- */
   add({
     id: 'greenhouse', label: 'Greenhouse', group: 'Nature',
-    blurb: 'Sunlit glasshouse — steel glazing bars, hanging foliage, condensation on the panes and a plant label on a stake.',
+    blurb: 'Sunlit glasshouse - steel glazing bars, hanging foliage, condensation on the panes and a plant label on a stake.',
     html: (d) => `
     <div class="lo lo-green">
       <div class="gh-light"></div>
@@ -367,7 +367,7 @@
   /* ---------- SKI RESORT ---------- */
   add({
     id: 'skiresort', label: 'Ski Report', group: 'Sport',
-    blurb: 'Mountain conditions board — piste difficulty diamonds, a snowfall figure and falling snow over a lodge window.',
+    blurb: 'Mountain conditions board - piste difficulty diamonds, a snowfall figure and falling snow over a lodge window.',
     html: (d) => `
     <div class="lo lo-ski">
       <div class="sr2-sky"></div>
@@ -409,7 +409,7 @@
   /* ---------- VINYL SHOP ---------- */
   add({
     id: 'recordshop', label: 'Record Shop', group: 'Music',
-    blurb: 'Flipping through the crates — a sleeve pulled forward, genre divider card and a hand-written price sticker.',
+    blurb: 'Flipping through the crates - a sleeve pulled forward, genre divider card and a hand-written price sticker.',
     html: (d) => `
     <div class="lo lo-crate">
       <div class="rs-shop"></div>
@@ -449,7 +449,7 @@
   /* ---------- AWARDS NIGHT ---------- */
   add({
     id: 'awards', label: 'Awards Night', group: 'Broadcast',
-    blurb: 'And the winner is — an envelope tears open, a gold statuette rises and the nominee list crosses itself off.',
+    blurb: 'And the winner is - an envelope tears open, a gold statuette rises and the nominee list crosses itself off.',
     html: (d) => `
     <div class="lo lo-awards">
       <div class="aw-hall"></div>

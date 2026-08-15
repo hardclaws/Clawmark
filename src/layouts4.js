@@ -1,14 +1,14 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — SET 4
+   LAYOUTS - SET 4
    Gaming-culture themes: battle royale, block-world, achievements,
    console UI, speedrun, MMO, fighting game, kart racing, tabletop
    initiative, and a Zwift-style ride HUD.
 
-   Heavier on motion than earlier sets — counters roll, bars fill,
+   Heavier on motion than earlier sets - counters roll, bars fill,
    badges pop, banners sweep.
    ============================================================= */
 (function (root) {
@@ -23,7 +23,7 @@
   /* ---------- 54. VICTORY ROYALE ---------- */
   add({
     id: 'victory', label: 'Victory Royale', group: 'Gaming',
-    blurb: 'Battle-royale win screen — placement banner sweeps in, elimination counters roll up.',
+    blurb: 'Battle-royale win screen - placement banner sweeps in, elimination counters roll up.',
     html: (d) => `
     <div class="lo lo-vict">
       ${clip(d, 'fill')}
@@ -56,7 +56,7 @@
   /* ---------- 55. BLOCK WORLD ---------- */
   add({
     id: 'blockworld', label: 'Block World', group: 'Gaming',
-    blurb: 'Voxel sandbox UI — grass-block frame, hotbar slots, hearts and a pixel font.',
+    blurb: 'Voxel sandbox UI - grass-block frame, hotbar slots, hearts and a pixel font.',
     html: (d) => `
     <div class="lo lo-block">
       <div class="bw-sky"></div>
@@ -129,7 +129,7 @@
   /* ---------- 57. CONSOLE DASH ---------- */
   add({
     id: 'consoledash', label: 'Console Dash', group: 'Gaming',
-    blurb: 'Modern console dashboard — big tile, blade accents, trophy row, gamertag chip.',
+    blurb: 'Modern console dashboard - big tile, blade accents, trophy row, gamertag chip.',
     html: (d) => `
     <div class="lo lo-dash">
       <div class="cd-bg"></div>
@@ -208,7 +208,7 @@
   /* ---------- 59. MMO QUEST ---------- */
   add({
     id: 'mmoquest', label: 'MMO Quest', group: 'Gaming',
-    blurb: 'Quest-accepted panel — objectives tick in, XP bar fills, reward icons shimmer.',
+    blurb: 'Quest-accepted panel - objectives tick in, XP bar fills, reward icons shimmer.',
     html: (d) => `
     <div class="lo lo-mmo">
       ${clip(d, 'fill')}
@@ -248,7 +248,7 @@
   /* ---------- 60. FIGHTING GAME VS ---------- */
   add({
     id: 'versus', label: 'VS Screen', group: 'Gaming',
-    blurb: 'Fighting-game versus card — angled portraits, health bars, a slamming VS badge.',
+    blurb: 'Fighting-game versus card - angled portraits, health bars, a slamming VS badge.',
     html: (d) => `
     <div class="lo lo-vs">
       <div class="vs-bg">${clip(d, 'fill')}</div>
@@ -285,7 +285,7 @@
   /* ---------- 61. KART RACE ---------- */
   add({
     id: 'kartrace', label: 'Kart Race', group: 'Gaming',
-    blurb: 'Arcade racer HUD — lap counter, position medal, item box and a boost streak.',
+    blurb: 'Arcade racer HUD - lap counter, position medal, item box and a boost streak.',
     html: (d) => `
     <div class="lo lo-kart">
       ${clip(d, 'fill')}
@@ -370,7 +370,7 @@
   /* ---------- 63. RIDE HUD ---------- */
   add({
     id: 'ridehud', label: 'Ride HUD', group: 'Cycling',
-    blurb: 'Virtual-cycling HUD — corner data pods, rider list, sprint banner and lap arc.',
+    blurb: 'Virtual-cycling HUD - corner data pods, rider list, sprint banner and lap arc.',
     html: (d) => `
     <div class="lo lo-ride">
       ${clip(d, 'fill')}

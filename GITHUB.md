@@ -8,7 +8,7 @@ Two things happen here:
 2. GitHub serves it as a live website for free (**GitHub Pages**)
 
 Once step 2 is done you get a permanent URL like
-`https://hardclaws.github.io/clawmark/` that you paste straight into OBS —
+`https://hardclaws.github.io/clawmark/` that you paste straight into OBS -
 on any PC, no local server, nothing to keep running.
 
 Pick **Route A** (no command line) or **Route B** (Git). Route A is fine and
@@ -16,7 +16,7 @@ takes about five minutes.
 
 ---
 
-# Route A — no command line
+# Route A - no command line
 
 ## 1. Make a GitHub account
 
@@ -28,7 +28,7 @@ Your username becomes part of the URL, so `hardclaws` gives you
 
 - Go to <https://github.com/new>
 - **Repository name:** `clawmark`
-- **Description:** `A Twitch shoutout overlay for OBS — 138 hand-designed layouts`
+- **Description:** `A Twitch shoutout overlay for OBS - 138 hand-designed layouts`
 - Select **Public** ← Pages needs this on a free account
 - Do **not** tick "Add a README file" (there's already one in the zip)
 - Click **Create repository**
@@ -45,7 +45,7 @@ Now unzip `clawmark.zip` on your PC. Open the folder so you can see
 > Drag in the **contents** of the folder, not the folder itself.
 >
 > ```
-> ✅ CORRECT — repo root      ❌ WRONG — one level too deep
+> ✅ CORRECT - repo root      ❌ WRONG - one level too deep
 > index.html                  clawmark/
 > overlay.html                    index.html
 > src/                            overlay.html
@@ -54,10 +54,10 @@ Now unzip `clawmark.zip` on your PC. Open the folder so you can see
 > ```
 >
 > If the wrong version happens, your site will 404. Delete the files and
-> re-upload — or just add `/clawmark` to the end of your URL.
+> re-upload - or just add `/clawmark` to the end of your URL.
 
 Select everything inside the folder (`Ctrl+A`) and drag it onto the browser
-window. Wait for all the files to finish listing — there are a few hundred, so
+window. Wait for all the files to finish listing - there are a few hundred, so
 give it a moment.
 
 Scroll down, type `Initial commit` in the message box, click **Commit changes**.
@@ -93,7 +93,7 @@ Done. You never need the local `serve.py` again.
 
 ---
 
-# Route B — with Git (command line)
+# Route B - with Git (command line)
 
 If you'd rather use Git so future updates are one command:
 
@@ -120,7 +120,7 @@ git push
 Pages redeploys automatically in under a minute.
 
 > **On the password prompt:** GitHub stopped accepting account passwords over
-> Git. When it asks, paste a **Personal Access Token** instead — make one at
+> Git. When it asks, paste a **Personal Access Token** instead - make one at
 > <https://github.com/settings/tokens> (classic, tick `repo`). Or install
 > [GitHub Desktop](https://desktop.github.com/) and avoid the terminal entirely.
 
@@ -147,8 +147,10 @@ https://hardclaws.github.io/clawmark/overlay.html?channel=hardclaws&layout=drago
 
 ## Showing your credit on stream
 
-Add `&credit=1` to the URL for a small `Clawmark by Hardclaws` badge in the
-corner. It's off unless you ask for it.
+In the builder: **Behaviour → Credit badge → "Show a small credit in the
+corner"**. A text box appears if you want custom wording.
+
+Or add `&credit=1` to the URL by hand. Off unless you ask for it.
 
 ## Updating later
 
@@ -158,7 +160,7 @@ commit. Same-named files are overwritten.
 **Route B:** `git add . && git commit -m "..." && git push`
 
 Either way Pages rebuilds in about a minute. If you don't see the change,
-hard-refresh with `Ctrl+Shift+R` — and in OBS, right-click the source and pick
+hard-refresh with `Ctrl+Shift+R` - and in OBS, right-click the source and pick
 **Refresh**.
 
 ---
@@ -174,11 +176,11 @@ The repo is Private. Settings → General → scroll to the bottom → **Change
 visibility → Public**.
 
 **Site loads but the overlay is a grey box in OBS**
-Your URL is missing `bg=panels`. Rebuild it from the builder — it always writes
+Your URL is missing `bg=panels`. Rebuild it from the builder - it always writes
 that parameter now.
 
 **Clips don't play**
-Open `test.html` on your Pages URL — it runs diagnostics and tells you exactly
+Open `test.html` on your Pages URL - it runs diagnostics and tells you exactly
 what's failing. No credentials needed.
 
 **It worked locally but not on Pages**
@@ -191,16 +193,16 @@ Pages is HTTPS-only. If you hand-wrote a URL with `http://`, change it to
 
 Nothing here is locked. Some starting points:
 
-- **Change the default layout** — `src/app.js`, the `layout:` line in `CFG`
-- **Add a colour preset** — `src/skins.js`, copy an entry in the presets array
-- **Write a new layout** — copy any block in `src/layouts10.js`; they're
+- **Change the default layout** - `src/app.js`, the `layout:` line in `CFG`
+- **Add a colour preset** - `src/skins.js`, copy an entry in the presets array
+- **Write a new layout** - copy any block in `src/layouts10.js`; they're
   self-contained and only use theme tokens, so a new one works with every theme
-- **Verify your changes** — `python3 tools/audit-layouts.py` checks the clip
+- **Verify your changes** - `python3 tools/audit-layouts.py` checks the clip
   isn't covered and `python3 tools/check-transparency.py` proves it's still
   see-through in OBS
 
 ---
 
-**Clawmark** — built by Hardclaws
+**Clawmark** - built by Hardclaws
 [twitch.tv/hardclaws](https://twitch.tv/hardclaws) · thehardclaws@gmail.com
 MIT licence: use it, change it, ship it.

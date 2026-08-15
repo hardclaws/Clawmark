@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   OVERLAY CSS — layout structure only.
+   OVERLAY CSS - layout structure only.
    Colour / type / radius / texture all come from skin tokens.
    ============================================================= */
 
@@ -103,7 +103,7 @@ h1{margin:0;font-family:var(--font-display);font-weight:var(--weight-display);
   mix-blend-mode:var(--texture-blend);opacity:.5}
 
 /* =============================================================
-   ANIMATIONS — .playing on #stage triggers, .leaving reverses
+   ANIMATIONS - .playing on #stage triggers, .leaving reverses
    ============================================================= */
 @keyframes up{from{transform:translateY(46px);opacity:0}to{transform:none;opacity:1}}
 @keyframes rise{from{transform:translateY(100%);opacity:0}to{transform:none;opacity:1}}
@@ -609,7 +609,7 @@ h1{margin:0;font-family:var(--font-display);font-weight:var(--weight-display);
 .lo-film .furl{margin-top:20px;font-size:26px;color:var(--ink)}
 
 /* =============================================================
-   DEMO CLIP — stand-in animation used by the builder preview
+   DEMO CLIP - stand-in animation used by the builder preview
    ============================================================= */
 .clipwrap{position:absolute;inset:0;overflow:hidden}
 .clipwrap:not(.fill){position:relative;width:100%;height:100%}
@@ -636,7 +636,7 @@ h1{margin:0;font-family:var(--font-display);font-weight:var(--weight-display);
 .circle .democlip,.clipwrap.circle{border-radius:50%}
 
 /* =============================================================
-   FIXES — text over media, overflow, collisions
+   FIXES - text over media, overflow, collisions
    ============================================================= */
 
 /* demo HUD readout must not collide with layout chrome */
@@ -744,7 +744,7 @@ h1{margin:0;font-family:var(--font-display);font-weight:var(--weight-display);
    in the builder preview. Never applies with real credentials. */
 body.demo:not(.nodemobg) .lo-bug::before{content:'';position:absolute;inset:0;z-index:-1;
   background:linear-gradient(170deg,#7fc4e8 0%,#bfe3f2 38%,#f6d9a0 70%,#7bb661 70%,#4e8f45 100%)}
-body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layout is transparent in OBS';
+body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP - this layout is transparent in OBS';
   position:absolute;left:60px;top:60px;font:600 22px system-ui;letter-spacing:.1em;
   color:rgba(0,0,0,.42);text-transform:uppercase}
 
@@ -759,7 +759,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
   backdrop-filter:blur(8px)}
 .lo-cine .mark .kicker{color:var(--on-media-acc)}
 
-/* terminal v2: two columns — log left, clip pane right. Always fits. */
+/* terminal v2: two columns - log left, clip pane right. Always fits. */
 .lo-terminal .twin{top:90px;height:900px;max-height:900px}
 .lo-terminal .tbody{display:grid;grid-template-columns:1fr 700px;gap:28px 34px;
   align-content:start;padding:30px 40px;font-size:24px;line-height:1.5;height:840px;overflow:hidden}
@@ -785,7 +785,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .lo-scroll .roll.l{left:0}
 .lo-scroll .roll.r{right:0;left:auto}
 
-/* banner: name must never wrap — give it room and let the bio flex instead */
+/* banner: name must never wrap - give it room and let the bio flex instead */
 .lo-banner .bandmain{flex:1 1 auto;min-width:0;overflow:hidden}
 .lo-banner .row{flex-wrap:nowrap;align-items:baseline;gap:16px}
 .lo-banner .row h1{white-space:nowrap;flex:0 0 auto;max-width:760px;
@@ -800,7 +800,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .lo-banner .bandmain{margin-right:20px}
 
 /* =============================================================
-   CLIP CREDIT — title / clipped by / date. Present in every layout.
+   CLIP CREDIT - title / clipped by / date. Present in every layout.
    ============================================================= */
 .credit{min-width:0}
 .credit b{display:block;font-weight:700;color:var(--ink);line-height:1.25;
@@ -844,7 +844,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .lo-score .sbstrip b{color:var(--on-media)}
 
 /* =============================================================
-   GENERATED LAYOUTS — composed by layoutgen.js
+   GENERATED LAYOUTS - composed by layoutgen.js
    ============================================================= */
 .lo-gen{background:var(--bg)}
 
@@ -860,7 +860,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .playing .spin-slow{animation:ospin 22s linear infinite;transform-origin:50% 50%}
 .playing .spin-rev{animation:ospin 26s linear infinite reverse;transform-origin:50% 50%}
 @keyframes ospin{to{transform:rotate(360deg)}}
-/* chain / mountain are strips, not discs — don't rotate them */
+/* chain / mountain are strips, not discs - don't rotate them */
 .lo-gen .ornwrap .orn[viewBox="0 0 240 40"],
 .lo-gen .ornwrap .orn[viewBox="0 0 120 60"]{animation:none!important}
 .ornwrap.behind .orn[viewBox="0 0 240 40"],
@@ -1057,7 +1057,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .lo-gen .ornwrap .orn[viewBox="0 0 100 60"]{animation:none!important;height:auto}
 .lo-gen .ornwrap.behind .orn[viewBox="0 0 100 60"]{width:120%;margin-left:-10%}
 
-/* ornament visibility: scatter/lattice forms read faintly at .14 —
+/* ornament visibility: scatter/lattice forms read faintly at .14 -
    lift them, and make sure nothing bleeds past the canvas edge */
 .lo-gen .ornwrap{overflow:visible}
 .lo-gen .ornwrap.behind{opacity:.20}
@@ -1074,7 +1074,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
    ============================================================= */
 .orn.asset{width:100%;height:100%;object-fit:contain;display:block}
 .ornwrap .orn.asset{filter:drop-shadow(0 10px 30px rgba(0,0,0,.5))}
-/* image assets carry their own colour — don't tint them */
+/* image assets carry their own colour - don't tint them */
 .lo-gen .ornwrap:has(.orn.asset){color:inherit;opacity:1}
 .lo-gen .ornwrap.behind:has(.orn.asset){opacity:.55}
 .lo-gen .ornwrap.orbit:has(.orn.asset){opacity:.4}
@@ -1139,7 +1139,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 :root[data-transparency="panels"] .lo-kinetic .kpanel,
 :root[data-transparency="full"] .lo-kinetic .kpanel{display:none!important}
 
-/* scrims/vignettes exist to make text readable over video — keep them in
+/* scrims/vignettes exist to make text readable over video - keep them in
    'panels' mode, drop them in 'full' */
 :root[data-transparency="full"] .scrim-b,
 :root[data-transparency="full"] .scrim-l,
@@ -1200,7 +1200,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
   background-size:contain;background-position:center;opacity:.85}
 
 /* =============================================================
-   FIT — letterbox vs crop.
+   FIT - letterbox vs crop.
    'cover' fills and crops; 'contain' guarantees the whole frame of
    video is visible. Frames far from 16:9 default to contain, because
    cover was discarding up to 47% of the picture.
@@ -1213,7 +1213,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .lo-gen .gframe.fit-contain .democlip{width:100%;height:100%}
 
 /* =============================================================
-   REVISED FRAMES — sized so the info block never sits on the video
+   REVISED FRAMES - sized so the info block never sits on the video
    ============================================================= */
 /* full bleed: info gets a gradient plate rather than a solid panel over the clip */
 .lo-gen.f-fullbleed .ginfo.at-bottom,
@@ -1264,7 +1264,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .lo-gen.f-card .gframe.card{top:76px;height:540px}
 
 /* =============================================================
-   INFO HOLD — clear the panel so the clip plays unobstructed
+   INFO HOLD - clear the panel so the clip plays unobstructed
    ============================================================= */
 .playing .lo-gen.hold-long .ginfo{animation-name:genin,infoOut;
   animation-duration:.8s,.9s;animation-delay:0s,8s;animation-fill-mode:both,forwards;
@@ -1302,19 +1302,19 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 /* =============================================================
    BROADCAST-GRADE ENTRANCES
    ============================================================= */
-/* unfold — panel opens from a hairline, content fades up after */
+/* unfold - panel opens from a hairline, content fades up after */
 .playing .lo-gen.e-unfold .ginfo{animation:unfoldY .75s cubic-bezier(.16,1,.3,1) both}
 @keyframes unfoldY{from{transform:scaleY(.02);opacity:.4}60%{opacity:1}to{transform:none;opacity:1}}
 .playing .lo-gen.e-unfold .ginfo > *{animation:up .5s ease-out .42s both}
 
-/* shutter — three vertical bands sweep away */
+/* shutter - three vertical bands sweep away */
 .playing .lo-gen.e-shutter .gframe{animation:shutter 1s cubic-bezier(.7,0,.2,1) both}
 @keyframes shutter{
   from{clip-path:polygon(0 0,0 0,0 100%,0 100%,33% 0,33% 0,33% 100%,33% 100%,66% 0,66% 0,66% 100%,66% 100%)}
   to{clip-path:polygon(0 0,33% 0,33% 100%,0 100%,33% 0,66% 0,66% 100%,33% 100%,66% 0,100% 0,100% 100%,66% 100%)}}
 .playing .lo-gen.e-shutter .ginfo{animation:genin .7s var(--ease) .45s both}
 
-/* glide — slow cinematic drift with a soft blur settle */
+/* glide - slow cinematic drift with a soft blur settle */
 .playing .lo-gen.e-glide .ginfo{animation:glide 1.15s cubic-bezier(.16,1,.3,1) both}
 @keyframes glide{from{transform:translateY(64px) scale(1.03);opacity:0;filter:blur(9px)}
   to{transform:none;opacity:1;filter:blur(0)}}
@@ -1322,7 +1322,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 @keyframes glideF{from{transform:scale(1.06);opacity:0;filter:blur(12px)}
   to{transform:none;opacity:1;filter:blur(0)}}
 
-/* stagger — each child lands in sequence, broadcast package style */
+/* stagger - each child lands in sequence, broadcast package style */
 .playing .lo-gen.e-stagger .ginfo{animation:fade .3s ease-out both}
 .playing .lo-gen.e-stagger .ginfo > *{animation:staggerIn .6s cubic-bezier(.2,.9,.2,1) both}
 .playing .lo-gen.e-stagger .ginfo > *:nth-child(1){animation-delay:.10s}
@@ -1332,24 +1332,24 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 @keyframes staggerIn{from{transform:translateX(-44px);opacity:0;clip-path:inset(0 100% 0 0)}
   to{transform:none;opacity:1;clip-path:inset(0 0 0 0)}}
 
-/* mask — a soft wipe reveals the panel left to right */
+/* mask - a soft wipe reveals the panel left to right */
 .playing .lo-gen.e-mask .ginfo{animation:maskIn .9s cubic-bezier(.5,0,.2,1) both}
 @keyframes maskIn{from{clip-path:inset(0 100% 0 0);opacity:.6}to{clip-path:inset(0 0 0 0);opacity:1}}
 .playing .lo-gen.e-mask .gframe{animation:maskFrame 1s cubic-bezier(.5,0,.2,1) both}
 @keyframes maskFrame{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
 
-/* skew — motion-graphics slam with a shear that settles */
+/* skew - motion-graphics slam with a shear that settles */
 .playing .lo-gen.e-skew .ginfo{animation:skewIn .7s cubic-bezier(.2,1.05,.3,1) both}
 @keyframes skewIn{from{transform:translateX(-90px) skewX(-12deg);opacity:0}
   60%{transform:translateX(6px) skewX(3deg);opacity:1}to{transform:none}}
 
-/* blurin — rack focus */
+/* blurin - rack focus */
 .playing .lo-gen.e-blurin .ginfo{animation:blurIn .9s cubic-bezier(.16,1,.3,1) both}
 @keyframes blurIn{from{filter:blur(16px);opacity:0;transform:scale(1.04)}
   to{filter:blur(0);opacity:1;transform:none}}
 .playing .lo-gen.e-blurin .gframe{animation:blurIn 1.05s cubic-bezier(.16,1,.3,1) both}
 
-/* a hairline accent sweep under every generated panel — subtle polish */
+/* a hairline accent sweep under every generated panel - subtle polish */
 .lo-gen .ginfo::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;
   background:linear-gradient(90deg,var(--accent),var(--accent-2),transparent);
   transform-origin:left;border-radius:0 0 var(--radius) var(--radius)}
@@ -1430,7 +1430,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .lo-gen.f-inset.p-right .ginfo.at-right{right:70px;width:590px}
 
 /* FULL BLEED: text must survive on bright footage. The gradient alone
-   was not enough — add a real scrim and force media ink. */
+   was not enough - add a real scrim and force media ink. */
 .lo-gen.f-fullbleed .ginfo.at-bottom,
 .lo-gen.f-fullbleed .ginfo.at-top{
   background:linear-gradient(0deg,rgba(4,4,8,.94) 0%,rgba(4,4,8,.78) 42%,transparent 100%)}
@@ -1469,7 +1469,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .lo-gen .ginfo.at-left .gstats .stat:first-child,
 .lo-gen .ginfo.at-right .gstats .stat:first-child{padding-left:0}
 
-/* inset side panels are narrow — stack stats vertically so nothing clips */
+/* inset side panels are narrow - stack stats vertically so nothing clips */
 .lo-gen.f-inset .ginfo.at-left .gstats,
 .lo-gen.f-inset .ginfo.at-right .gstats{flex-direction:column;gap:14px}
 .lo-gen.f-inset .ginfo.at-left .gstats .stat,
@@ -1576,7 +1576,7 @@ body.demo:not(.nodemobg) .lo-bug::after{content:'PREVIEW BACKDROP — this layou
 .playing .lo-gen.cleared .ginfo::after{animation:none!important}
 
 /* =============================================================
-   EXPAND ON CLEAR — once the info panel leaves, the clip grows
+   EXPAND ON CLEAR - once the info panel leaves, the clip grows
    to fill the frame. This is the payoff for a short info hold.
    ============================================================= */
 .lo-gen.expands .gframe{transition:all 1.1s cubic-bezier(.22,1,.28,1)}
@@ -1852,7 +1852,7 @@ body.scaled #stage{width:1920px;height:1080px}
 
 /* =============================================================
    OPTIONAL CREDIT BADGE  (URL: credit=1)
-   Deliberately off by default — see the note in app.js. Small,
+   Deliberately off by default - see the note in app.js. Small,
    bottom-right, and never sits over the clip window because it is
    the last child and only 26px tall.
    ============================================================= */

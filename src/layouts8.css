@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS SET 8 — nature, sport, music, food.
+   LAYOUTS SET 8 - nature, sport, music, food.
    ============================================================= */
 
 .lo-nature .nd-view  > *, .lo-field .fj-photo > *,
@@ -388,7 +388,7 @@
 .lo-gig .gp-sub{margin-top:10px;font:700 26px var(--font-display);letter-spacing:.24em;color:#2f6b8a}
 .lo-gig .gp-art{margin-top:24px}
 /* was 1632x456 = 3.37, a letterbox slot that cropped the clip badly.
-   Cap the width (not the height — max-height loses to aspect-ratio) and centre. */
+   Cap the width (not the height - max-height loses to aspect-ratio) and centre. */
 .lo-gig .gp-frame{position:relative;width:100%;max-width:810px;height:auto;aspect-ratio:16/9;
   margin:0 auto;overflow:hidden;background:#05060a;border:6px solid #1a1614}
 .lo-gig .gp-frame video,.lo-gig .gp-frame .democlip{filter:contrast(1.3) saturate(.75) sepia(.2)}

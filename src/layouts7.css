@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS SET 7 — horror / occult, anime / manga.
+   LAYOUTS SET 7 - horror / occult, anime / manga.
    ============================================================= */
 
 .lo-found .ff-view   > *, .lo-seance .se-window > *,
@@ -350,7 +350,7 @@
   border-radius:300px 300px 8px 8px/264px 264px 8px 8px;background:#05060a;
   box-shadow:inset 0 0 60px rgba(0,0,0,.9)}
 /* The glass is a tall oval; letting the clip fill it cropped to 1.21 and threw
-   away a third of the picture. Centre a real 16:9 window inside instead — the
+   away a third of the picture. Centre a real 16:9 window inside instead - the
    mirror silhouette is unchanged. */
 .lo-mirror .mr-view{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
   height:auto;aspect-ratio:16/9;overflow:hidden}

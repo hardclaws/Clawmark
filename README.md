@@ -4,7 +4,7 @@
 # Clawmark
 
 **A Twitch shoutout overlay for OBS.** Someone types `!so thatstreamer` in your chat and
-Clawmark plays one of their clips inside a hand-designed animated card — profile, follower
+Clawmark plays one of their clips inside a hand-designed animated card - profile, follower
 count, category, and who clipped it.
 
 Created by **[Hardclaws](https://twitch.tv/hardclaws)** · thehardclaws@gmail.com
@@ -22,7 +22,7 @@ Created by **[Hardclaws](https://twitch.tv/hardclaws)** · thehardclaws@gmail.co
 
 ## What makes it different
 
-- **138 hand-designed layouts** — 20 classic + **118 themed**, from Dragonfire and Ring of
+- **138 hand-designed layouts** - 20 classic + **118 themed**, from Dragonfire and Ring of
   Power to Netrunner, Manga Page, Found Footage and Departure Board. None of them are
   generated from a template; each one is drawn by hand.
 - **The clip is never covered.** Every layout gives the video its own 16:9 window sized to
@@ -36,7 +36,7 @@ Created by **[Hardclaws](https://twitch.tv/hardclaws)** · thehardclaws@gmail.co
 
 ## Quick start
 
-1. Open **`index.html`** (the builder) — or use the hosted version once you've deployed it
+1. Open **`index.html`** (the builder) - or use the hosted version once you've deployed it
 2. Pick a layout and a theme
 3. Enter your Twitch channel name
 4. Copy the generated URL
@@ -49,8 +49,8 @@ Type `!so someone` in your chat to fire it.
 
 ## The Hardclaws theme
 
-The default palette is sampled straight from the Hardclaws logo — claw cyan `#1ffdff`,
-deep navy `#0c2336`, steel blue `#327295` — and comes with a five-slash claw motif that
+The default palette is sampled straight from the Hardclaws logo - claw cyan `#1ffdff`,
+deep navy `#0c2336`, steel blue `#327295` - and comes with a five-slash claw motif that
 matches the mark. Pick **Hardclaws** in the theme list, or add `&skin=hardclaws` to the URL.
 
 All 28 other presets still work on all 138 layouts.
@@ -60,15 +60,17 @@ All 28 other presets still work on all 138 layouts.
 ## Credit
 
 Clawmark is free to use and fork under the MIT licence. Credit isn't required, but if you
-want to show it on stream there's a built-in badge — add `&credit=1` to your overlay URL:
+want to show it on stream there's a built-in badge.
 
-```
-...&layout=dragonfire&credit=1
-```
+**In the builder:** *Behaviour → Credit badge → "Show a small credit in the corner"*.
+Tick it and a text box appears if you want to write your own wording.
 
-That renders a small `Clawmark by Hardclaws` pill in the bottom-right corner. It's **off by
-default** so that anyone who forks this doesn't broadcast someone else's name by accident.
-Set your own text with `&credit=Your%20Text`.
+**By URL:** add `&credit=1` for the default `Clawmark by Hardclaws`, or
+`&credit=Your%20Text` for something custom.
+
+It renders as a small pill in the bottom-right, fades in after the shoutout starts, and
+never overlaps the clip. It is **off by default** so anyone who forks this doesn't
+broadcast someone else's name by accident.
 
 ---
 
@@ -78,7 +80,7 @@ Set your own text with `&credit=Your%20Text`.
 - Twitch: [twitch.tv/hardclaws](https://twitch.tv/hardclaws)
 - Email: [thehardclaws@gmail.com](mailto:thehardclaws@gmail.com)
 
-Bug reports and layout ideas are welcome — open a GitHub Issue or email me.
+Bug reports and layout ideas are welcome - open a GitHub Issue or email me.
 
 ---
 
@@ -104,9 +106,9 @@ repo, upload the files, then Settings → Pages → Branch `main` / `(root)`. Yo
 | Setting | Value |
 |---|---|
 | Width × Height | **1920 × 1080** (scale the source in your scene, don't change these) |
-| Shutdown source when not visible | **on** — stops audio on hidden scenes |
-| Refresh browser when scene becomes active | **on** — reconnects chat reliably |
-| Control audio via OBS | **on** — required or clip audio won't reach your stream |
+| Shutdown source when not visible | **on** - stops audio on hidden scenes |
+| Refresh browser when scene becomes active | **on** - reconnects chat reliably |
+| Control audio via OBS | **on** - required or clip audio won't reach your stream |
 
 ---
 
@@ -131,7 +133,7 @@ shoutout('someuser')
 
 ## Layouts
 
-**138 hand-designed layouts** — 20 classic structural plus **118 themed** — in 30 groups,
+**138 hand-designed layouts** - 20 classic structural plus **118 themed** - in 30 groups,
 plus 466,200 generated variations.
 
 ### The themed families
@@ -169,9 +171,9 @@ Bold rows are the 60 added in the latest batch.
 | Layout | Character |
 |---|---|
 | Pixel Quest | 8-bit JRPG dialogue box, sprite portrait, party stat window, HP/MP bars |
-| Handheld | Grey handheld console — dot-matrix LCD, D-pad, A/B buttons, blinking battery |
+| Handheld | Grey handheld console - dot-matrix LCD, D-pad, A/B buttons, blinking battery |
 | Tape Loader | 1982 home computer loading from cassette, screaming colour border stripes |
-| Demoscene | Amiga cracktro — copper bars, chrome logo, starfield, sine scroller |
+| Demoscene | Amiga cracktro - copper bars, chrome logo, starfield, sine scroller |
 | High Score | Arcade attract mode; the channel slams into first place and flashes |
 
 ### Magic & dragons (set 5)
@@ -179,7 +181,7 @@ Bold rows are the 60 added in the latest batch.
 | Layout | Character |
 |---|---|
 | Arcane Circle | Three counter-rotating rune rings, column of light, drifting motes |
-| Dragonfire | A dragon breathes across the frame — layered flame, embers, cracked obsidian |
+| Dragonfire | A dragon breathes across the frame - layered flame, embers, cracked obsidian |
 | Grimoire | Spellbook thrown open, gold leaf, illuminated capital, swinging ribbon |
 | Scrying Orb | Crystal ball on a clawed stand, curling mist, refracted glass |
 | Alchemy Bench | Bubbling flasks whose liquid level reads out the channel stats |
@@ -198,17 +200,17 @@ Bold rows are the 60 added in the latest batch.
 
 Every layout gives the clip its **own 16:9 window that nothing is drawn over**.
 Before this, the info panels sat on top of a full-bleed video and covered up to
-47% of the picture — usually the centre, where the action is.
+47% of the picture - usually the centre, where the action is.
 
 `videofit=` controls it:
 
 | Value | Behaviour |
 |---|---|
 | `smart` *(default)* | The clip moves into the largest area the panels do not use, letterboxed so none of the frame is cropped |
-| `shrink` | Same, at 88% scale — for very busy scenes |
+| `shrink` | Same, at 88% scale - for very busy scenes |
 | `cover` | Old behaviour: clip fills the canvas, panels overlap it |
 
-The clear area for each layout is **measured, not guessed** — `tools/audit-layouts.py`
+The clear area for each layout is **measured, not guessed** - `tools/audit-layouts.py`
 renders every layout, paints the clip a flat colour, screenshots it and counts how
 many of those pixels survive. Anything drawn over the video eats them.
 
@@ -219,9 +221,9 @@ many of those pixels survive. Anything drawn over the video eats them.
 | Comic Strip | Halftone panels, ink borders, speech bubble, POW! burst |
 | Cartoon Sticker | Thick outlines, drop-shadow stickers, tape, bouncy entrance |
 | VHS Tape | Tracking lines, chromatic fringing, timecode, blinking REC |
-| Newspaper | Broadsheet front page — masthead, columns, halftone photo |
+| Newspaper | Broadsheet front page - masthead, columns, halftone photo |
 | Arcade Cabinet | CRT bezel, pixel type, INSERT COIN, high-score table |
-| Blueprint | Technical drawing — grid paper, dimension lines, title block |
+| Blueprint | Technical drawing - grid paper, dimension lines, title block |
 | Sports Broadcast | Angled network bug, wipe-in lower third, stat ribbon |
 | Scrapbook | Cork board, pinned photos, torn notes, handwriting |
 | Boarding Pass | Perforated ticket, barcode, seat block, tear-off stub |
@@ -229,9 +231,9 @@ many of those pixels survive. Anything drawn over the video eats them.
 | Holo Card | Foil-shimmer collectible that tilts in 3D, rarity gems |
 | Wanted Poster | Weathered western bill nailed to a board, reward figure |
 | Chat App | Messaging thread, typing indicator, bubbles landing in turn |
-| Now Spinning | Record deck — spinning label, tonearm, VU meters |
+| Now Spinning | Record deck - spinning label, tonearm, VU meters |
 | Storybook | Open picture book, drop cap, gilt edges, page-turn |
-| Boss Bar | Game boss-encounter UI — name plate, segmented health bar |
+| Boss Bar | Game boss-encounter UI - name plate, segmented health bar |
 | Neon Tube | Bent glass tubing on brick, buzzing flicker, glow pool |
 | Race Board | Live timing screen, the shouted rider in P1 |
 | Passport Stamp | Travel page with inked stamps and an approval thump |
@@ -242,23 +244,23 @@ many of those pixels survive. Anything drawn over the video eats them.
 | Layout | Character |
 |---|---|
 | Victory Royale | Battle-royale win banner sweeps in, elimination counters roll up |
-| Block World | Voxel sandbox — grass frame, hotbar slots, hearts, pixel type |
+| Block World | Voxel sandbox - grass frame, hotbar slots, hearts, pixel type |
 | Achievement | Console toast slides down, gamerscore counts up, XP bar fills |
-| Console Dash | Modern dashboard — big tile, gamertag chip, stat cards |
+| Console Dash | Modern dashboard - big tile, gamertag chip, stat cards |
 | Speedrun | Splits panel with a **live running timer** and gold splits |
 | MMO Quest | Quest-accepted panel, objectives tick in, XP bar fills |
-| VS Screen | Fighting-game versus — angled portraits, health bars, slamming VS |
-| Kart Race | Arcade racer HUD — position medal, lap counter, item box, speed lines |
+| VS Screen | Fighting-game versus - angled portraits, health bars, slamming VS |
+| Kart Race | Arcade racer HUD - position medal, lap counter, item box, speed lines |
 
 ### Cycling
 
 | Layout | Character |
 |---|---|
-| Race Bib | Broadcast race bug — pinned number plate, split times, clip ticker |
-| Power Meter | Telemetry rail — animated watt gauge, readout, power trace |
+| Race Bib | Broadcast race bug - pinned number plate, split times, clip ticker |
+| Power Meter | Telemetry rail - animated watt gauge, readout, power trace |
 | Tour Jersey | GC leaderboard with real jersey swatches over the footage |
 | Route Profile | Stage elevation band with categorised climbs and a rider marker |
-| Ride HUD | Virtual-cycling HUD — data pods, riders-nearby list, sprint banner |
+| Ride HUD | Virtual-cycling HUD - data pods, riders-nearby list, sprint banner |
 
 ### Fantasy / tabletop
 
@@ -294,7 +296,7 @@ many of those pixels survive. Anything drawn over the video eats them.
 | 8 | Polaroid | Card | Tilted photo frame. Warm, personal. |
 | 9 | Terminal | Full frame | Data prints like a shell session. |
 | 10 | Spotlight | Full frame | Circular clip mask, orbiting stats. |
-| 11 | Sidebar | Split | Vertical rail — sits beside gameplay, not over it. |
+| 11 | Sidebar | Split | Vertical rail - sits beside gameplay, not over it. |
 | 12 | Trading Card | Card | Collectible card flips in. Very shareable. |
 | 13 | Scoreboard | Lower third | Sports bug, big numerals. |
 | 14 | Magazine | Full frame | Editorial cover, masthead and pull quote. |
@@ -310,7 +312,7 @@ many of those pixels survive. Anything drawn over the video eats them.
 ## Layout variations
 
 The 20 built-ins are hand-written. The **Variations** tab enumerates the layout engine's
-full combination space — **266,400 valid layouts** — across 9 axes:
+full combination space - **266,400 valid layouts** - across 9 axes:
 
 | Axis | Options |
 |---|---|
@@ -338,7 +340,7 @@ same clip:
 ### Expand on clear
 
 Pair a short info hold with **expand** and the clip animates up to full frame once the panel
-leaves — so a split-screen layout becomes full-screen video for the rest of the clip.
+leaves - so a split-screen layout becomes full-screen video for the rest of the clip.
 Verified: split 940×529 → 1920×1080, window 1180×590 → 1920×1080.
 
 ### Info duration
@@ -355,13 +357,13 @@ overlay.html?layout=banner&hold_info=short     # clears after 3s
 
 Seven new broadcast-style entrances beyond the basics:
 
-- **unfold** — panel opens from a hairline, content fades up after
-- **shutter** — three vertical bands sweep away
-- **glide** — slow cinematic drift with a blur settle
-- **stagger** — each element lands in sequence
-- **mask** — soft wipe reveal
-- **skew** — motion-graphics slam with a shear that settles
-- **blur-in** — rack focus
+- **unfold** - panel opens from a hairline, content fades up after
+- **shutter** - three vertical bands sweep away
+- **glide** - slow cinematic drift with a blur settle
+- **stagger** - each element lands in sequence
+- **mask** - soft wipe reveal
+- **skew** - motion-graphics slam with a shear that settles
+- **blur-in** - rack focus
 
 Every generated panel also gets a hairline accent sweep along its lower edge.
 
@@ -370,7 +372,7 @@ combinations tested, zero overflow or clipping**.
 
 ## Random mix
 
-Tick any set of layouts in the **Random mix** tab and each shoutout picks one at random —
+Tick any set of layouts in the **Random mix** tab and each shoutout picks one at random -
 so your overlay changes every time. The same layout never plays twice in a row.
 
 ```
@@ -380,7 +382,7 @@ overlay.html?pool=comic,arcade,newspaper,vhs,glitch
 ### Previewing
 
 Clicking a layout in the mix immediately previews **that** layout, with a green ring showing
-which one you're looking at. (The live overlay still picks at random — the forced preview is
+which one you're looking at. (The live overlay still picks at random - the forced preview is
 builder-only.)
 
 ### Per-layout options
@@ -415,8 +417,8 @@ Every built-in layout now accepts the same options the generated ones do:
 | Detail level | `detail` | `minimal` · `standard` · `rich` |
 | Info duration | `hold_info` | *(stays)* · `long` 8s · `medium` 5s · `short` 3s |
 | Video fit | `fit` | `contain` (never crop) · `cover` |
-| Backdrop | `backdrop` | `blur` · `dim` · `scrim` — sits **between** the clip and the info panel |
-| Expand on clear | `expand` | `1` — clip grows to full frame when the info leaves |
+| Backdrop | `backdrop` | `blur` · `dim` · `scrim` - sits **between** the clip and the info panel |
+| Expand on clear | `expand` | `1` - clip grows to full frame when the info leaves |
 
 ```
 overlay.html?layout=banner&detail=minimal&hold_info=short&fit=contain&expand=1
@@ -426,8 +428,8 @@ overlay.html?layout=banner&detail=minimal&hold_info=short&fit=contain&expand=1
 
 ### Presets
 
-28 shipped, including a full range of blues — **Ice Blue**, **Sky**, **Steel Blue**,
-**Navy**, **Electric Blue**, **Cobalt**, **Glacier** and **Denim** — plus
+28 shipped, including a full range of blues - **Ice Blue**, **Sky**, **Steel Blue**,
+**Navy**, **Electric Blue**, **Cobalt**, **Glacier** and **Denim** - plus
 Twitch Purple, Dungeons & Derailleurs, Midnight Glass, Neon City, Synthwave,
 Peloton, Grimoire, Old Parchment, Terminal Green, Cotton Candy, Espresso, Broadsheet,
 Vaporwave, Blood Moon, Arctic, Gold Rush, Toxic, Sakura, Deep Sea, Inferno.
@@ -436,15 +438,15 @@ Vaporwave, Blood Moon, Arctic, Gold Rush, Toxic, Sakura, Deep Sea, Inferno.
 
 Four rows of things to click. No colour codes, no sliders, no advanced panel.
 
-1. **Colour** — 20 palettes shown as their actual colour bars (panel background, then the
+1. **Colour** - 20 palettes shown as their actual colour bars (panel background, then the
    three accents), so what you see is what renders
-2. **Mood** — Dark · Light · Vivid · Muted
-3. **Type** — Modern · Bold · Classic · Techno · Playful
-4. **Shape** — Sharp · Rounded · Pill
-5. **Overlay background** — Transparent · Solid · Text only
+2. **Mood** - Dark · Light · Vivid · Muted
+3. **Type** - Modern · Bold · Classic · Techno · Playful
+4. **Shape** - Sharp · Rounded · Pill
+5. **Overlay background** - Transparent · Solid · Text only
 
-Every other value — panel shades, text, muted text, borders, button text, glow, fonts,
-corner radius, border width — is derived from those choices. Contrast is **fixed
+Every other value - panel shades, text, muted text, borders, button text, glow, fonts,
+corner radius, border width - is derived from those choices. Contrast is **fixed
 automatically**; the readout confirms the result rather than asking you to solve it.
 
 **Surprise me** rolls a whole theme. **Pick my own colour** reveals a colour picker if you
@@ -461,7 +463,7 @@ scales back **up** so it stays readable:
 
 | Source size | Text boost | Name height as % of frame |
 |---|---|---|
-| 1920 × 1080 | — | 7.0% |
+| 1920 × 1080 | - | 7.0% |
 | 1280 × 720 | ×1.14 | 8.0% |
 | 960 × 540 | ×1.30 | 9.1% |
 | 640 × 360 | ×1.55 | 10.9% |
@@ -482,7 +484,7 @@ via `bg=`:
 |---|---|---|
 | Transparent background | `panels` *(default)* | Background removed, info panels stay solid. |
 | Solid | `none` | Page background painted. Use when the overlay is its own full scene. |
-| Fully transparent | `full` | Background *and* panel fills removed — text and clip only, with drop shadows for legibility. |
+| Fully transparent | `full` | Background *and* panel fills removed - text and clip only, with drop shadows for legibility. |
 
 In `panels` mode a **Panel opacity** slider fades the panels from 100% down to 20%.
 
@@ -502,20 +504,20 @@ overlay.html?layout=banner&skin=derailleur&bg=panels
 ```
 
 > In OBS this needs **"Shutdown source when not visible"** ticked, as usual. The browser
-> source itself already has a transparent canvas — no chroma key needed.
+> source itself already has a transparent canvas - no chroma key needed.
 
 ## URL parameters
 
 | Param | Default | Description |
 |---|---|---|
-| `channel` | — | Your channel (chat is read here) |
-| `client_id` | — | *Optional.* Only for posting chat messages |
-| `token` | — | *Optional.* Only for posting chat messages |
+| `channel` | - | Your channel (chat is read here) |
+| `client_id` | - | *Optional.* Only for posting chat messages |
+| `token` | - | *Optional.* Only for posting chat messages |
 | `layout` | `banner` | Built-in layout id |
-| `lg` | — | Base64 generated-layout spec (overrides `layout`) |
+| `lg` | - | Base64 generated-layout spec (overrides `layout`) |
 | `skin` | `twitch-purple` | Preset theme id |
-| `sk` | — | Base64 generated-theme options (overrides `skin`) |
-| `sx` | — | Base64 explicit custom theme from the editor (overrides both) |
+| `sk` | - | Base64 generated-theme options (overrides `skin`) |
+| `sx` | - | Base64 explicit custom theme from the editor (overrides both) |
 | `bg` | `none` | Transparency: `none` · `panels` · `full` |
 | `cmd` | `so` | Command name, without `!` |
 | `clip` | `1` | Show clip |
@@ -523,23 +525,23 @@ overlay.html?layout=banner&skin=derailleur&bg=panels
 | `fallback` | `1` | Use profile image when no clips exist |
 | `days` | `0` | Prefer clips from last N days (0 = all time) |
 | `max` | `60` | Max clip duration, seconds |
-| `vol` | `70` | Clip volume 0–100 |
+| `vol` | `70` | Clip volume 0-100 |
 | `mute` | `0` | Mute clips |
 | `hold` | `8000` | Dwell time in ms when there's no clip |
-| `hold_info` | — | Clear the info panel: `always` · `long` (8s) · `medium` (5s) · `short` (3s) |
+| `hold_info` | - | Clear the info panel: `always` · `long` (8s) · `medium` (5s) · `short` (3s) |
 | `size` | `1920x1080` | Browser-source size: `1280x720` · `960x540` · `854x480` · `640x360` |
-| `textscale` | — | Manual text boost as a percentage, e.g. `140` |
+| `textscale` | - | Manual text boost as a percentage, e.g. `140` |
 | `mods` | `0` | Moderators only |
 | `vips` | `0` | VIPs only |
 | `progress` | `1` | Show progress bar |
 | `kicker` | `Go check out {channel}` | Kicker line |
 | `cta` | `Go give them a follow` | Call to action |
-| `tag` | — | Branding tag |
-| `chatmsg` | — | Post this in chat (needs `user:write:chat`) |
+| `tag` | - | Branding tag |
+| `chatmsg` | - | Post this in chat (needs `user:write:chat`) |
 | `raid` | `0` | Auto-shoutout on raid |
 | `raidcount` | `0` | Minimum raiders required to trigger (0 = any) |
 | `raiddelay` | `0` | Seconds to wait before firing, so your raid alert plays first |
-| `test` | — | Fire a shoutout for this user on load |
+| `test` | - | Fire a shoutout for this user on load |
 | `debug` | `0` | Console logging |
 | `demo` | `0` | Force demo mode (ignore credentials, use fake data) |
 | `noclip` | `0` | Demo only: simulate a channel with no clips |
@@ -551,8 +553,8 @@ Template variables: `{channel}` `{url}` `{game}` `{title}` `{creator_name}` `{cr
 
 ## Do I need a token?
 
-**Almost certainly not.** By default the overlay reads Twitch's public API — the same one
-twitch.tv itself uses in your browser — which needs no authentication and returns:
+**Almost certainly not.** By default the overlay reads Twitch's public API - the same one
+twitch.tv itself uses in your browser - which needs no authentication and returns:
 
 avatar · display name · login · bio · partner/affiliate badge · account age ·
 **follower count** · last category · last stream title · live status ·
@@ -571,7 +573,7 @@ and use `token.html` to generate the pair.
 ### Follower counts
 
 The public API returns follower counts for **any** channel. The official Helix API only
-returns them for channels you moderate — which is why this overlay prefers the public one.
+returns them for channels you moderate - which is why this overlay prefers the public one.
 
 ### If you do supply credentials
 
@@ -589,26 +591,26 @@ live status, language, and the clip's video, title, view count, duration, date a
 
 ## Testing
 
-Run **`test.html`** first — it validates your token, checks every scope, runs each API call
+Run **`test.html`** first - it validates your token, checks every scope, runs each API call
 the overlay makes, and actually loads a clip video to prove playback works. Most setup
 problems are token/scope issues, and this tells you which one.
 
 ### Test order
 
-1. **Diagnostics** — open `test.html`, leave credentials **blank**, enter a test channel
+1. **Diagnostics** - open `test.html`, leave credentials **blank**, enter a test channel
    that has clips, and *Run all checks*. It verifies the no-token path end to end,
    including actually playing a clip. Fix anything red.
-2. **Layouts, no credentials needed** — append `&demo=1` to any overlay URL to render
+2. **Layouts, no credentials needed** - append `&demo=1` to any overlay URL to render
    fake data. Add `&noclip=1` (no clips) or `&nodata=1` (empty channel) to check fallbacks.
-3. **Builder preview** — open `index.html`, click through layouts and themes, then use
+3. **Builder preview** - open `index.html`, click through layouts and themes, then use
    **Preview with a real channel** to render live Twitch data for any username right in
    the builder. Tick *Sound* to check audio.
-4. **Real data in a browser tab** — your generated URL plus `&test=someuser&debug=1`.
+4. **Real data in a browser tab** - your generated URL plus `&test=someuser&debug=1`.
    A shoutout fires on load; the console shows what happened.
-5. **Chat commands** — with that tab open, type `!so someuser` in your chat.
+5. **Chat commands** - with that tab open, type `!so someuser` in your chat.
    Use *Test chat connection only* in `test.html` to confirm the IRC listener sees messages.
-6. **Queue** — fire three `!so` commands quickly; they should play in sequence, not overlap.
-7. **OBS** — add the Browser Source with the four settings above. Confirm you can *hear* the clip.
+6. **Queue** - fire three `!so` commands quickly; they should play in sequence, not overlap.
+7. **OBS** - add the Browser Source with the four settings above. Confirm you can *hear* the clip.
 
 ### Edge cases worth checking
 
@@ -644,12 +646,12 @@ add({
 });
 ```
 
-Then style `.lo-mylayout` in `src/overlay.css` using **only** skin tokens — no hard-coded
+Then style `.lo-mylayout` in `src/overlay.css` using **only** skin tokens - no hard-coded
 colours. Add a thumbnail in the `thumb()` map in `index.html`. That's it; it appears in
 the builder automatically and works with all themes.
 
 **Every layout must show the clip title, who clipped it, and the clip date.** Use the shared
-`credit(d, variant)` helper — variants are `line`, `stack`, or `micro`.
+`credit(d, variant)` helper - variants are `line`, `stack`, or `micro`.
 
 Every layout must handle sparse data: a channel may have no clip, no bio, no follower
 count and no category. Guard optional fields (`${d.user.bio ? ... : ''}`).
@@ -657,7 +659,7 @@ count and no category. Guard optional fields (`${d.user.bio ? ... : ''}`).
 ## Project layout
 
 ```
-serve.py            local dev server (quiet — see note below)
+serve.py            local dev server (quiet - see note below)
 index.html          builder UI
 overlay.html        the OBS browser source
 src/skins.js        theme engine + presets + generator
@@ -689,7 +691,7 @@ Use `serve.bat` / `./serve.sh` (both call `serve.py`) rather than
 `python -m http.server`.
 
 The stock Python server prints a full `ConnectionAbortedError` traceback every time a
-browser cancels a request — which happens constantly with iframe reloads and video
+browser cancels a request - which happens constantly with iframe reloads and video
 seeking. Those tracebacks are harmless but alarming. `serve.py` swallows them, serves a
 favicon, and sends no-cache headers so edits appear on refresh.
 

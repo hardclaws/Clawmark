@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — SET 2
+   LAYOUTS - SET 2
    Hand-designed themed layouts in the spirit of Terminal / Magazine /
    Receipt from set 1. Each has a distinct visual world rather than
    being a parametric box-and-panel arrangement.
@@ -125,7 +125,7 @@
   /* ---------- 24. NEWSPAPER ---------- */
   add({
     id: 'newspaper', label: 'Newspaper', group: 'Themed',
-    blurb: 'Broadsheet front page — masthead, rules, columns, halftone photo.',
+    blurb: 'Broadsheet front page - masthead, rules, columns, halftone photo.',
     html: (d) => `
     <div class="lo lo-news">
       <div class="nw-paper a-unroll">
@@ -153,7 +153,7 @@
           <div class="nw-col narrow a-up d5">
             <div class="nw-box">
               <div class="nw-boxh">CLIP FILED BY</div>
-              <div class="nw-boxb">${esc(d.clip ? d.clip.creator : '—')}</div>
+              <div class="nw-boxb">${esc(d.clip ? d.clip.creator : '-')}</div>
               <div class="nw-boxs">${esc(d.clip ? d.clip.created : '')}</div>
             </div>
             <div class="nw-cta">${esc(d.copy.cta)}<br><b>${esc(d.user.url)}</b></div>
@@ -195,7 +195,7 @@
           ${d.user.game ? `<div><span>STAGE</span><b>${esc(d.user.game)}</b></div>` : ''}
         </div>
         <div class="ar-credit">${credit(d, 'micro')}</div>
-        <div class="ar-coin">INSERT COIN — ${esc(d.user.url)}</div>
+        <div class="ar-coin">INSERT COIN - ${esc(d.user.url)}</div>
       </div>
       <div class="progress"><i></i></div>
     </div>`,
@@ -204,7 +204,7 @@
   /* ---------- 26. BLUEPRINT ---------- */
   add({
     id: 'blueprint', label: 'Blueprint', group: 'Themed',
-    blurb: 'Technical drawing — grid paper, dimension lines, title block, mono type.',
+    blurb: 'Technical drawing - grid paper, dimension lines, title block, mono type.',
     html: (d) => `
     <div class="lo lo-blue">
       <div class="bp-grid"></div>
@@ -222,7 +222,7 @@
         ${d.user.game ? `<div class="bp-row"><span>CATEGORY</span><b>${esc(d.user.game)}</b></div>` : ''}
         ${d.user.followers != null ? `<div class="bp-row"><span>AUDIENCE</span><b>${n(d.user.followers)}</b></div>` : ''}
         ${d.user.created ? `<div class="bp-row"><span>EST.</span><b>${esc(d.user.created)}</b></div>` : ''}
-        <div class="bp-row"><span>SOURCE</span><b>${esc(d.clip ? d.clip.creator : '—')} · ${esc(d.clip ? d.clip.created : '')}</b></div>
+        <div class="bp-row"><span>SOURCE</span><b>${esc(d.clip ? d.clip.creator : '-')} · ${esc(d.clip ? d.clip.created : '')}</b></div>
         <div class="bp-row wide"><span>TITLE</span><b>${esc(d.clip ? d.clip.title : d.user.title)}</b></div>
       </div>
       <div class="bp-stamp a-pop d3">${esc(d.copy.cta)}</div>
@@ -256,7 +256,7 @@
         </div>
         <div class="sp-ribbon a-wipeR d1">
           <span class="sp-tag">CLIP</span>
-          <marquee-like>${esc(d.clip ? d.clip.title : d.user.title)} &nbsp;·&nbsp; clipped by ${esc(d.clip ? d.clip.creator : '—')} &nbsp;·&nbsp; ${esc(d.clip ? d.clip.created : '')} &nbsp;·&nbsp; ${esc(d.user.game || '')} &nbsp;·&nbsp; ${esc(d.user.url)}</marquee-like>
+          <marquee-like>${esc(d.clip ? d.clip.title : d.user.title)} &nbsp;·&nbsp; clipped by ${esc(d.clip ? d.clip.creator : '-')} &nbsp;·&nbsp; ${esc(d.clip ? d.clip.created : '')} &nbsp;·&nbsp; ${esc(d.user.game || '')} &nbsp;·&nbsp; ${esc(d.user.url)}</marquee-like>
         </div>
       </div>
       <div class="progress"><i></i></div>
@@ -381,7 +381,7 @@
           <div class="ho-inner">
             <div class="ho-top">
               <span class="ho-name">${esc(d.user.name)}</span>
-              <span class="ho-hp">${d.user.followers != null ? n(d.user.followers) : '—'}</span>
+              <span class="ho-hp">${d.user.followers != null ? n(d.user.followers) : '-'}</span>
             </div>
             <div class="ho-art">${clip(d)}<div class="ho-shine"></div></div>
             <div class="ho-type">${esc(d.user.game || 'Streamer')} ${badge(d)}</div>
@@ -414,7 +414,7 @@
       <div class="wa-poster a-nail">
         <div class="wa-nail tl"></div><div class="wa-nail tr"></div>
         <div class="wa-w">WANTED</div>
-        <div class="wa-sub">— ${esc(d.user.live ? 'LIVE RIGHT NOW' : 'LAST SEEN STREAMING')} —</div>
+        <div class="wa-sub">- ${esc(d.user.live ? 'LIVE RIGHT NOW' : 'LAST SEEN STREAMING')} -</div>
         <div class="wa-photo">${clip(d)}</div>
         <div class="wa-name">${esc(d.user.name)}</div>
         <div class="wa-for">for <i>${esc(d.clip ? d.clip.title : (d.user.title || 'outstanding streams'))}</i></div>
@@ -435,7 +435,7 @@
   /* ---------- 33. CHAT / MESSAGING ---------- */
   add({
     id: 'chatapp', label: 'Chat App', group: 'Themed',
-    blurb: 'Messaging thread — typing indicator, bubbles landing one by one, read ticks.',
+    blurb: 'Messaging thread - typing indicator, bubbles landing one by one, read ticks.',
     html: (d) => {
       const msgs = [];
       msgs.push(`<div class="ch-msg in a-msg d1"><span>${esc(d.copy.kicker)}</span></div>`);
@@ -471,7 +471,7 @@
   /* ---------- 34. VINYL / NOW PLAYING ---------- */
   add({
     id: 'vinyl', label: 'Now Spinning', group: 'Themed',
-    blurb: 'Record deck — spinning label, tonearm, VU meters and a track listing.',
+    blurb: 'Record deck - spinning label, tonearm, VU meters and a track listing.',
     html: (d) => `
     <div class="lo lo-vinyl">
       <div class="vy-felt"></div>
@@ -504,7 +504,7 @@
   /* ---------- 35. STORYBOOK ---------- */
   add({
     id: 'storybook', label: 'Storybook', group: 'Themed',
-    blurb: 'Open picture book — two pages, drop cap, gilt edges and a page-turn entrance.',
+    blurb: 'Open picture book - two pages, drop cap, gilt edges and a page-turn entrance.',
     html: (d) => `
     <div class="lo lo-story">
       <div class="st-book a-open">
@@ -536,7 +536,7 @@
   /* ---------- 36. BOSS HEALTH BAR ---------- */
   add({
     id: 'bossbar', label: 'Boss Bar', group: 'Themed',
-    blurb: 'Game boss-encounter UI — name plate, segmented health bar, stagger meter.',
+    blurb: 'Game boss-encounter UI - name plate, segmented health bar, stagger meter.',
     html: (d) => `
     <div class="lo lo-boss">
       ${clip(d, 'fill')}
@@ -587,7 +587,7 @@
   /* ---------- 38. RACE RESULTS BOARD ---------- */
   add({
     id: 'raceboard', label: 'Race Board', group: 'Themed',
-    blurb: 'Live timing screen — position rows, split times, the shouted rider highlighted.',
+    blurb: 'Live timing screen - position rows, split times, the shouted rider highlighted.',
     html: (d) => `
     <div class="lo lo-race">
       <div class="rc-bgclip">${clip(d, 'fill')}</div>
@@ -599,8 +599,8 @@
         <div class="rc-row lead a-up d1">
           <span class="rc-pos">1</span>
           <span class="rc-rider">${av(d, 62)}<b>${esc(d.user.name)}</b>${badge(d)}</span>
-          <span>${esc(d.user.game || '—')}</span>
-          <span class="ra">${d.user.followers != null ? n(d.user.followers) : '—'}</span>
+          <span>${esc(d.user.game || '-')}</span>
+          <span class="ra">${d.user.followers != null ? n(d.user.followers) : '-'}</span>
         </div>
         <div class="rc-row a-up d2"><span class="rc-pos">2</span>
           <span class="rc-rider"><i></i>The Peloton</span><span>Chasing</span><span class="ra">+0:14</span></div>
@@ -634,7 +634,7 @@
             <div><span>HANDLE</span><b>@${esc(d.user.login)}</b></div>
             ${d.user.game ? `<div><span>ORIGIN</span><b>${esc(d.user.game)}</b></div>` : ''}
             ${d.user.followers != null ? `<div><span>PARTY SIZE</span><b>${n(d.user.followers)}</b></div>` : ''}
-            <div><span>ENTRY</span><b>${esc(d.clip ? d.clip.created : '—')}</b></div>
+            <div><span>ENTRY</span><b>${esc(d.clip ? d.clip.created : '-')}</b></div>
           </div>
         </div>
         <div class="pt-credit a-up d2">${credit(d, 'micro')}</div>

@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — SET 3
+   LAYOUTS - SET 3
    Cycling, tabletop/fantasy and steampunk themes.
    Same contract as sets 1 and 2: skin tokens only, sparse-data safe,
    and every layout surfaces clip title + who clipped it + when.
@@ -206,7 +206,7 @@
   /* ---------- 45. CHARACTER SHEET ---------- */
   add({
     id: 'charsheet', label: 'Character Sheet', group: 'Fantasy',
-    blurb: 'Parchment adventurer sheet — ability scores, portrait medallion, wax seal.',
+    blurb: 'Parchment adventurer sheet - ability scores, portrait medallion, wax seal.',
     html: (d) => `
     <div class="lo lo-sheet">
       <div class="cs-sheet a-unroll">
@@ -281,7 +281,7 @@
   /* ---------- 47. TAVERN BOARD ---------- */
   add({
     id: 'tavern', label: 'Tavern Board', group: 'Fantasy',
-    blurb: 'Notice board in an inn — hanging sign, nailed parchment, candlelight glow.',
+    blurb: 'Notice board in an inn - hanging sign, nailed parchment, candlelight glow.',
     html: (d) => `
     <div class="lo lo-tav">
       <div class="tv-wall"></div>
@@ -338,7 +338,7 @@
   /* ---------- 49. LOOT DROP ---------- */
   add({
     id: 'lootdrop', label: 'Loot Drop', group: 'Fantasy',
-    blurb: 'RPG item tooltip — rarity border, stat rolls, flavour text and a rarity beam.',
+    blurb: 'RPG item tooltip - rarity border, stat rolls, flavour text and a rarity beam.',
     html: (d) => `
     <div class="lo lo-loot">
       ${clip(d, 'fill')}
@@ -453,7 +453,7 @@
               ${d.user.game ? `<div><span>Cargo</span><b>${esc(d.user.game)}</b></div>` : ''}
               ${d.user.followers != null ? `<div><span>Crew</span><b>${n(d.user.followers)}</b></div>` : ''}
               ${d.user.created ? `<div><span>Joined</span><b>${esc(d.user.created)}</b></div>` : ''}
-              <div><span>Logged by</span><b>${esc(d.clip ? d.clip.creator : '—')}</b></div>
+              <div><span>Logged by</span><b>${esc(d.clip ? d.clip.creator : '-')}</b></div>
             </div>
             <div class="ai-url">${esc(d.user.url)}</div>
           </div>

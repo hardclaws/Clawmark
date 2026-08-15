@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Clawmark — Twitch Shoutout Overlay Builder</title>
+<title>Clawmark - Twitch Shoutout Overlay Builder</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="assets/brand/icon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="assets/brand/icon-180.png">
 <meta name="theme-color" content="#08192a">
 <meta name="author" content="Hardclaws">
-<meta property="og:title" content="Clawmark — Twitch Shoutout Overlay">
+<meta property="og:title" content="Clawmark - Twitch Shoutout Overlay">
 <meta property="og:description" content="138 hand-designed shoutout layouts for OBS. No access token required. By Hardclaws.">
 <meta property="og:image" content="assets/brand/social-preview.png">
 <meta property="og:type" content="website">
@@ -133,7 +133,7 @@
   <h1>Clawmark <span>Builder</span></h1>
   <p class="lede">A Twitch shoutout overlay for OBS, by <b>Hardclaws</b>.<br>
   Pick a layout, pick or <b>generate</b> a theme, set your options, and copy the URL into an OBS Browser Source.<br>
-  138 layouts × unlimited generated skins. Everything runs client-side — your token never leaves your machine.</p>
+  138 layouts × unlimited generated skins. Everything runs client-side - your token never leaves your machine.</p>
   </div>
 </header>
 
@@ -146,8 +146,8 @@
         <div class="stagebox"><iframe id="pv"></iframe></div>
         <div class="previewbar">
           <button class="btn sm" id="replay">↻ Replay</button>
-          <button class="btn sm sec" id="shuffle" title="Pick a random colour theme — the layout stays the same">🎲 Random theme</button>
-          <button class="btn sm sec" id="randlayout" title="Jump to a random layout — the theme stays the same">🎲 Random layout</button>
+          <button class="btn sm sec" id="shuffle" title="Pick a random colour theme - the layout stays the same">🎲 Random theme</button>
+          <button class="btn sm sec" id="randlayout" title="Jump to a random layout - the theme stays the same">🎲 Random layout</button>
           <button class="btn sm sec" id="cycle">▶ Cycle layouts</button>
           <span class="hint" style="margin:0 0 0 auto" id="pvinfo"></span>
         </div>
@@ -164,13 +164,13 @@
         </div>
         <div class="hint" id="pvstatus" style="margin-top:8px">
           Showing fake demo data. Enter a real Twitch username above to fetch their actual
-          profile and play a real clip — no credentials needed.
+          profile and play a real clip - no credentials needed.
         </div>
       </div>
     </div>
 
     <div class="panel">
-      <h2>1 · Layout <span style="color:var(--td);text-transform:none;letter-spacing:0">— structure</span></h2>
+      <h2>1 · Layout <span style="color:var(--td);text-transform:none;letter-spacing:0">- structure</span></h2>
       <div class="tabs">
         <button class="tab on" data-tab="builtin">138 built-in</button>
         <button class="tab" data-tab="random">🎲 Random mix</button>
@@ -204,7 +204,7 @@
              background:#0e0e17;border:1px solid var(--l);border-radius:10px">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
             <b id="rEditName" style="font-size:13.5px"></b>
-            <span class="hint" style="margin:0">— options just for this layout</span>
+            <span class="hint" style="margin:0">- options just for this layout</span>
             <button class="btn sec sm" id="rEditClose" style="margin-left:auto">Done</button>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
@@ -232,16 +232,16 @@
       <div id="layoutopts" style="padding:14px 18px;border-top:1px solid var(--l);
            background:#0e0e17">
         <div style="font-size:12.5px;color:var(--td);margin-bottom:10px">
-          <b style="color:var(--t)">Options for the selected layout</b> — these apply to every
+          <b style="color:var(--t)">Options for the selected layout</b> - these apply to every
           built-in layout and to the random mix.</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <div style="flex:1;min-width:150px">
             <label style="margin-top:0">Detail level</label>
             <select id="oDetail">
               <option value="">Layout default</option>
-              <option value="minimal">Minimal — name + one stat</option>
+              <option value="minimal">Minimal - name + one stat</option>
               <option value="standard">Standard</option>
-              <option value="rich">Rich — everything</option>
+              <option value="rich">Rich - everything</option>
             </select>
           </div>
           <div style="flex:1;min-width:150px">
@@ -257,8 +257,8 @@
             <label style="margin-top:0">Video fit</label>
             <select id="oFit">
               <option value="">Layout default</option>
-              <option value="contain">Letterbox — never crop</option>
-              <option value="cover">Fill — may crop</option>
+              <option value="contain">Letterbox - never crop</option>
+              <option value="cover">Fill - may crop</option>
             </select>
           </div>
           <div style="flex:1;min-width:150px">
@@ -278,7 +278,7 @@
 
       <div class="tabc" id="tab-genlayout">
         <div class="hint" style="margin-top:0">Structural variations built from the layout
-          engine — different clip framing, info placement, panel style, entrance and detail
+          engine - different clip framing, info placement, panel style, entrance and detail
           level. Filter the set, or leave everything on and browse.</div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px">
@@ -357,7 +357,7 @@
     </div>
 
     <div class="panel">
-      <h2>2 · Theme <span style="color:var(--td);text-transform:none;letter-spacing:0">— colour, type, texture</span></h2>
+      <h2>2 · Theme <span style="color:var(--td);text-transform:none;letter-spacing:0">- colour, type, texture</span></h2>
       <div class="tabs">
         <button class="tab on" data-tab="preset">Presets</button>
         <button class="tab" data-tab="gen">Generate</button>
@@ -367,7 +367,7 @@
       </div>
       <div class="tabc" id="tab-gen">
         <div class="hint" style="margin-top:0">Click things. Every choice shows you the
-          result — there are no colour codes to work out.</div>
+          result - there are no colour codes to work out.</div>
 
         <label style="margin-top:16px">Colour</label>
         <div id="paletteGrid"></div>
@@ -405,7 +405,7 @@
       </div>
       <div class="tabc on" id="tab-cmds"><table>
         <tr><td>!<span id="cmdname">so</span> user</td><td>Queue a shoutout. Multiple shoutouts stack in a queue and play in order.</td></tr>
-        <tr><td>!watchclip user</td><td>Play a clip for anyone — ignores the mods/VIP restriction.</td></tr>
+        <tr><td>!watchclip user</td><td>Play a clip for anyone - ignores the mods/VIP restriction.</td></tr>
         <tr><td>!replayso</td><td>Replay the last shoutout. Aliases: !soreplay, !clipreplay, !replayclip</td></tr>
         <tr><td>!stopclip</td><td>Stop the current clip immediately. Mods/broadcaster only. Aliases: !sostop, !clipstop</td></tr>
         <tr><td>!clipreload</td><td>Reload the browser source. Mods/broadcaster only. Alias: !soreload</td></tr>
@@ -415,21 +415,21 @@
       <div class="tabc" id="tab-obs">
         <p style="margin-top:0">Add a <b>Browser Source</b> and paste the generated URL. Set:</p>
         <table>
-          <tr><td>Width × Height</td><td>1920 × 1080 — then scale the source in your scene, don't change these</td></tr>
-          <tr><td>Shutdown source when not visible</td><td><b>✓ on</b> — stops audio playing on hidden scenes</td></tr>
-          <tr><td>Refresh browser when scene becomes active</td><td><b>✓ on</b> — reconnects chat reliably</td></tr>
-          <tr><td>Control audio via OBS</td><td><b>✓ on</b> — clip audio becomes a normal mixer channel</td></tr>
+          <tr><td>Width × Height</td><td>1920 × 1080 - then scale the source in your scene, don't change these</td></tr>
+          <tr><td>Shutdown source when not visible</td><td><b>✓ on</b> - stops audio playing on hidden scenes</td></tr>
+          <tr><td>Refresh browser when scene becomes active</td><td><b>✓ on</b> - reconnects chat reliably</td></tr>
+          <tr><td>Control audio via OBS</td><td><b>✓ on</b> - clip audio becomes a normal mixer channel</td></tr>
         </table>
         <div class="warn">Clip audio needs "Control audio via OBS" ticked or you won't hear it. If clips are silent on your stream but audible locally, that's the setting.</div>
       </div>
       <div class="tabc" id="tab-scopes">
         <p style="margin-top:0">Generate a token with these scopes (an implicit-grant token is fine):</p>
         <table>
-          <tr><td>(none)</td><td>Profile, clips, category, live status, account age — all work with just a valid token</td></tr>
-          <tr><td>moderator:read:followers</td><td>Follower counts. Only returns data for channels you moderate — otherwise the stat is hidden automatically</td></tr>
+          <tr><td>(none)</td><td>Profile, clips, category, live status, account age - all work with just a valid token</td></tr>
+          <tr><td>moderator:read:followers</td><td>Follower counts. Only returns data for channels you moderate - otherwise the stat is hidden automatically</td></tr>
           <tr><td>user:write:chat</td><td>Only if you enable "post shoutout message in chat"</td></tr>
         </table>
-        <div class="warn"><b>Follower counts are restricted by Twitch.</b> The API only returns them for channels you moderate. For everyone else these layouts hide the stat rather than show a zero — this is a Twitch policy limit, not a bug.</div>
+        <div class="warn"><b>Follower counts are restricted by Twitch.</b> The API only returns them for channels you moderate. For everyone else these layouts hide the stat rather than show a zero - this is a Twitch policy limit, not a bug.</div>
       </div>
     </div>
   </div>
@@ -451,7 +451,7 @@
     </div>
 
     <div class="panel">
-      <h2>3b · Access token <span style="color:var(--td);text-transform:none;letter-spacing:0">— optional</span></h2>
+      <h2>3b · Access token <span style="color:var(--td);text-transform:none;letter-spacing:0">- optional</span></h2>
       <div class="in">
         <label class="chk" style="margin-top:0"><input type="checkbox" id="usetoken">
           <span>I want the overlay to post a message in chat
@@ -491,9 +491,9 @@
 
         <label><b style="color:var(--t)">Overlay background</b></label>
         <select id="obg">
-          <option value="panels">Transparent — show my game/scene behind (recommended)</option>
-          <option value="none">Solid — overlay fills the whole screen</option>
-          <option value="full">Fully transparent — text and clip only, no panels</option>
+          <option value="panels">Transparent - show my game/scene behind (recommended)</option>
+          <option value="none">Solid - overlay fills the whole screen</option>
+          <option value="full">Fully transparent - text and clip only, no panels</option>
         </select>
         <div class="hint">In OBS the browser source is transparent by default, so
           <b>Transparent</b> lets your gameplay show through around the overlay.
@@ -509,6 +509,16 @@
           text panels do not use, so nothing is drawn over the video and none of the
           picture is cropped. <b>Full screen</b> is the old behaviour: the clip fills
           the frame and the panels overlap it.</div>
+
+        <label><b style="color:var(--t)">Credit badge</b></label>
+        <label class="chk"><input type="checkbox" id="ocredit"><span>Show a small credit in the corner</span></label>
+        <div id="creditrow" style="display:none;margin-top:8px">
+          <input id="ocredittext" placeholder="Clawmark by Hardclaws">
+          <div class="hint">Leave blank for the default. This sits in the bottom-right,
+            never over the clip, and fades in after the shoutout starts.</div>
+        </div>
+        <div class="hint">Off by default. Clawmark is free to use and fork - credit is
+          appreciated but never required.</div>
 
         <label>Browser source size</label>
         <select id="osize">
@@ -543,7 +553,7 @@
     </div>
 
     <div class="panel">
-      <h2>4b · Custom images <span style="color:var(--td);text-transform:none;letter-spacing:0">— optional</span></h2>
+      <h2>4b · Custom images <span style="color:var(--td);text-transform:none;letter-spacing:0">- optional</span></h2>
       <div class="in">
         <label class="chk" style="margin-top:0"><input type="checkbox" id="useassets">
           <span>Use my own artwork
@@ -555,9 +565,9 @@
           <input type="text" id="backplate" placeholder="assets/parchment.png">
           <div class="hint">Relative path or full URL. Bake AI images to transparent PNGs first:
             <code>python tools/bake-asset.py raw.png --out assets/emblem.png</code>
-            — see <b>docs/AI-ASSETS.md</b>.</div>
+            - see <b>docs/AI-ASSETS.md</b>.</div>
           <div class="warn">Generate artwork <b>once</b> and ship it. Calling an image API at
-            shoutout time would add 3–20s of delay, cost per shoutout, and put an API key in
+            shoutout time would add 3-20s of delay, cost per shoutout, and put an API key in
             your browser-source URL.</div>
         </div>
       </div>
@@ -865,7 +875,7 @@ function updateRCount(){
   const c=S.pool.filter(hasOpts).length;
   $('rCount').textContent = S.pool.length
     ? `${S.pool.length} in the mix${c?` · ${c} with custom options`:''}`
-    : 'None selected — pick at least two';
+    : 'None selected - pick at least two';
 }
 function openEditor(id){
   rEditing=id; S.poolFocus=id; update();
@@ -915,6 +925,11 @@ buildRandomGrid(); updateRCount();
   $(id).addEventListener('input',update));
 $('osize').addEventListener('change',()=>{fit();update(true);});
 $('ovfit').addEventListener('change',()=>update());
+$('ocredit').addEventListener('change',()=>{
+  $('creditrow').style.display=$('ocredit').checked?'block':'none';
+  update();
+});
+$('ocredittext').addEventListener('input',()=>update());
 $('obg').addEventListener('change',()=>{
   S.bgMode=$('obg').value;
   S.theme.bg=S.bgMode; S.custom.transparency=S.bgMode;
@@ -962,7 +977,7 @@ function genLayouts(page){
     g.appendChild(b);
   });
   const shown=Math.min((lgenPage+1)*12,total);
-  $('lcount').textContent=`${total.toLocaleString()} possible layouts · showing ${lgenPage*12+1}–${shown}`;
+  $('lcount').textContent=`${total.toLocaleString()} possible layouts · showing ${lgenPage*12+1}-${shown}`;
   $('lgeninfo').textContent='Click one to preview it.';
 }
 $('lgen').onclick=()=>genLayouts(0);
@@ -1128,7 +1143,7 @@ function sat(h,f){const [r,g,b]=hex2rgb(h);const l=(r+g+b)/3;
 /* Recompute the whole skin from the four visual choices. */
 /* What theme is actually showing right now. `skinNow().name` only carries a
    label in preset mode, so after a shuffle (which switches to custom) it kept
-   reporting the previously selected preset — the label looked frozen even
+   reporting the previously selected preset - the label looked frozen even
    though the colours were changing. */
 function themeLabel(){
   if(S.skinMode==='preset'){
@@ -1290,9 +1305,9 @@ rl('vol',v=>v+'%');
 rl('hold',v=>v+'s');
 
 /* ---------------- URL build ---------------- */
-const FIELDS=['channel','clientid','token','cmd','kicker','cta','tag','chatmsg','asset','backplate','osize','obg','ovfit'];
+const FIELDS=['channel','clientid','token','cmd','kicker','cta','tag','chatmsg','asset','backplate','osize','obg','ovfit','ocredittext'];
 const $tok=()=>document.getElementById('usetoken').checked;
-const CHECKS=['clip','featured','fallback','raid','progress','mods','vips'];
+const CHECKS=['clip','featured','fallback','raid','progress','mods','vips','ocredit'];
 FIELDS.concat(CHECKS).forEach(id=>$(id).addEventListener('input',update));
 
 let PV = { user:null, sound:false };
@@ -1349,6 +1364,11 @@ function buildURL(forPreview){
      written "when it differs from the default" silently vanishes from the
      URL and the overlay falls back to something the user did not pick */
   p.set('videofit', ($('ovfit')&&$('ovfit').value)||'smart');
+  /* credit badge - only written when switched on, so a fork's URLs stay clean */
+  if($('ocredit') && $('ocredit').checked){
+    const t=($('ocredittext').value||'').trim();
+    p.set('credit', t || '1');
+  }
   if(+$('days').value)p.set('days',$('days').value);
   if(+$('max').value!==60)p.set('max',$('max').value);
   if(+$('vol').value!==70)p.set('vol',$('vol').value);
@@ -1381,7 +1401,7 @@ let cycling=null;
 let pvTimer=null, pvLast='';
 function loadPreview(force){
   const u=buildURL(true);
-  // skip redundant reloads — only navigate when the URL actually changed
+  // skip redundant reloads - only navigate when the URL actually changed
   if(!force && u===pvLast) return;
   pvLast=u;
   clearTimeout(pvTimer);
@@ -1424,7 +1444,7 @@ $('pvgo').onclick=()=>{
 $('pvuser').addEventListener('keydown',e=>{if(e.key==='Enter')$('pvgo').click();});
 $('pvdemo').onclick=()=>{
   PV.user=null; $('pvuser').value='';
-  $('pvstatus').textContent='Showing fake demo data. Enter a real Twitch username above to fetch their actual profile and play a real clip — no credentials needed.';
+  $('pvstatus').textContent='Showing fake demo data. Enter a real Twitch username above to fetch their actual profile and play a real clip - no credentials needed.';
   update();
 };
 $('pvsound').onchange=()=>{ PV.sound=$('pvsound').checked; update(); };
@@ -1479,14 +1499,17 @@ function load(){
   }catch(e){}
 }
 load();
-// refresh slider labels directly — dispatching 'input' would trigger 4 extra previews
+/* load() restores the checkbox but not the row it controls - sync it so a
+   reload doesn't show a ticked box with the text field hidden. */
+$('creditrow').style.display = $('ocredit').checked ? 'block' : 'none';
+// refresh slider labels directly - dispatching 'input' would trigger 4 extra previews
 ['days','max','vol','hold','raidcount','raiddelay'].forEach(id=>RL[id] && RL[id]());
 update(true);
 </script>
 <footer style="max-width:1600px;margin:48px auto 40px;padding:26px 30px;
   border-top:1px solid var(--l);color:var(--d);font-size:14px;line-height:1.7">
   <div style="font-size:17px;color:var(--t);font-weight:700;margin-bottom:8px">
-    Clawmark — Twitch Shoutout Overlay
+    Clawmark - Twitch Shoutout Overlay
   </div>
   Built by <b style="color:var(--t)">Hardclaws</b> ·
   <a href="https://twitch.tv/hardclaws" target="_blank" rel="noopener"

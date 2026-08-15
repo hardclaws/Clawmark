@@ -1,4 +1,4 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
@@ -78,7 +78,7 @@
     crown:   { glyph: '♛', label: '' },
     diamond: { glyph: '◆', label: '' },
     circuit: { glyph: '⬡', label: '' },
-    claw:    { glyph: '', label: '' },   /* Hardclaws slash — drawn as SVG in app.js */
+    claw:    { glyph: '', label: '' },   /* Hardclaws slash - drawn as SVG in app.js */
   };
 
   /* ---------- TEXTURES ---------- */
@@ -103,7 +103,7 @@
   const TEXTURE_SIZE = { scan: 'auto', parchment: '7px 7px', paper: '5px 5px', grunge: 'auto', grid: '48px 48px', dots: '6px 6px', none: 'auto' };
 
   /* =============================================================
-     generateSkin — the "describe it and get a theme" entry point
+     generateSkin - the "describe it and get a theme" entry point
      opts: { mood, hue, hue2, contrast, radius, texture, motif,
              fontDisplay, fontBody, uppercase, glow, seed, name }
      Every field optional. Missing fields are synthesised from
@@ -224,7 +224,7 @@
   function pick(arr, r) { return arr[Math.floor((r ? r() : Math.random()) * arr.length)]; }
 
   /* =============================================================
-     COLOUR ROLES — the contract between skins and layouts.
+     COLOUR ROLES - the contract between skins and layouts.
      Every layout only ever references these. Documented here so the
      theme editor can explain exactly what each one paints.
      ============================================================= */
@@ -279,7 +279,7 @@
   }
 
   /* =============================================================
-     customSkin — build a skin from EXPLICIT values.
+     customSkin - build a skin from EXPLICIT values.
      No mood, no hue guessing. What you set is what you get.
      ============================================================= */
   const CUSTOM_DEFAULTS = {
@@ -412,11 +412,11 @@
   }
 
   /* =============================================================
-     PRESET SKINS — the curated ones shipped in the dropdown.
+     PRESET SKINS - the curated ones shipped in the dropdown.
      Each is just a call to generateSkin with pinned values.
      ============================================================= */
   /* =============================================================
-     PRESETS — hand-picked explicit palettes.
+     PRESETS - hand-picked explicit palettes.
      Previously these were generated from a hue + mood, which meant the
      swatch never matched the rendered overlay and names like
      "Old Parchment" produced arbitrary colours. Now every value is
@@ -620,7 +620,7 @@
   };
 
   /* =============================================================
-     describeToSkin — loose natural-language -> skin opts.
+     describeToSkin - loose natural-language -> skin opts.
      Lets the generator UI accept "dark cyberpunk pink" etc.
      ============================================================= */
   const WORD_HUE = {
@@ -653,11 +653,11 @@
     const words = String(text || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
     const o = Object.assign({}, extra || {});
 
-    // 1. mood — first explicit mood word wins (ignores 'dark'/'light')
+    // 1. mood - first explicit mood word wins (ignores 'dark'/'light')
     if (!o.mood) {
       for (const w of words) { if (WORD_MOOD[w]) { o.mood = WORD_MOOD[w]; break; } }
     }
-    // 2. colour — first colour word wins
+    // 2. colour - first colour word wins
     if (o.hue === undefined) {
       for (const w of words) { if (WORD_HUE[w] !== undefined) { o.hue = WORD_HUE[w]; break; } }
     }

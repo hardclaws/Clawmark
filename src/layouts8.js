@@ -1,9 +1,9 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — SET 8
+   LAYOUTS - SET 8
    Nature, sport, music and food. Rounds the themed count to 118.
    Clip window is dedicated 16:9; nothing is drawn over it.
    ============================================================= */
@@ -24,7 +24,7 @@
   /* ---------- NATURE DOC ---------- */
   add({
     id: 'naturedoc', label: 'Nature Documentary', group: 'Nature',
-    blurb: 'Wildlife film lower third — species name in italic latin, habitat readout and a soft cream serif palette.',
+    blurb: 'Wildlife film lower third - species name in italic latin, habitat readout and a soft cream serif palette.',
     html: (d) => `
     <div class="lo lo-nature">
       <div class="nd-frame a-ndin">
@@ -56,7 +56,7 @@
   /* ---------- FIELD JOURNAL ---------- */
   add({
     id: 'fieldjournal', label: 'Field Journal', group: 'Nature',
-    blurb: 'A naturalist\'s notebook — pressed leaves, pencil sketches, tape-mounted photo and handwritten margin notes.',
+    blurb: 'A naturalist\'s notebook - pressed leaves, pencil sketches, tape-mounted photo and handwritten margin notes.',
     html: (d) => `
     <div class="lo lo-field">
       <div class="fj-desk"></div>
@@ -102,7 +102,7 @@
   /* ---------- AQUARIUM ---------- */
   add({
     id: 'aquarium', label: 'Aquarium', group: 'Nature',
-    blurb: 'Looking into a tank — caustic light ripples, drifting bubbles, kelp silhouettes and a brass exhibit plaque.',
+    blurb: 'Looking into a tank - caustic light ripples, drifting bubbles, kelp silhouettes and a brass exhibit plaque.',
     html: (d) => `
     <div class="lo lo-aqua">
       <div class="aq-water"></div>
@@ -139,7 +139,7 @@
   /* ---------- STADIUM BIG SCREEN ---------- */
   add({
     id: 'stadium', label: 'Stadium Screen', group: 'Sport',
-    blurb: 'The jumbotron at a packed ground — LED dot matrix, crowd bokeh and a sponsor ribbon crawling underneath.',
+    blurb: 'The jumbotron at a packed ground - LED dot matrix, crowd bokeh and a sponsor ribbon crawling underneath.',
     html: (d) => `
     <div class="lo lo-stad">
       <div class="sd-night"></div>
@@ -177,13 +177,13 @@
   /* ---------- TRADING STICKER ---------- */
   add({
     id: 'stickerbook', label: 'Sticker Album', group: 'Sport',
-    blurb: 'A football sticker album page — foil-shine special, empty slots waiting, and a "GOT IT!" slap.',
+    blurb: 'A football sticker album page - foil-shine special, empty slots waiting, and a "GOT IT!" slap.',
     html: (d) => `
     <div class="lo lo-sticker">
       <div class="sk-page">
         <div class="sk-head">
           <b>OFFICIAL COLLECTION</b>
-          <span>PAGE ${(d.user.followers || 24) % 60 + 1} — STREAMERS</span>
+          <span>PAGE ${(d.user.followers || 24) % 60 + 1} - STREAMERS</span>
         </div>
 
         <div class="sk-row">
@@ -222,7 +222,7 @@
   /* ---------- PODIUM ---------- */
   add({
     id: 'podium', label: 'Podium', group: 'Sport',
-    blurb: 'Medal ceremony — three-step podium rising from the floor, confetti burst and a laurel-wreath name plate.',
+    blurb: 'Medal ceremony - three-step podium rising from the floor, confetti burst and a laurel-wreath name plate.',
     html: (d) => `
     <div class="lo lo-podium">
       <div class="pd-hall"></div>
@@ -264,7 +264,7 @@
   /* ---------- GIG POSTER ---------- */
   add({
     id: 'gigposter', label: 'Gig Poster', group: 'Music',
-    blurb: 'Screen-printed show flyer — riso-style offset colour, huge condensed type and a torn paper edge.',
+    blurb: 'Screen-printed show flyer - riso-style offset colour, huge condensed type and a torn paper edge.',
     html: (d) => `
     <div class="lo lo-gig">
       <div class="gp-wall"></div>
@@ -302,14 +302,14 @@
   /* ---------- MIXING DESK ---------- */
   add({
     id: 'mixingdesk', label: 'Mixing Desk', group: 'Music',
-    blurb: 'Studio console — channel strips with moving faders, bouncing VU needles and a routing display.',
+    blurb: 'Studio console - channel strips with moving faders, bouncing VU needles and a routing display.',
     html: (d) => `
     <div class="lo lo-mix">
       <div class="mx-room"></div>
 
       <div class="mx-display a-mxin">
         <div class="mx-view">${clip(d)}</div>
-        <div class="mx-dcap">MONITOR A — ${esc(d.clip ? d.clip.title : d.user.title)}</div>
+        <div class="mx-dcap">MONITOR A - ${esc(d.clip ? d.clip.title : d.user.title)}</div>
       </div>
 
       <div class="mx-vu a-mxvu">
@@ -402,7 +402,7 @@
   /* ---------- DINER MENU ---------- */
   add({
     id: 'diner', label: 'Diner Menu', group: 'Food',
-    blurb: 'American diner specials board — chrome trim, checkerboard tile, neon OPEN sign and a daily-special card.',
+    blurb: 'American diner specials board - chrome trim, checkerboard tile, neon OPEN sign and a daily-special card.',
     html: (d) => `
     <div class="lo lo-diner">
       <div class="dn-tile"></div>
@@ -445,7 +445,7 @@
   /* ---------- COOKING SHOW ---------- */
   add({
     id: 'cookingshow', label: 'Cooking Show', group: 'Food',
-    blurb: 'Daytime food TV — warm kitchen light, a recipe card with ingredients, and a bouncing timer badge.',
+    blurb: 'Daytime food TV - warm kitchen light, a recipe card with ingredients, and a bouncing timer badge.',
     html: (d) => `
     <div class="lo lo-cook">
       <div class="ck2-kitchen"></div>
@@ -510,7 +510,7 @@
           <span>ORDER #${String((d.user.followers || 42) % 999).padStart(3, '0')}</span>
         </div>
         <div class="cf-lines">
-          <div><span>${esc(d.user.name)}</span><b>—</b></div>
+          <div><span>${esc(d.user.name)}</span><b>-</b></div>
           ${d.user.game ? `<div><span>${esc(d.user.game)}</span><b>1</b></div>` : ''}
           ${d.user.followers != null ? `<div><span>Followers</span><b>${n(d.user.followers)}</b></div>` : ''}
           ${d.user.created ? `<div><span>Regular since</span><b>${esc(d.user.created)}</b></div>` : ''}

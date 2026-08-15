@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Clawmark — overlay parameter smoke test.
+"""Clawmark - overlay parameter smoke test.
 
 Every URL parameter the builder can emit, asserted against the rendered DOM.
 A parameter that silently does nothing is the worst class of bug here: the
@@ -18,7 +18,7 @@ fails, checks = [], 0
 def check(name, ok, detail=""):
     global checks
     checks += 1
-    print(f"  {'PASS' if ok else 'FAIL'}  {name}{('  — ' + detail) if detail else ''}")
+    print(f"  {'PASS' if ok else 'FAIL'}  {name}{('  - ' + detail) if detail else ''}")
     if not ok:
         fails.append(name)
 
@@ -92,7 +92,7 @@ def main():
             check(f"size={sz}", pg.evaluate("()=>document.body.offsetWidth") == w)
 
         print("\n== copy overrides ==")
-        # NB: not every layout has a kicker slot — Stat Band and Holo Card lead
+        # NB: not every layout has a kicker slot - Stat Band and Holo Card lead
         # with the clip title by design. Test one that does show it.
         go("layout=deck&kicker=CHECK%20THIS%20OUT")
         check("kicker=", "CHECK THIS OUT" in pg.evaluate("()=>document.body.innerText"))

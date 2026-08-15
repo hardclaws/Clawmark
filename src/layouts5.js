@@ -1,15 +1,15 @@
-/* Clawmark — Twitch Shoutout Overlay for OBS
+/* Clawmark - Twitch Shoutout Overlay for OBS
  * Created by Hardclaws · twitch.tv/hardclaws · thehardclaws@gmail.com
  * MIT licence. Free to use, modify and fork.
  */
 /* =============================================================
-   LAYOUTS — SET 5
+   LAYOUTS - SET 5
    Retro / 8-bit, high fantasy, dragons, spellcasting, and
    Tolkien-flavoured heraldry.
 
    Design rule for this whole set, learned the hard way: the clip gets
    its OWN 16:9 window that nothing else is allowed to touch. No panel,
-   badge, bar or flourish overlaps the picture — the furniture is built
+   badge, bar or flourish overlaps the picture - the furniture is built
    around the window rather than dropped on top of it.
    ============================================================= */
 (function (root) {
@@ -417,7 +417,7 @@
   /* ---------- 73. ALCHEMY BENCH ---------- */
   add({
     id: 'alchemy', label: 'Alchemy Bench', group: 'Magic',
-    blurb: 'A potion-maker\'s bench — bubbling flasks whose liquid level reads out the channel stats, plus a bound recipe card.',
+    blurb: 'A potion-maker\'s bench - bubbling flasks whose liquid level reads out the channel stats, plus a bound recipe card.',
     html: (d) => `
     <div class="lo lo-alch">
       <div class="al-wall"></div>

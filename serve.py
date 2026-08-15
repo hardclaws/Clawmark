@@ -96,7 +96,7 @@ def main():
     try:
         httpd = Server(("0.0.0.0", PORT), Handler)
     except OSError as e:
-        print(f"\n  ERROR: could not bind port {PORT} — {e}")
+        print(f"\n  ERROR: could not bind port {PORT} - {e}")
         print(f"  Something else is probably using it. Try: python serve.py {PORT + 1}\n")
         sys.exit(1)
 

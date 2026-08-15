@@ -21,7 +21,7 @@ Once it's up you get a permanent URL you can paste straight into OBS on any mach
 
 - Go to <https://github.com/new>
 - **Repository name:** `clawmark` (or anything)
-- **Public** — Pages requires public on free accounts
+- **Public** - Pages requires public on free accounts
 - Don't tick "Add a README" (you already have one)
 - **Create repository**
 
@@ -29,7 +29,7 @@ Once it's up you get a permanent URL you can paste straight into OBS on any mach
 
 On the new empty repo page, click **uploading an existing file**.
 
-Drag in the *contents* of the unzipped folder — `index.html`, `overlay.html`, the `src`
+Drag in the *contents* of the unzipped folder - `index.html`, `overlay.html`, the `src`
 folder, and the rest. **Not** the outer folder itself, or everything ends up one level too
 deep.
 
@@ -63,7 +63,7 @@ https://YOURNAME.github.io/clawmark/
 ### 4. Build your overlay URL
 
 Open that address. It's the same builder you've been using locally. Pick a layout and
-theme, then **Copy URL** — it will already point at your GitHub Pages address, e.g.
+theme, then **Copy URL** - it will already point at your GitHub Pages address, e.g.
 
 ```
 https://YOURNAME.github.io/clawmark/overlay.html?layout=racebib&skin=peloton&channel=yourname
@@ -100,7 +100,7 @@ Pages redeploys in under a minute.
 ## Things worth knowing
 
 **Subpaths are handled.** A project site lives at `/YOURREPO/`, not the domain root. Every
-path in this project is relative, so it works either way — tested by serving the whole
+path in this project is relative, so it works either way - tested by serving the whole
 thing from a subdirectory.
 
 **HTTPS is automatic**, which matters: browsers block some requests from `http://` pages,
@@ -113,7 +113,7 @@ Twitch's public API for profile, clips, follower counts and clip playback.
 > commit that URL, don't paste it in a screenshot, and don't put it in the README. Keep the
 > URL in OBS only. Anyone with the URL can post as you.
 
-**Custom domain** — optional. Add a `CNAME` file containing your domain, then point a DNS
+**Custom domain** - optional. Add a `CNAME` file containing your domain, then point a DNS
 CNAME record at `YOURNAME.github.io`.
 
 ---
@@ -124,7 +124,7 @@ CNAME record at `YOURNAME.github.io`.
 |---|---|
 | 404 on the Pages URL | Pages not enabled yet, or still deploying. Check Settings → Pages for a green tick. |
 | Page loads but no layouts | Files were uploaded one folder too deep. `index.html` must be at the repo root. |
-| Works locally, blank on Pages | Hard refresh (Ctrl+F5) — Pages caches aggressively for a few minutes. |
+| Works locally, blank on Pages | Hard refresh (Ctrl+F5) - Pages caches aggressively for a few minutes. |
 | Clips don't play | Test with `test.html` on the Pages URL. Usually an adblocker blocking the Twitch CDN. |
 | Changes don't show | Pages can take a minute, and your browser caches. Hard refresh. |
 
@@ -134,9 +134,9 @@ CNAME record at `YOURNAME.github.io`.
 
 Free GitHub Pages requires a public repo. If you'd rather not publish:
 
-- **Run it locally** — `serve.bat` / `./serve.sh`, then use the `http://localhost:8080/...`
+- **Run it locally** - `serve.bat` / `./serve.sh`, then use the `http://localhost:8080/...`
   URL in OBS. Works fine, but only on that machine and only while the server is running.
-- **Netlify / Cloudflare Pages** — both have free tiers, both accept a drag-and-dropped
+- **Netlify / Cloudflare Pages** - both have free tiers, both accept a drag-and-dropped
   folder, and both allow private sources.
 
 The overlay itself is identical in all three cases.
