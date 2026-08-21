@@ -491,7 +491,22 @@
       dur = playFor * 1000 + 900;
       stage.style.setProperty('--clipdur', playFor + 's');
 
-      const main = vids[0];
+      /* ---- WHICH video is the one the viewer watches? --------------------
+         Six layouts (dossier, receipt, filmstrip, boardingpass, holocard,
+         chatapp) render the clip TWICE: a blurred full-frame copy as a
+         backdrop, and the sharp inset you actually look at. The backdrop is
+         first in the markup, so `vids[0]` was the blurred one - meaning the
+         sharp clip never had play() called on it at all and sat frozen on its
+         first frame while the blur animated behind it.
+
+         That is the real cause of the "random freeze": it depended entirely on
+         which layout came up. Retrying harder never helped because the retries
+         were aimed at the wrong element.
+
+         Fix: start EVERY video, and treat the sharp one as the timing source. */
+      const BG_WRAP = '.bgblur,.ho-bg,.fbg,.rbg,.pa-bg,.ch-bg,.gbleed,.nbg,.pbg,.vs-bg,.rc-bgclip';
+      const isBackdrop = (v) => !!v.closest(BG_WRAP);
+      const main = Array.prototype.find.call(vids, (v) => !isBackdrop(v)) || vids[0];
 
       /* ---- robust autoplay ----------------------------------------------
          The old code was:
@@ -510,21 +525,23 @@
 
          Now: retry with backoff, and also attempt whenever the element tells
          us it has data. Whichever happens first wins.                       */
-      let tries = 0, started = false;
-      const markStarted = () => { started = true; };
-      main.addEventListener('playing', markStarted, { once: true });
-
-      const attempt = () => {
-        if (started || tries > 6 || current !== d) return;
-        tries++;
-        const pr = main.play();
-        if (pr && typeof pr.catch === 'function') {
-          pr.catch(() => { setTimeout(attempt, 120 * tries); });
-        }
-      };
-      main.addEventListener('loadeddata', attempt);
-      main.addEventListener('canplay', attempt);
-      attempt();
+      /* Kick every video element, backdrop included, each with its own retry
+         chain. Previously only one element was ever started. */
+      Array.prototype.forEach.call(vids, (v) => {
+        let tries = 0, started = false;
+        v.addEventListener('playing', () => { started = true; }, { once: true });
+        const attempt = () => {
+          if (started || tries > 6 || current !== d) return;
+          tries++;
+          const pr = v.play();
+          if (pr && typeof pr.catch === 'function') {
+            pr.catch(() => { setTimeout(attempt, 120 * tries); });
+          }
+        };
+        v.addEventListener('loadeddata', attempt);
+        v.addEventListener('canplay', attempt);
+        attempt();
+      });
 
       /* If the clip genuinely cannot load (404, expired signature, codec),
          don't strand the overlay on a dead frame - hold briefly, then move on. */
@@ -538,7 +555,9 @@
          frame. Give it a moment to recover, then end early rather than sit there. */
       main.addEventListener('stalled', () => {
         setTimeout(() => {
-          if (current === d && !started && main.readyState < 3) {
+          /* `started` is now per-element and scoped to the loop above, so ask
+             the element itself instead of a stale closure variable. */
+          if (current === d && main.paused && main.readyState < 3) {
             log('clip stalled with no data, ending early');
             finish();
           }
