@@ -683,6 +683,7 @@ tools/audit-layouts.py      pixel audit: clip coverage, aspect, overflow
 tools/check-transparency.py proves every layout is transparent in OBS
 tools/smoke-builder.py      clicks every builder control, asserts it did something
 tools/smoke-overlay.py      asserts every URL parameter actually takes effect
+tools/test-clip-playback.py clip autoplay resilience (the frozen-frame bug)
 ```
 
 ## About the local server

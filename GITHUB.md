@@ -179,6 +179,13 @@ visibility → Public**.
 Your URL is missing `bg=panels`. Rebuild it from the builder - it always writes
 that parameter now.
 
+**A clip shows a frozen first frame, but the next shoutout is fine**
+Fixed in the current version. The overlay used to call `play()` before the
+video had any data, and only retried once - so a cold CDN fetch failed twice.
+It now retries with backoff and also starts as soon as the browser reports the
+clip is ready. If you still see it, tick **Control audio via OBS** on the
+Browser Source and make sure **Shutdown source when not visible** is on.
+
 **Clips don't play**
 Open `test.html` on your Pages URL - it runs diagnostics and tells you exactly
 what's failing. No credentials needed.

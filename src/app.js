@@ -483,12 +483,71 @@
     }
 
     if (d.clip && vids.length) {
-      dur = Math.min(d.clip.duration, CFG.maxDuration) * 1000 + 900;
-      stage.style.setProperty('--clipdur', Math.min(d.clip.duration, CFG.maxDuration) + 's');
+      /* Guard the duration maths. A clip with a missing/zero duration made
+         Math.min(undefined, 60) === NaN, so the safety timeout below was
+         setTimeout(fn, NaN) - which fires immediately and killed the shoutout. */
+      const rawDur = Number(d.clip.duration) > 0 ? Number(d.clip.duration) : 30;
+      const playFor = CFG.maxDuration > 0 ? Math.min(rawDur, CFG.maxDuration) : rawDur;
+      dur = playFor * 1000 + 900;
+      stage.style.setProperty('--clipdur', playFor + 's');
+
       const main = vids[0];
-      main.play().catch(() => { main.muted = true; main.play().catch(() => {}); });
+
+      /* ---- robust autoplay ----------------------------------------------
+         The old code was:
+             main.play().catch(() => { main.muted = true; main.play()... });
+         Two problems, both of which show as "the clip is frozen on its first
+         frame, but the next shoutout is fine":
+
+         1. play() was called the instant the element was in the DOM, while
+            readyState was still 0. On a cold Twitch CDN fetch the promise
+            rejects with AbortError, and the single retry fired immediately -
+            failing for exactly the same reason. Second time round the file is
+            in the browser cache, so it works. Hence the randomness.
+
+         2. Nothing listened for 'canplay'. Once both attempts had failed there
+            was no path back: the element just sat there showing frame one.
+
+         Now: retry with backoff, and also attempt whenever the element tells
+         us it has data. Whichever happens first wins.                       */
+      let tries = 0, started = false;
+      const markStarted = () => { started = true; };
+      main.addEventListener('playing', markStarted, { once: true });
+
+      const attempt = () => {
+        if (started || tries > 6 || current !== d) return;
+        tries++;
+        const pr = main.play();
+        if (pr && typeof pr.catch === 'function') {
+          pr.catch(() => { setTimeout(attempt, 120 * tries); });
+        }
+      };
+      main.addEventListener('loadeddata', attempt);
+      main.addEventListener('canplay', attempt);
+      attempt();
+
+      /* If the clip genuinely cannot load (404, expired signature, codec),
+         don't strand the overlay on a dead frame - hold briefly, then move on. */
+      main.addEventListener('error', () => {
+        log('clip failed to load, falling back to hold');
+        clearTimeout(timer);
+        timer = setTimeout(() => { if (current === d) finish(); }, 2500);
+      });
+
+      /* A stalled download used to run the full safety timeout showing a frozen
+         frame. Give it a moment to recover, then end early rather than sit there. */
+      main.addEventListener('stalled', () => {
+        setTimeout(() => {
+          if (current === d && !started && main.readyState < 3) {
+            log('clip stalled with no data, ending early');
+            finish();
+          }
+        }, 4000);
+      });
+
       main.onended = finish;
-      if (CFG.maxDuration) setTimeout(() => { if (current === d) finish(); }, dur);
+      /* Safety net: never let a shoutout outlive its clip. */
+      setTimeout(() => { if (current === d) finish(); }, dur);
     } else {
       stage.style.setProperty('--clipdur', CFG.holdMs / 1000 + 's');
       timer = setTimeout(finish, CFG.holdMs);
