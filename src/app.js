@@ -482,6 +482,20 @@
       }, HOLD_MS[holdKey] + 900);
     }
 
+    /* ---- claim this render BEFORE wiring playback -----------------------
+       `current = d` used to sit at the very END of render(), but every guard
+       in the playback code below tests `current !== d`. So the immediate
+       play() attempt ALWAYS bailed out, and playback depended entirely on a
+       later 'canplay' event arriving to retry it.
+
+       If that event had already fired (clip served from cache) or was missed
+       while OBS was busy switching scene visibility, nothing ever started the
+       video and it sat frozen on frame one.
+
+       That is why raids were worse: an alert scene toggling sources at the
+       same moment as the shoutout is exactly that race. */
+    current = d;
+
     if (d.clip && vids.length) {
       /* Guard the duration maths. A clip with a missing/zero duration made
          Math.min(undefined, 60) === NaN, so the safety timeout below was
@@ -571,7 +585,7 @@
       stage.style.setProperty('--clipdur', CFG.holdMs / 1000 + 's');
       timer = setTimeout(finish, CFG.holdMs);
     }
-    current = d;
+    /* (current is claimed above, before playback is wired) */
   }
 
   function finish() {
